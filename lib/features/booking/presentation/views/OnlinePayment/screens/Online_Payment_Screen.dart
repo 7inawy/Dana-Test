@@ -3,7 +3,10 @@ import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/widgets/text_frame.dart';
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_text_style.dart';
+import 'package:dana/core/utils/currency_helper.dart';
+import 'package:dana/core/utils/date_formatter.dart';
 import 'package:dana/core/widgets/custom_screen_header.dart';
+import 'package:dana/features/booking/booking_flow_models.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:dana/features/booking/presentation/views/BookingScreen/widgets/doctor_details_widget.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +27,34 @@ class _PaymentSuccessScreenState extends State<OnlinePaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final draft = ModalRoute.of(context)?.settings.arguments as BookingDraft?;
     final themeProvider = context.watch<AppThemeProvider>();
     final isDark =
         themeProvider.appTheme == ThemeMode.dark ||
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
+
+    DateTime? dDate;
+    TimeOfDay? dTime;
+    if (draft != null) {
+      try {
+        dDate = DateTime.parse(draft.dateIso);
+      } catch (_) {
+        dDate = null;
+      }
+      final p = draft.timeHm.split(':');
+      if (p.length >= 2) {
+        dTime = TimeOfDay(
+          hour: int.tryParse(p[0]) ?? 0,
+          minute: int.tryParse(p[1]) ?? 0,
+        );
+      }
+    }
+    final fee = draft != null && draft.doctor.detectionPrice > 0
+        ? draft.doctor.detectionPrice
+        : 250.0;
+    final feeLabel = CurrencyHelper.format(context, fee);
+
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(24.r),
@@ -71,7 +97,7 @@ class _PaymentSuccessScreenState extends State<OnlinePaymentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  DoctorDetailsWidget(),
+                  DoctorDetailsWidget(doctor: draft?.doctor),
                   Divider(
                     color: isDark
                         ? AppColors.border_card_default_dark
@@ -97,7 +123,9 @@ class _PaymentSuccessScreenState extends State<OnlinePaymentScreen> {
                                 ),
                               ),
                               Text(
-                                'الخميس 18 نوفمبر',
+                                dDate != null
+                                    ? formatDate(context, dDate)
+                                    : '—',
                                 style: AppTextStyle.bold12TextBody(context),
                               ),
                             ],
@@ -116,7 +144,9 @@ class _PaymentSuccessScreenState extends State<OnlinePaymentScreen> {
                                 ),
                               ),
                               Text(
-                                '10:00 ص',
+                                dTime != null
+                                    ? formatSingleTime(context, dTime)
+                                    : '—',
                                 style: AppTextStyle.bold12TextBody(context),
                               ),
                             ],
@@ -170,7 +200,7 @@ class _PaymentSuccessScreenState extends State<OnlinePaymentScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        'نوح عبدالرحمن ',
+                        draft?.childName ?? '—',
                         style: AppTextStyle.semibold20TextHeading(context),
                       ),
                       Text(
@@ -179,7 +209,10 @@ class _PaymentSuccessScreenState extends State<OnlinePaymentScreen> {
                       ),
                     ],
                   ),
-                  Text('8 سنوات', style: AppTextStyle.bold12TextBody(context)),
+                  Text(
+                    '${draft?.childYears ?? 0} سنوات',
+                    style: AppTextStyle.bold12TextBody(context),
+                  ),
                 ],
               ),
             ),
@@ -203,7 +236,7 @@ class _PaymentSuccessScreenState extends State<OnlinePaymentScreen> {
                             style: AppTextStyle.bold12TextHeading(context),
                           ),
                           Text(
-                            '250 ج',
+                            feeLabel,
                             style: AppTextStyle.bold12TextHeading(context),
                           ),
                         ],
@@ -218,7 +251,7 @@ class _PaymentSuccessScreenState extends State<OnlinePaymentScreen> {
                           ),
 
                           Text(
-                            '0 ج',
+                            CurrencyHelper.format(context, 0),
                             style: AppTextStyle.semibold12TextBody(context),
                           ),
                         ],
@@ -243,7 +276,7 @@ class _PaymentSuccessScreenState extends State<OnlinePaymentScreen> {
                       ),
 
                       Text(
-                        '250 ج',
+                        feeLabel,
                         style: AppTextStyle.semibold12TextDisplay(context),
                       ),
                     ],

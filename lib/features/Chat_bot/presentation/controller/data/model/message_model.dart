@@ -23,12 +23,14 @@ class Message {
 }
 
 class Doctor {
+  final String? id;
   final String name;
   final String specialty;
   final String location;
   final String imageUrl;
 
   const Doctor({
+    this.id,
     required this.name,
     required this.specialty,
     required this.location,
@@ -37,6 +39,7 @@ class Doctor {
 }
 
 Doctor getSampleDoctor(BuildContext context) => Doctor(
+  id: null,
   name: AppLocalizations.of(context)!.doctorName,
   specialty: AppLocalizations.of(context)!.doctorSpecialty,
   location: AppLocalizations.of(context)!.doctorLocation,
@@ -44,6 +47,7 @@ Doctor getSampleDoctor(BuildContext context) => Doctor(
 );
 
 Doctor getAIDoctor(BuildContext context) => Doctor(
+  id: null,
   name: AppLocalizations.of(context)!.aiAssistantName,
   specialty: '',
   location: '',

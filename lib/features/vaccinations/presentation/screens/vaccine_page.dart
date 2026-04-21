@@ -167,6 +167,9 @@ class _VaccineScreenState extends State<VaccineScreen> {
                         ],
                       );
                     }
+                    if (state is VaccinationScheduleInitial) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
                     if (state is VaccinationScheduleLoaded) {
                       final items = state.items
                           .map((e) => _mapScheduleToUi(
@@ -186,9 +189,7 @@ class _VaccineScreenState extends State<VaccineScreen> {
                         children: items.map((v) => VaccineItemWidget(item: v)).toList(),
                       );
                     }
-                    // fallback mock until loaded
-                    final mock = getVaccines(context);
-                    return Column(children: mock.map((v) => VaccineItemWidget(item: v)).toList());
+                    return const Center(child: CircularProgressIndicator());
                   },
                 ),
               ),

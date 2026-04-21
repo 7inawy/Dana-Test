@@ -16,7 +16,8 @@ import 'package:dana/l10n/app_localizations.dart';
 import 'package:dana/providers/app_language_provider.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:dana/features/child_profile/presentation/screens/child_profile_page.dart';
-import 'package:dana/features/booking/presentation/views/DoctorTime/screens/doctor_time_screen.dart';
+import 'package:dana/features/booking/booking_flow_models.dart';
+import 'package:dana/features/booking/presentation/views/DoctorTime/screens/doctor_Time_screen.dart';
 import 'package:dana/features/booking/presentation/views/OnlinePayment/screens/Online_Payment_Screen.dart';
 import 'package:dana/features/booking/presentation/views/BookingScreen/screens/Payment_Confirm_Screen.dart';
 import 'package:dana/features/notification/presentation/screens/notification_screen.dart';
@@ -67,6 +68,20 @@ class MyApp extends StatelessWidget {
 
           initialRoute: AppRoutes.splash,
           routes: _buildRoutes(),
+          onGenerateRoute: (settings) {
+            if (settings.name == ChatScreen.routeName) {
+              return MaterialPageRoute<void>(
+                builder: (ctx) {
+                  final arg = settings.arguments;
+                  final doctor = arg is Doctor ? arg : null;
+                  return ChatScreen(
+                    doctor: doctor ?? getSampleDoctor(ctx),
+                  );
+                },
+              );
+            }
+            return null;
+          },
         );
       },
     );
@@ -95,16 +110,23 @@ class MyApp extends StatelessWidget {
       ),
 
       /// Booking
-      AppRoutes.doctorTime: (_) => ChangeNotifierProvider(
-        create: (_) => AppointmentController(),
-        child: DoctorTimeScreen(),
-      ), // AppRoutes.reviewBooking: (_) => ReviewBookingScreen(),
+      AppRoutes.doctorTime: (ctx) {
+        final args = ModalRoute.of(ctx)?.settings.arguments;
+        return ChangeNotifierProvider(
+          create: (_) {
+            final c = AppointmentController();
+            if (args is BookingDoctorArgs) {
+              c.applyBookingDoctor(args);
+            }
+            return c;
+          },
+          child: const DoctorTimeScreen(),
+        );
+      },
       /// Appointments
       AppRoutes.appointments: (_) => AppointmentsScreen(),
 
-      /// Chat
-      ChatScreen.routeName: (context) =>
-          ChatScreen(doctor: getSampleDoctor(context)),
+      /// Chat (doctor chat uses [onGenerateRoute] + optional [Doctor] arguments)
       AIChatScreen.routeName: (context) =>
           AIChatScreen(doctor: getAIDoctor(context)),
       AppRoutes.videos: (_) => const VideosScreen(),
@@ -123,7 +145,7 @@ class MyApp extends StatelessWidget {
       AppRoutes.vaccine: (_) => const VaccineScreen(),
 
       /// Doctors
-      AppRoutes.doctors: (_) => DoctorsScreen(),
+      AppRoutes.doctors: (_) => const DoctorsScreen(),
 
       /// Notification
       AppRoutes.notification: (_) => const NotificationScreen(),

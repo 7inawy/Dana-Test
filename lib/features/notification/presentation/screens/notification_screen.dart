@@ -4,7 +4,7 @@ import 'package:dana/features/notification/presentation/widgets/notification_ite
 import 'package:dana/features/notification/presentation/widgets/notification_section_title.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:dana/features/notification/data/models/notification_model.dart';
-import 'package:dana/features/notification/data/mock_notifications.dart';
+import 'package:dana/core/utils/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -23,9 +23,9 @@ class _NotificationScreenState extends State<NotificationScreen>
   late List<AppNotification> _notifications;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _notifications = mockNotifications(context);
+  void initState() {
+    super.initState();
+    _notifications = const [];
   }
 
   List<AppNotification> get _unread =>
@@ -72,6 +72,17 @@ class _NotificationScreenState extends State<NotificationScreen>
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
           children: [
+            if (_notifications.isEmpty)
+              Padding(
+                padding: EdgeInsets.only(top: 48.h),
+                child: Center(
+                  child: Text(
+                    context.l10n.notificationsEmpty,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.medium12TextBody(context),
+                  ),
+                ),
+              ),
             if (_unread.isNotEmpty) ...[
               NotificationSectionTitle(
                 title: context.l10n.notificationsNew,

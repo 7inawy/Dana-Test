@@ -1,11 +1,11 @@
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_routes.dart';
+import 'package:dana/core/utils/currency_helper.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/Appointments/logic/appointment_controller.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointment_date_row.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointment_month_navigator.dart';
-import 'package:dana/features/Appointments/presentation/widgets/appointment_time_data.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointment_time_grid.dart';
 import 'package:dana/features/booking/presentation/views/DoctorTime/widgets/experience_Card.dart';
 import 'package:dana/providers/app_theme_provider.dart';
@@ -35,12 +35,40 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
 
+    final rating = controller.ratingAverage > 0
+        ? controller.ratingAverage.toStringAsFixed(1)
+        : '—';
+    final patients = controller.ratingQuantity > 0
+        ? controller.ratingQuantity.toString()
+        : '—';
+    final fee = controller.detectionPrice > 0
+        ? CurrencyHelper.format(context, controller.detectionPrice)
+        : CurrencyHelper.format(context, 250);
+
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(24.r),
         child: CustomButton(
           onTap: () {
-            Navigator.of(context).pushNamed(AppRoutes.paymentMethod);
+            if (!controller.hasDoctor) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('اختر طبيباً من قائمة الأطباء أولاً')),
+              );
+              return;
+            }
+            if (!controller.canProceedToPayment) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(context.l10n.selectAppointment)),
+              );
+              return;
+            }
+            final draft = controller.buildDraftForPayment();
+            if (draft != null) {
+              Navigator.of(context).pushNamed(
+                AppRoutes.paymentMethod,
+                arguments: draft,
+              );
+            }
           },
           text: context.l10n.nextButton,
         ),
@@ -48,7 +76,6 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
       body: Stack(
         children: [
           Image.asset(AppAssets.doctorTime, fit: BoxFit.fill),
-
           DraggableScrollableSheet(
             initialChildSize: 0.65,
             minChildSize: 0.65,
@@ -81,48 +108,44 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             SizedBox(height: 16.h),
-                            DoctorCard(),
+                            const DoctorCard(),
                             SizedBox(height: 8.h),
                             Row(
                               children: [
                                 ExperienceCard(
-                                  textOne: '7 سنين',
-                                  textTwo: 'من الخبرة',
-                                  // icon: Icons.person,
+                                  textOne: rating,
+                                  textTwo: 'التقييم',
                                   svgPicture: 'assets/Icons/medal_star.svg',
                                 ),
                                 SizedBox(width: 8.w),
                                 ExperienceCard(
-                                  textOne: '4.5 الف',
-                                  textTwo: 'مريض',
+                                  textOne: patients,
+                                  textTwo: 'مراجع',
                                   svgPicture: 'assets/Icons/people.svg',
                                 ),
                                 SizedBox(width: 8.w),
                                 ExperienceCard(
-                                  textOne: '3.5 الف',
-                                  textTwo: 'تقيم',
+                                  textOne: fee,
+                                  textTwo: 'سعر الكشف',
                                   svgPicture: 'assets/Icons/ranking.svg',
                                 ),
                               ],
                             ),
                             SizedBox(height: 24.h),
-
                             AppointmentMonthNavigator(
                               currentMonth: controller.currentMonth,
                               onPrevious: controller.goToPreviousMonth,
                               onNext: controller.goToNextMonth,
                             ),
                             SizedBox(height: 12.h),
-
                             AppointmentDateRow(
                               dates: controller.dateList,
                               selectedDate: controller.selectedDate,
                               onSelected: controller.selectDate,
                             ),
                             SizedBox(height: 24.h),
-
                             AppointmentTimeGrid(
-                              times: AppointmentTimeData.availableTimes,
+                              times: controller.timeSlots,
                               selectedIndex: controller.selectedTimeIndex,
                               onSelected: controller.selectTime,
                             ),

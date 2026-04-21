@@ -1,42 +1,74 @@
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/extensions/localization_extension.dart';
+import 'package:dana/features/booking/booking_flow_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../App_style/app_assets.dart';
 
 class DoctorDetailsWidget extends StatelessWidget {
-  const DoctorDetailsWidget({super.key});
+  const DoctorDetailsWidget({super.key, this.doctor});
+
+  final BookingDoctorArgs? doctor;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        ClipRRect(
+    final name = doctor?.doctorName ?? 'إسلام غنيم';
+    final spec = (doctor?.specialty.isNotEmpty ?? false)
+        ? doctor!.specialty
+        : context.l10n.physiotherapist;
+    final loc = (doctor?.locationLine.isNotEmpty ?? false)
+        ? doctor!.locationLine
+        : 'القاهرة – مصر الجديدة';
+    final img = doctor?.imageUrl ?? AppAssets.image_bottomSheet;
+
+    Widget avatar() {
+      if (img.startsWith('http')) {
+        return ClipRRect(
           borderRadius: BorderRadius.circular(12.r),
-          child: Image.asset(
-            AppAssets.image_bottomSheet,
+          child: Image.network(
+            img,
             height: 70.h,
             width: 70.w,
             fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => Image.asset(
+              AppAssets.image_bottomSheet,
+              height: 70.h,
+              width: 70.w,
+              fit: BoxFit.cover,
+            ),
           ),
+        );
+      }
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12.r),
+        child: Image.asset(
+          img,
+          height: 70.h,
+          width: 70.w,
+          fit: BoxFit.cover,
         ),
+      );
+    }
+
+    return Row(
+      children: [
+        avatar(),
         SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${context.l10n.dr} إسلام غنيم',
+                '${context.l10n.dr} $name',
                 style: AppTextStyle.semibold20TextHeading(context),
               ),
               SizedBox(height: 8.h),
               Text(
-                context.l10n.physiotherapist,
+                spec,
                 style: AppTextStyle.bold12TextBody(context),
               ),
-
               SizedBox(height: 8.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -46,9 +78,13 @@ class DoctorDetailsWidget extends StatelessWidget {
                     color: AppColors.icon_onLight_light,
                     size: 16.r,
                   ),
-                  Text(
-                    'القاهرة – مصر الجديدة',
-                    style: AppTextStyle.bold12TextBody(context),
+                  Expanded(
+                    child: Text(
+                      loc,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyle.bold12TextBody(context),
+                    ),
                   ),
                 ],
               ),

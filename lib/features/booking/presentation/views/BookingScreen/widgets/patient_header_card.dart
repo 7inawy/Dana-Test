@@ -5,12 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PatientHeaderCard extends StatelessWidget {
-  const PatientHeaderCard({super.key, required this.isDark});
+  const PatientHeaderCard({
+    super.key,
+    required this.isDark,
+    this.childName,
+    this.childYears,
+    this.visitLabel,
+  });
 
   final bool isDark;
+  final String? childName;
+  final int? childYears;
+  final String? visitLabel;
 
   @override
   Widget build(BuildContext context) {
+    final visit = visitLabel ?? '(${context.l10n.visitTypeExam})';
+    final name = childName ?? '—';
+    final years = childYears ?? 0;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -31,18 +43,21 @@ class PatientHeaderCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                'نوح عبدالرحمن ',
-                style: AppTextStyle.semibold20TextHeading(context),
+              Flexible(
+                child: Text(
+                  '$name ',
+                  style: AppTextStyle.semibold20TextHeading(context),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               Text(
-                ' (${context.l10n.visitTypeExam})',
+                ' $visit',
                 style: AppTextStyle.bold12TextBody(context),
               ),
             ],
           ),
           Text(
-            "8 ${context.l10n.years}",
+            '$years ${context.l10n.years}',
             style: AppTextStyle.bold12TextBody(context),
           ),
         ],

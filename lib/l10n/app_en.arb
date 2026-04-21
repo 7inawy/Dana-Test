@@ -185,6 +185,8 @@
 
   "notificationsNew": "New",
   "notificationsOld": "Earlier",
+  "notificationsEmpty": "You have no notifications yet.",
+  "doctorsListEmpty": "No doctors to show yet.",
   "markAllAsRead": "Mark all as read",
 
   "vaccineReminderTitle": "Vaccination appointment today!",

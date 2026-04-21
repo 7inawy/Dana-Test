@@ -15,12 +15,44 @@ class DoctorCard extends StatelessWidget {
     required this.doctorName,
     this.rate = 0.0,
     this.width,
+    this.specialtyText,
+    this.onBookNow,
+    this.onOpenChat,
   });
 
   final String imageSrc;
   final String doctorName;
   final double rate;
   final double? width;
+  final String? specialtyText;
+  final VoidCallback? onBookNow;
+  final VoidCallback? onOpenChat;
+
+  Widget _buildImage(BuildContext context) {
+    final src = imageSrc.trim();
+    final w = width;
+    final h = 104.h;
+    Widget core(Widget child) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.radius_sm),
+        child: SizedBox(width: w, height: h, child: child),
+      );
+    }
+
+    if (src.startsWith('http')) {
+      return core(
+        Image.network(
+          src,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => Image.asset(
+            'assets/Images/home/doctor1.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+    return core(Image.asset(src, fit: BoxFit.cover));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +74,7 @@ class DoctorCard extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 2.w),
         child: Column(
           children: [
-            Image.asset(imageSrc, width: width ?? double.infinity),
+            _buildImage(context),
             Padding(
               padding: EdgeInsets.only(top: 4.h),
               child: Padding(
@@ -51,12 +83,27 @@ class DoctorCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '${context.l10n.dr} $doctorName',
-                          style: AppTextStyle.medium12TextHeading(context),
+                        Expanded(
+                          child: Text(
+                            '${context.l10n.dr} $doctorName',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyle.medium12TextHeading(context),
+                          ),
                         ),
+                        if (onOpenChat != null) ...[
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            visualDensity: VisualDensity.compact,
+                            constraints: const BoxConstraints(
+                              minWidth: 28,
+                              minHeight: 28,
+                            ),
+                            onPressed: onOpenChat,
+                            icon: const Icon(Icons.chat_bubble_outline, size: 16),
+                          ),
+                        ],
                         Text(
                           '⭐$rate',
                           style: AppTextStyle.regular8TextBody(context),
@@ -65,13 +112,20 @@ class DoctorCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      context.l10n.physiotherapist,
+                      (specialtyText != null && specialtyText!.trim().isNotEmpty)
+                          ? specialtyText!.trim()
+                          : context.l10n.physiotherapist,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: AppTextStyle.regular8TextBody(context),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(AppRoutes.doctorTime);
-                      },
+                      onTap: onBookNow ??
+                          () {
+                            Navigator.of(context).pushNamed(
+                              AppRoutes.doctorTime,
+                            );
+                          },
                       child: Container(
                         margin: EdgeInsets.only(top: 12.h),
                         decoration: BoxDecoration(

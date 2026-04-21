@@ -3,6 +3,8 @@ import 'package:dana/core/utils/app_routes.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/core/utils/currency_helper.dart';
 import 'package:dana/extensions/localization_extension.dart';
+import 'package:dana/features/Appointments/logic/appointment_controller.dart';
+import 'package:dana/features/Chat_bot/presentation/controller/data/model/message_model.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,10 +18,24 @@ class DoctorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<AppThemeProvider>();
+    final controller = context.watch<AppointmentController>();
     final isDark =
         themeProvider.appTheme == ThemeMode.dark ||
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
+
+    final name = controller.doctorName.isNotEmpty
+        ? controller.doctorName
+        : 'إسلام غنيم';
+    final spec = controller.specialty.isNotEmpty
+        ? controller.specialty
+        : context.l10n.physiotherapist;
+    final loc = controller.locationLine.isNotEmpty
+        ? controller.locationLine
+        : 'القاهرة – مصر الجديدة';
+    final price = controller.detectionPrice > 0
+        ? controller.detectionPrice
+        : 250;
 
     return Container(
       height: 112.h,
@@ -45,12 +61,12 @@ class DoctorCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${context.l10n.dr} إسلام غنيم',
+                    '${context.l10n.dr} $name',
                     style: AppTextStyle.semibold20TextHeading(context),
                   ),
                   SizedBox(height: 8.h),
                   Text(
-                    context.l10n.physiotherapist,
+                    spec,
                     style: AppTextStyle.bold12TextBody(context),
                   ),
                   SizedBox(height: 8.h),
@@ -63,9 +79,13 @@ class DoctorCard extends StatelessWidget {
                             ? AppColors.icon_onLight_dark
                             : AppColors.icon_onLight_light,
                       ),
-                      Text(
-                        'القاهرة – مصر الجديدة',
-                        style: AppTextStyle.bold12TextBody(context),
+                      Expanded(
+                        child: Text(
+                          loc,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyle.bold12TextBody(context),
+                        ),
                       ),
                     ],
                   ),
@@ -78,7 +98,17 @@ class DoctorCard extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, AppRoutes.chatDoctor);
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.chatDoctor,
+                      arguments: Doctor(
+                        id: controller.doctorId,
+                        name: name,
+                        specialty: spec,
+                        location: loc,
+                        imageUrl: controller.imageUrl,
+                      ),
+                    );
                   },
                   child: CircleAvatar(
                     radius: 18.r,
@@ -99,7 +129,7 @@ class DoctorCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  CurrencyHelper.format(context, 250),
+                  CurrencyHelper.format(context, price),
                   style: AppTextStyle.bold16TextBody(context),
                 ),
               ],

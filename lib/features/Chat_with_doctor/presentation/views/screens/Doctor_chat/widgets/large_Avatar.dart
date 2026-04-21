@@ -8,13 +8,39 @@ class LargeAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 90.w,
-      height: 90.h,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-
-        image: DecorationImage(image: AssetImage(AppAssets.imageBottomSheet)),
+    final url = imageUrl.trim();
+    if (url.startsWith('http')) {
+      return ClipOval(
+        child: Image.network(
+          url,
+          width: 90.w,
+          height: 90.h,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => Image.asset(
+            AppAssets.imageBottomSheet,
+            width: 90.w,
+            height: 90.h,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+    if (url.isNotEmpty && url.startsWith('assets/')) {
+      return ClipOval(
+        child: Image.asset(
+          url,
+          width: 90.w,
+          height: 90.h,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+    return ClipOval(
+      child: Image.asset(
+        AppAssets.imageBottomSheet,
+        width: 90.w,
+        height: 90.h,
+        fit: BoxFit.cover,
       ),
     );
   }

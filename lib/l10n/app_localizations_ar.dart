@@ -347,6 +347,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationsOld => 'سابقة';
 
   @override
+  String get notificationsEmpty => 'لا توجد إشعارات حتى الآن.';
+
+  @override
+  String get doctorsListEmpty => 'لا يوجد أطباء لعرضهم حالياً.';
+
+  @override
   String get markAllAsRead => 'تحديد الكل كمقروء';
 
   @override

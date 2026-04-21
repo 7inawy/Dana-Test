@@ -350,6 +350,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsOld => 'Earlier';
 
   @override
+  String get notificationsEmpty => 'You have no notifications yet.';
+
+  @override
+  String get doctorsListEmpty => 'No doctors to show yet.';
+
+  @override
   String get markAllAsRead => 'Mark all as read';
 
   @override

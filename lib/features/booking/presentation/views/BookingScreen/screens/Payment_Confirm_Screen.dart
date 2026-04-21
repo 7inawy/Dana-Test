@@ -1,15 +1,21 @@
+import 'package:dana/core/di/injection_container.dart';
 import 'package:dana/core/utils/app_routes.dart';
+import 'package:dana/core/utils/currency_helper.dart';
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/widgets/text_frame.dart';
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/core/widgets/custom_screen_header.dart';
+import 'package:dana/features/booking/booking_flow_models.dart';
+import 'package:dana/features/booking/data/repo/booking_repo.dart';
 import 'package:dana/features/booking/presentation/views/BookingScreen/widgets/booking_summary_card.dart';
 import 'package:dana/features/booking/presentation/views/BookingScreen/widgets/patient_header_card.dart';
+import 'package:dana/features/parent_profile/data/repo/parent_profile_repository.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PaymentSuccessScreen extends StatefulWidget {
   static const String routeName = 'PaymentSuccessScreen';
@@ -21,6 +27,64 @@ class PaymentSuccessScreen extends StatefulWidget {
 }
 
 class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
+  BookingDraft? _draft;
+  bool _submitting = false;
+  String? _createdBookingId;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final a = ModalRoute.of(context)?.settings.arguments;
+    if (_draft == null && a is BookingDraft) {
+      _draft = a;
+    }
+  }
+
+  Future<void> _submitBooking() async {
+    final draft = _draft;
+    if (draft == null || !draft.canSubmit) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('بيانات الحجز غير مكتملة')),
+      );
+      return;
+    }
+    setState(() => _submitting = true);
+    try {
+      final me = await sl<ParentProfileRepository>().getMe();
+      final parentId = me.id;
+      final result = await sl<BookingRepo>().createBooking(
+        doctorId: draft.doctor.doctorId,
+        parentId: parentId,
+        childId: draft.childId!,
+        date: draft.dateIso,
+        time: draft.timeHm,
+        paymentMethod: draft.paymentMethod!,
+        visitStatus: draft.visitStatus,
+        notes: draft.notes,
+      );
+      if (!mounted) return;
+      if (result.isPaymentRequired &&
+          result.paymentUrl != null &&
+          result.paymentUrl!.isNotEmpty) {
+        final uri = Uri.tryParse(result.paymentUrl!);
+        if (uri != null) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+        return;
+      }
+      final id = result.booking?.id ?? '';
+      setState(() => _createdBookingId = id.isNotEmpty ? id : null);
+      showConfirmationSheet();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<AppThemeProvider>();
@@ -28,16 +92,36 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
         themeProvider.appTheme == ThemeMode.dark ||
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
+
+    final draft = _draft;
+    if (draft == null) {
+      return Scaffold(
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.all(24.w),
+            child: Text(
+              'لا يوجد حجز للعرض.',
+              style: AppTextStyle.medium16TextHeading(context),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final isOnVisit = draft.paymentMethod == 'on-visit';
+    final fee = draft.doctor.detectionPrice > 0
+        ? draft.doctor.detectionPrice
+        : 250;
+    final feeLabel = CurrencyHelper.format(context, fee);
+
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(24.r),
         child: Directionality(
           textDirection: TextDirection.rtl,
           child: CustomButton(
-            onTap: () {
-              showConfirmationSheet();
-            },
-            text: 'تأكيد الحجز',
+            onTap: _submitting ? () {} : _submitBooking,
+            text: _submitting ? 'جاري التأكيد…' : 'تأكيد الحجز',
           ),
         ),
       ),
@@ -51,76 +135,87 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
               subtitle: 'اتأكد من التفاصيل قبل إكمال الحجز.',
             ),
             SizedBox(height: 24.h),
-            BookingSummaryCard(isDark: isDark),
-            SizedBox(height: 12.h),
-            PatientHeaderCard(isDark: isDark),
-            SizedBox(height: 24.h),
-            Text(
-              'الدفع عند الزيارة',
-              style: AppTextStyle.bold16TextDisplay(context),
-            ),
-            SizedBox(height: 12.h),
-
-            Column(
-              children: [
-                TextFrame(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BookingSummaryCard(
+                      isDark: isDark,
+                      draft: draft,
+                      bookingDisplayId: _createdBookingId,
+                    ),
+                    SizedBox(height: 12.h),
+                    if (draft.childName != null)
+                      PatientHeaderCard(
+                        isDark: isDark,
+                        childName: draft.childName!,
+                        childYears: draft.childYears ?? 0,
+                      ),
+                    SizedBox(height: 24.h),
+                    Text(
+                      isOnVisit ? 'الدفع عند الزيارة' : 'الدفع الإلكتروني',
+                      style: AppTextStyle.bold16TextDisplay(context),
+                    ),
+                    SizedBox(height: 12.h),
+                    TextFrame(
+                      child: Column(
                         children: [
-                          Text(
-                            'تكلفة الخدمة',
-                            style: AppTextStyle.bold12TextHeading(context),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'تكلفة الخدمة',
+                                style: AppTextStyle.bold12TextHeading(context),
+                              ),
+                              Text(
+                                feeLabel,
+                                style: AppTextStyle.bold12TextHeading(context),
+                              ),
+                            ],
                           ),
-                          Text(
-                            '250 ج',
-                            style: AppTextStyle.bold12TextHeading(context),
+                          SizedBox(height: 10.h),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'ضريبة',
+                                style: AppTextStyle.semibold12TextBody(context),
+                              ),
+                              Text(
+                                CurrencyHelper.format(context, 0),
+                                style: AppTextStyle.semibold12TextBody(context),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      SizedBox(height: 10.h),
-                      Row(
+                    ),
+                    SizedBox(height: 12.h),
+                    TextFrame(
+                      color: isDark
+                          ? AppColors.bg_button_primary_disabled_dark
+                          : AppColors.bg_button_primary_disabled_light,
+                      borderColor: isDark
+                          ? AppColors.border_button_primary_dark
+                          : AppColors.border_button_primary_light,
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'ضريبة',
-                            style: AppTextStyle.semibold12TextBody(context),
+                            'إجمالي التكلفة',
+                            style: AppTextStyle.bold12TextDisplay(context),
                           ),
-
                           Text(
-                            '0 ج',
-                            style: AppTextStyle.semibold12TextBody(context),
+                            feeLabel,
+                            style: AppTextStyle.semibold12TextDisplay(context),
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 12.h),
-                TextFrame(
-                  color: isDark
-                      ? AppColors.bg_button_primary_disabled_dark
-                      : AppColors.bg_button_primary_disabled_light,
-                  borderColor: isDark
-                      ? AppColors.border_button_primary_dark
-                      : AppColors.border_button_primary_light,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'إجمالي التكلفة',
-                        style: AppTextStyle.bold12TextDisplay(context),
-                      ),
-
-                      Text(
-                        '250 ج',
-                        style: AppTextStyle.semibold12TextDisplay(context),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),

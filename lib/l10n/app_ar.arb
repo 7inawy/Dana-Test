@@ -180,6 +180,8 @@
 
   "notificationsNew": "جديدة",
   "notificationsOld": "سابقة",
+  "notificationsEmpty": "لا توجد إشعارات حتى الآن.",
+  "doctorsListEmpty": "لا يوجد أطباء لعرضهم حالياً.",
   "markAllAsRead": "تحديد الكل كمقروء",
 
   "vaccineReminderTitle": "ميعاد حمايته النهارده!",

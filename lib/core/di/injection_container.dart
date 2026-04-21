@@ -125,6 +125,7 @@ import '../../features/auth/login/data/datasources/auth_remote_data_source_impl.
 import '../../features/auth/login/data/repo/auth_repository_impl.dart';
 import '../../features/auth/login/domain/repo/auth_repository.dart';
 import '../../features/auth/login/domain/usecases/change_password_usecase.dart';
+import '../../features/auth/login/domain/usecases/create_doctor_usecase.dart';
 import '../../features/auth/login/domain/usecases/pre_sign_in_usecase.dart';
 import '../../features/auth/login/domain/usecases/pre_sign_up_usecase.dart';
 import '../../features/auth/login/domain/usecases/reset_password_usecase.dart';
@@ -163,6 +164,9 @@ import '../../features/books/presentation/cubit/textbooks_cubit.dart';
 import '../../features/child_profile/data/repo/growth_repo.dart';
 import '../../features/child_profile/data/services/growth_service.dart';
 import '../../features/child_profile/presentation/cubit/growth_cubit.dart';
+import '../../features/home/data/datasources/doctors_list_remote_data_source.dart';
+import '../../features/home/data/datasources/doctors_list_remote_data_source_impl.dart';
+import '../../features/home/presentation/cubit/doctors_list_cubit.dart';
 // import '../../features/home/data/datasource/Parent_Remote_DataSource_Impl.dart';
 // import '../../features/home/data/datasource/doctor_repository_impl.dart';
 // import '../../features/home/data/repo/Parent_Remote_DataSource.dart';
@@ -328,6 +332,10 @@ Future<void> init() async {
     () => ParentProfileRemoteDataSourceImpl(dio: sl()),
   );
 
+  sl.registerLazySingleton<DoctorsListRemoteDataSource>(
+    () => DoctorsListRemoteDataSourceImpl(dio: sl()),
+  );
+
   // sl.registerLazySingleton<ParentRemoteDataSource>(
   //   () => ParentRemoteDataSourceImpl(dio: sl()),
   // );
@@ -408,7 +416,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ResetPasswordUseCase(repository: sl()));
   sl.registerLazySingleton(() => VerifyPasswordOtpUseCase(repository: sl()));
   sl.registerLazySingleton(() => ChangePasswordUseCase(repository: sl()));
-  // sl.registerLazySingleton(() => CreateDoctorUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CreateDoctorUseCase(repository: sl()));
   // sl.registerLazySingleton(() => GetParentProfileUseCase(repository: sl()));
   // sl.registerLazySingleton(() => GetAllDoctorsUseCase(repository: sl()));
   // sl.registerLazySingleton(() => GetDoctorByIdUseCase(repository: sl()));
@@ -451,6 +459,7 @@ Future<void> init() async {
 
   sl.registerFactory<BookingCubit>(() => BookingCubit(sl()));
   sl.registerFactory<ParentProfileCubit>(() => ParentProfileCubit(sl()));
+  sl.registerFactory<DoctorsListCubit>(() => DoctorsListCubit(sl()));
   sl.registerFactory<VaccinationScheduleCubit>(
     () => VaccinationScheduleCubit(
       parentRepo: sl(),

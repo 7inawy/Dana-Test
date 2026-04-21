@@ -740,6 +740,18 @@ abstract class AppLocalizations {
   /// **'Earlier'**
   String get notificationsOld;
 
+  /// No description provided for @notificationsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no notifications yet.'**
+  String get notificationsEmpty;
+
+  /// No description provided for @doctorsListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No doctors to show yet.'**
+  String get doctorsListEmpty;
+
   /// No description provided for @markAllAsRead.
   ///
   /// In en, this message translates to:

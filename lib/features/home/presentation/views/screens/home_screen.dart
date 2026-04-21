@@ -14,11 +14,17 @@ import 'package:dana/features/home/widgets/doctor_card.dart';
 import 'package:dana/features/home/widgets/home_quick_access.dart';
 import 'package:dana/features/home/widgets/statistics_chart.dart';
 import 'package:dana/providers/app_theme_provider.dart';
+import 'package:dana/features/booking/booking_flow_models.dart';
+import 'package:dana/core/di/injection_container.dart';
+import 'package:dana/features/home/presentation/cubit/doctors_list_cubit.dart';
+import 'package:dana/features/home/presentation/cubit/doctors_list_state.dart';
+import 'package:dana/features/parent_profile/presentation/cubit/parent_profile_cubit.dart';
+import 'package:dana/features/parent_profile/presentation/cubit/parent_profile_state.dart';
 import 'package:dana/features/parent_profile/presentation/screens/profile_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,6 +38,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   GlobalKey<CurvedNavigationBarState> _navKey = GlobalKey();
   int _selectedIndex = 0;
+
+  late final ParentProfileCubit _parentProfileCubit;
+  late final DoctorsListCubit _doctorsListCubit;
 
   final List<String> _icons = [
     'assets/Icons/home_icon.svg',
@@ -47,30 +56,32 @@ class _HomeScreenState extends State<HomeScreen> {
     'assets/Icons/profile_outlined_icon.svg',
   ];
 
-  List<DoctorCard> doctorCards = [
-    DoctorCard(
-      doctorName: 'سالم غانم',
-      imageSrc: 'assets/Images/home/doctor1.png',
-      rate: 4.9,
-      width: 137.w,
-    ),
-    DoctorCard(
-      doctorName: 'أحمد حامد',
-      imageSrc: 'assets/Images/home/doctor1.png',
-      rate: 1.5,
-      width: 137.w,
-    ),
-    DoctorCard(
-      doctorName: 'التيت و الشريط',
-      imageSrc: 'assets/Images/home/doctor1.png',
-      width: 137.w,
-    ),
-    DoctorCard(
-      doctorName: 'الهئ و المئ',
-      imageSrc: 'assets/Images/home/doctor1.png',
-      width: 137.w,
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _parentProfileCubit = sl<ParentProfileCubit>()..loadMe();
+    _doctorsListCubit = sl<DoctorsListCubit>()..load();
+  }
+
+  @override
+  void dispose() {
+    _parentProfileCubit.close();
+    _doctorsListCubit.close();
+    super.dispose();
+  }
+
+  (int years, int months) _ageFromBirth(DateTime? birthDate) {
+    if (birthDate == null) return (0, 0);
+    final now = DateTime.now();
+    var y = now.year - birthDate.year;
+    var m = now.month - birthDate.month;
+    if (now.day < birthDate.day) m -= 1;
+    if (m < 0) {
+      y -= 1;
+      m += 12;
+    }
+    return (y < 0 ? 0 : y, m < 0 ? 0 : m);
+  }
 
   Widget _getBody() {
     final themeProvider = context.watch<AppThemeProvider>();
@@ -83,7 +94,12 @@ class _HomeScreenState extends State<HomeScreen> {
       case 3:
         return const ProfileSection();
       case 0:
-        return Stack(
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider<ParentProfileCubit>.value(value: _parentProfileCubit),
+            BlocProvider<DoctorsListCubit>.value(value: _doctorsListCubit),
+          ],
+          child: Stack(
           children: [
             Container(
               color: isDark
@@ -100,61 +116,165 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: [
                         // الطفل
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.asset(
-                              'assets/Images/home/boy_child_photo.png',
-                              width: 48.w,
-                            ),
-                            SizedBox(width: 12.w),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 3.5.h),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                        BlocBuilder<ParentProfileCubit, ParentProfileState>(
+                          builder: (context, pState) {
+                            if (pState is ParentProfileLoaded &&
+                                pState.profile.children.isEmpty) {
+                              return Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'نوح عبدالرحمن ',
+                                  Image.asset(
+                                    'assets/Images/home/boy_child_photo.png',
+                                    width: 48.w,
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 3.5.h,
+                                      ),
+                                      child: Text(
+                                        pState.profile.parentName,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                         style:
                                             AppTextStyle.semibold16TextHeading(
-                                              context,
-                                            ),
+                                          context,
+                                        ),
                                       ),
-                                      SizedBox(width: 2.w),
-                                      SvgPicture.asset(
-                                        'assets/Icons/arrow_drop_icon.svg',
-                                        width: 16.w,
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                  SizedBox(height: 4.h),
-                                  Text(
-                                    context.formatAge(5, 2),
-
-                                    style: AppTextStyle.medium12TextBody(
-                                      context,
+                                  CustomButton(
+                                    borderRadius: AppRadius.radius_full,
+                                    height: 32.w,
+                                    width: 32.w,
+                                    icon: Icons.arrow_forward_ios_rounded,
+                                    iconSize: 14.w,
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                        AppRoutes.childProfile,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            }
+                            if (pState is ParentProfileLoaded &&
+                                pState.profile.children.isNotEmpty) {
+                              final c = pState.profile.children.first;
+                              final age = _ageFromBirth(c.birthDate);
+                              final isBoy =
+                                  c.gender.toLowerCase() != 'female';
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Image.asset(
+                                    isBoy
+                                        ? 'assets/Images/home/boy_child_photo.png'
+                                        : 'assets/Images/girl_child_photo.png',
+                                    width: 48.w,
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 3.5.h,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              c.childName,
+                                              style: AppTextStyle
+                                                  .semibold16TextHeading(
+                                                context,
+                                              ),
+                                            ),
+                                            SizedBox(width: 2.w),
+                                            SvgPicture.asset(
+                                              'assets/Icons/arrow_drop_icon.svg',
+                                              width: 16.w,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4.h),
+                                        Text(
+                                          context.formatAge(
+                                            age.$1,
+                                            age.$2,
+                                          ),
+                                          style:
+                                              AppTextStyle.medium12TextBody(
+                                            context,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  CustomButton(
+                                    borderRadius: AppRadius.radius_full,
+                                    height: 32.w,
+                                    width: 32.w,
+                                    icon: Icons.arrow_forward_ios_rounded,
+                                    iconSize: 14.w,
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                        AppRoutes.childProfile,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            }
+                            if (pState is ParentProfileError) {
+                              return Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/Images/home/boy_child_photo.png',
+                                    width: 48.w,
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Expanded(
+                                    child: Text(
+                                      pState.message,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTextStyle.medium12TextBody(
+                                        context,
+                                      ),
                                     ),
                                   ),
                                 ],
-                              ),
-                            ),
-                            Spacer(),
-                            CustomButton(
-                              borderRadius: AppRadius.radius_full,
-                              height: 32.w,
-                              width: 32.w,
-                              icon: Icons.arrow_forward_ios_rounded,
-                              iconSize: 14.w,
-                              onTap: () {
-                                Navigator.of(
-                                  context,
-                                ).pushNamed(AppRoutes.childProfile);
-                              },
-                            ),
-                          ],
+                              );
+                            }
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Image.asset(
+                                  'assets/Images/home/boy_child_photo.png',
+                                  width: 48.w,
+                                ),
+                                SizedBox(width: 12.w),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 16.h,
+                                  ),
+                                  child: SizedBox(
+                                    width: 24.w,
+                                    height: 24.w,
+                                    child: const CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                         // الاحصائيات
                         Padding(
@@ -205,20 +325,79 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       SizedBox(height: 12.h),
                       // الدكاتره
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: List.generate(doctorCards.length, (index) {
-                            return Container(
-                              margin: EdgeInsets.only(
-                                right: index == 0 ? 0 : 4,
-                                left: index == doctorCards.length - 1 ? 0 : 4,
+                      BlocBuilder<DoctorsListCubit, DoctorsListState>(
+                        builder: (context, dState) {
+                          if (dState is DoctorsListLoading ||
+                              dState is DoctorsListInitial) {
+                            return SizedBox(
+                              height: 200.h,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
                               ),
-                              child: doctorCards[index],
                             );
-                          }),
-                        ),
+                          }
+                          if (dState is DoctorsListError) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16.h),
+                              child: Text(
+                                dState.message,
+                                style: AppTextStyle.medium12TextBody(context),
+                              ),
+                            );
+                          }
+                          if (dState is DoctorsListLoaded) {
+                            final list = dState.doctors;
+                            if (list.isEmpty) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12.h),
+                                child: Text(
+                                  context.l10n.doctorsListEmpty,
+                                  style: AppTextStyle.medium12TextBody(
+                                    context,
+                                  ),
+                                ),
+                              );
+                            }
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: List.generate(list.length, (index) {
+                                  final d = list[index];
+                                  return Container(
+                                    margin: EdgeInsets.only(
+                                      right: index == 0 ? 0 : 4,
+                                      left: index == list.length - 1 ? 0 : 4,
+                                    ),
+                                    child: DoctorCard(
+                                      imageSrc: d.cardImageSrc,
+                                      doctorName: d.doctorName,
+                                      rate: d.ratingAverage,
+                                      width: 137.w,
+                                      specialtyText: d.specialty,
+                                      onBookNow: () {
+                                        Navigator.of(context).pushNamed(
+                                          AppRoutes.doctorTime,
+                                          arguments:
+                                              BookingDoctorArgs.fromPublicDoctor(
+                                            d,
+                                          ),
+                                        );
+                                      },
+                                      onOpenChat: () {
+                                        Navigator.of(context).pushNamed(
+                                          AppRoutes.chatDoctor,
+                                          arguments: d.toChatDoctor(),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
                       ),
                     ],
                   ),
@@ -227,6 +406,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ],
+        ),
         );
       default:
         return const SizedBox();
@@ -244,7 +424,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (index == 2 || index == 1) {
       final pages = {
         2: AIChatScreen(doctor: getAIDoctor(context)),
-        1: DoctorsScreen(),
+        1: const DoctorsScreen(),
       };
 
       Navigator.push(
