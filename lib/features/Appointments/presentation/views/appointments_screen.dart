@@ -1,13 +1,12 @@
 import 'package:dana/core/utils/app_routes.dart';
-import 'package:dana/core/auth/auth_session.dart';
 import 'package:dana/core/di/injection_container.dart';
 import 'package:dana/core/widgets/custom_app_bar.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/Appointments/data/models/appointment_model.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointments_list.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointments_tab_bar.dart';
-import 'package:dana/features/auth/login/data/model/user_model.dart';
 import 'package:dana/features/booking/data/models/booking_model.dart';
+import 'package:dana/features/parent_profile/data/repo/parent_profile_repository.dart';
 import 'package:dana/features/booking/presentation/cubit/booking_cubit.dart';
 import 'package:dana/features/booking/presentation/cubit/booking_state.dart';
 import 'package:dana/providers/app_theme_provider.dart';
@@ -37,11 +36,14 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   }
 
   Future<void> _loadBookings() async {
-    final token = await sl<AuthSession>().token();
-    if (token == null || token.isEmpty) return;
-    final user = UserModel.fromToken(token: token);
-    if (user.id.isEmpty) return;
-    _bookingCubit.getMyAppointmentsByParent(parentId: user.id);
+    try {
+      final me = await sl<ParentProfileRepository>().getMe();
+      if (!mounted) return;
+      await _bookingCubit.getMyAppointmentsByParent(parentId: me.id);
+    } catch (e) {
+      if (!mounted) return;
+      _bookingCubit.reportLoadError(e.toString());
+    }
   }
 
   @override
@@ -53,7 +55,8 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   Status _mapStatus(String raw) {
     final s = raw.toLowerCase();
     if (s.contains('cancel')) return Status.cancelled;
-    if (s.contains('complete') || s.contains('confirm')) return Status.completed;
+    if (s.contains('complete')) return Status.completed;
+    // "confirmed" / "pending" stay upcoming until visit is done.
     return Status.upcoming;
   }
 
@@ -77,6 +80,9 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
       childId: b.child.id,
       doctorId: b.doctor.id,
       doctorName: '${context.l10n.dr} ${b.doctor.name}',
+      doctorNamePlain: b.doctor.name,
+      specialty: '',
+      detectionPrice: b.doctor.price.toDouble(),
       image: image,
       date: date,
       startTime: start,

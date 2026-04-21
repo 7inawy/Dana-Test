@@ -8,13 +8,12 @@ import 'package:dana/features/Appointments/presentation/widgets/appointment_date
 import 'package:dana/features/Appointments/presentation/widgets/appointment_month_navigator.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointment_time_data.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointment_time_grid.dart';
-import 'package:dana/features/auth/login/data/model/user_model.dart';
 import 'package:dana/features/booking/presentation/cubit/booking_cubit.dart';
+import 'package:dana/features/parent_profile/data/repo/parent_profile_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/auth/auth_session.dart';
 import '../../../../core/di/injection_container.dart';
 
 class ChangeAppointmentBottomSheet extends StatefulWidget {
@@ -35,6 +34,7 @@ class _ChangeAppointmentBottomSheetState
   int _selectedTimeIndex = -1;
   DateTime _currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime? _selectedDate;
+  bool _submitting = false;
 
   List<DateTime> get _dateList =>
       AppointmentCalendarLogic.getMonthDays(_currentMonth, DateTime.now());
@@ -66,31 +66,51 @@ class _ChangeAppointmentBottomSheetState
     final doctorId = widget.appointment.doctorId;
     if (bookingId == null || bookingId.isEmpty) return;
     if (doctorId == null || doctorId.isEmpty) return;
-    if (_selectedDate == null) return;
-    if (_selectedTimeIndex < 0 ||
+    if (_selectedDate == null ||
+        _selectedTimeIndex < 0 ||
         _selectedTimeIndex >= AppointmentTimeData.availableTimes.length) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.selectAppointment)),
+      );
       return;
     }
 
-    final token = await sl<AuthSession>().token();
-    if (token == null || token.isEmpty) return;
-    final user = UserModel.fromToken(token: token);
-    if (user.id.isEmpty) return;
+    setState(() => _submitting = true);
+    try {
+      final me = await sl<ParentProfileRepository>().getMe();
+      final picked = AppointmentTimeData.availableTimes[_selectedTimeIndex];
+      final time =
+          '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
+      final date =
+          '${_selectedDate!.year.toString().padLeft(4, '0')}-${_selectedDate!.month.toString().padLeft(2, '0')}-${_selectedDate!.day.toString().padLeft(2, '0')}';
 
-    final picked = AppointmentTimeData.availableTimes[_selectedTimeIndex];
-    final time =
-        '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
-    final date =
-        '${_selectedDate!.year.toString().padLeft(4, '0')}-${_selectedDate!.month.toString().padLeft(2, '0')}-${_selectedDate!.day.toString().padLeft(2, '0')}';
-
-    context.read<BookingCubit>().changeAppointment(
-          bookingId: bookingId,
-          doctorId: doctorId,
-          parentId: user.id,
-          date: date,
-          time: time,
+      final err = await context.read<BookingCubit>().changeAppointment(
+            bookingId: bookingId,
+            doctorId: doctorId,
+            parentId: me.id,
+            date: date,
+            time: time,
+          );
+      if (!context.mounted) return;
+      if (err == null) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.bookingConfirmed)),
         );
-    Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(err)),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
   }
 
   @override
@@ -136,8 +156,8 @@ class _ChangeAppointmentBottomSheetState
             SizedBox(height: 40.h),
 
             CustomButton(
-              text: context.l10n.confirmNewAppointment,
-              onTap: () => _onConfirm(context),
+              text: _submitting ? '…' : context.l10n.confirmNewAppointment,
+              onTap: _submitting ? () {} : () => _onConfirm(context),
             ),
             SizedBox(height: 20.h),
           ],

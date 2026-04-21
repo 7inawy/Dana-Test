@@ -1,13 +1,13 @@
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_raduis.dart';
+import 'package:dana/core/utils/app_routes.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/Appointments/data/models/appointment_model.dart';
+import 'package:dana/features/Appointments/presentation/appointment_rebook_args.dart';
 import 'package:dana/features/Appointments/presentation/bottom_sheets/change_appointment_bottom_sheet.dart';
 import 'package:dana/features/Appointments/presentation/bottom_sheets/rate_doctor_bottom_sheet.dart';
-import 'package:dana/features/Appointments/presentation/bottom_sheets/rebook_cancelled_bottom_sheet.dart';
-import 'package:dana/features/Appointments/presentation/bottom_sheets/rebook_completed_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -35,6 +35,20 @@ class AppointmentActionButtons extends StatelessWidget {
       ),
       builder: (_) => child,
     );
+  }
+
+  void _openRebookFlow(BuildContext context, Appointment appointment) {
+    final args = bookingDoctorArgsFromAppointment(appointment);
+    if (args == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('تعذر بدء الحجز: بيانات الطبيب غير مكتملة.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    Navigator.pushNamed(context, AppRoutes.doctorTime, arguments: args);
   }
 
   @override
@@ -79,8 +93,7 @@ class AppointmentActionButtons extends StatelessWidget {
                 borderRadius: AppRadius.radius_md,
                 height: 36.h,
                 text: context.l10n.rebook,
-                onTap: () =>
-                    _showSheet(context, const RebookCompletedBottomSheet()),
+                onTap: () => _openRebookFlow(context, appointment),
               ),
             ),
             SizedBox(width: 10.w),
@@ -111,8 +124,7 @@ class AppointmentActionButtons extends StatelessWidget {
                 borderRadius: AppRadius.radius_md,
                 height: 36.h,
                 text: context.l10n.rebook,
-                onTap: () =>
-                    _showSheet(context, const RebookCancelledBottomSheet()),
+                onTap: () => _openRebookFlow(context, appointment),
               ),
             ),
           ],

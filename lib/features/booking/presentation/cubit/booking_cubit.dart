@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/repo/booking_repo.dart';
 import 'booking_state.dart';
@@ -8,6 +9,31 @@ class BookingCubit extends Cubit<BookingState> {
   String? _lastParentId;
 
   BookingCubit(this.repo) : super(BookingInitial());
+
+  void reportLoadError(String message) => emit(BookingError(message));
+
+  String _apiErrorMessage(Object e) {
+    if (e is DioException) {
+      final d = e.response?.data;
+      if (d is Map) {
+        final m = d['message']?.toString();
+        if (m != null && m.isNotEmpty) return m;
+        final resp = d['response'];
+        if (resp is Map) {
+          final m2 = resp['message']?.toString();
+          if (m2 != null && m2.isNotEmpty) return m2;
+        }
+      }
+      if (e.message != null && e.message!.isNotEmpty) return e.message!;
+    }
+    return e.toString();
+  }
+
+  Future<void> _reloadParentBookings(String parentId) async {
+    _lastParentId = parentId;
+    final list = await repo.getMyAppointmentsByParent(parentId: parentId);
+    emit(BookingSuccess(list));
+  }
 
   Future<BookingCreateResult?> createBooking({
     required String doctorId,
@@ -55,11 +81,9 @@ class BookingCubit extends Cubit<BookingState> {
   Future<void> getMyAppointmentsByParent({required String parentId}) async {
     emit(BookingLoading());
     try {
-      _lastParentId = parentId;
-      final bookings = await repo.getMyAppointmentsByParent(parentId: parentId);
-      emit(BookingSuccess(bookings));
+      await _reloadParentBookings(parentId);
     } catch (e) {
-      emit(BookingError(e.toString()));
+      emit(BookingError(_apiErrorMessage(e)));
     }
   }
 
@@ -70,9 +94,14 @@ class BookingCubit extends Cubit<BookingState> {
     emit(BookingLoading());
     try {
       await repo.rateBooking(bookingId: bookingId, rating: rating.round());
-      await getBookings();
+      final pid = _lastParentId;
+      if (pid != null && pid.isNotEmpty) {
+        await _reloadParentBookings(pid);
+      } else {
+        await getBookings();
+      }
     } catch (e) {
-      emit(BookingError(e.toString()));
+      emit(BookingError(_apiErrorMessage(e)));
     }
   }
 
@@ -86,21 +115,64 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  Future<void> cancelByChildId({required String childId}) async {
+  /// Cancels the booking for this child (backend: `DELETE …/cancel/child/:childId`).
+  /// Prefer [cancelBookingById] when a booking id is known.
+  Future<String?> cancelByChildId({required String childId}) async {
     emit(BookingLoading());
+    final parentId = _lastParentId;
     try {
       await repo.cancelByChildId(childId: childId);
-      if (_lastParentId != null && _lastParentId!.isNotEmpty) {
-        await getMyAppointmentsByParent(parentId: _lastParentId!);
+      if (parentId != null && parentId.isNotEmpty) {
+        await _reloadParentBookings(parentId);
       } else {
         await getBookings();
       }
+      return null;
     } catch (e) {
-      emit(BookingError(e.toString()));
+      final msg = _apiErrorMessage(e);
+      if (parentId != null && parentId.isNotEmpty) {
+        try {
+          await _reloadParentBookings(parentId);
+        } catch (_) {
+          emit(BookingError(msg));
+        }
+      } else {
+        emit(BookingError(msg));
+      }
+      return msg;
     }
   }
 
-  Future<void> changeAppointment({
+  /// Cancels a single appointment (`DELETE /v1/booking/:bookingId`).
+  Future<String?> cancelBookingById({required String bookingId}) async {
+    emit(BookingLoading());
+    final parentId = _lastParentId;
+    try {
+      await repo.deleteBooking(bookingId: bookingId);
+      if (parentId != null && parentId.isNotEmpty) {
+        await _reloadParentBookings(parentId);
+      } else {
+        await getBookings();
+      }
+      return null;
+    } catch (e) {
+      final msg = _apiErrorMessage(e);
+      if (parentId != null && parentId.isNotEmpty) {
+        try {
+          await _reloadParentBookings(parentId);
+        } catch (_) {
+          emit(BookingError(msg));
+        }
+      } else {
+        emit(BookingError(msg));
+      }
+      return msg;
+    }
+  }
+
+  /// Reschedules an existing booking (`PATCH /v1/booking/:bookingId`).
+  /// Returns `null` on success, or an error message string on failure.
+  Future<String?> changeAppointment({
     required String bookingId,
     required String doctorId,
     required String parentId,
@@ -117,8 +189,15 @@ class BookingCubit extends Cubit<BookingState> {
         time: time,
       );
       await getMyAppointmentsByParent(parentId: parentId);
+      return null;
     } catch (e) {
-      emit(BookingError(e.toString()));
+      final msg = _apiErrorMessage(e);
+      try {
+        await getMyAppointmentsByParent(parentId: parentId);
+      } catch (_) {
+        emit(BookingError(msg));
+      }
+      return msg;
     }
   }
 }
