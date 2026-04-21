@@ -8,8 +8,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CustomPhoneField extends StatelessWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  final ValueChanged<String>? onNormalizedNumberChanged;
 
-  const CustomPhoneField({super.key, this.controller, this.validator});
+  const CustomPhoneField({
+    super.key,
+    this.controller,
+    this.validator,
+    this.onNormalizedNumberChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +29,10 @@ class CustomPhoneField extends StatelessWidget {
         Container(
           margin: EdgeInsets.only(top: AppSizes.h8),
           height: 64.h,
-          child: PhoneField(controller: controller),
+          child: PhoneField(
+            controller: controller,
+            onNormalizedNumberChanged: onNormalizedNumberChanged,
+          ),
         ),
       ],
     );

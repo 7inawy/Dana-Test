@@ -1,3 +1,4 @@
+import 'package:dana/core/utils/parent_phone_utils.dart';
 import 'package:dana/features/auth/login/presentation/cubit/reset_password_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,25 +17,27 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
 
   /// Step 1 – إرسال رقم الهاتف لاستلام OTP
   Future<void> sendOtp({required String phone}) async {
+    final apiPhone = ParentPhoneUtils.normalizeForApi(phone);
     emit(const ResetPasswordLoading());
-    final result = await resetPasswordUseCase(phone);
+    final result = await resetPasswordUseCase(apiPhone);
     if (isClosed) return;
     result.fold(
       (f) => emit(ResetPasswordFailure(message: f.message)),
-      (_) => emit(ResetPasswordOtpSent(phone: phone)),
+      (_) => emit(ResetPasswordOtpSent(phone: apiPhone)),
     );
   }
 
   /// Step 2 – تأكيد OTP
   Future<void> verifyOtp({required String phone, required String otp}) async {
+    final apiPhone = ParentPhoneUtils.normalizeForApi(phone);
     emit(const ResetPasswordLoading());
     final result = await verifyPasswordOtpUseCase(
-      VerifyPasswordOtpParams(phone: phone, otp: otp),
+      VerifyPasswordOtpParams(phone: apiPhone, otp: otp),
     );
     if (isClosed) return;
     result.fold(
       (f) => emit(ResetPasswordFailure(message: f.message)),
-      (_) => emit(ResetPasswordOtpVerified(phone: phone, otp: otp)),
+      (_) => emit(ResetPasswordOtpVerified(phone: apiPhone, otp: otp)),
     );
   }
 }

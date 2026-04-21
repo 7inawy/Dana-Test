@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/exceptions.dart';
+import '../../../../../core/utils/parent_phone_utils.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/network/network_info.dart';
 import '../../domain/entities/user_entity.dart';
@@ -72,10 +73,12 @@ class AuthRepositoryImpl implements AuthRepository {
     required List<ChildData> children,
     File? profileImage,
   }) => _guard(() async {
+    final p = ParentPhoneUtils.normalizeForApi(phone);
+    final em = email.trim().toLowerCase();
     await remoteDataSource.preSignUp(
-      parentName: parentName,
-      email: email,
-      phone: phone,
+      parentName: parentName.trim(),
+      email: em,
+      phone: p,
       government: government,
       address: address,
       password: password,
@@ -90,7 +93,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required String phone,
     required String otp,
   }) => _guard(() async {
-    await remoteDataSource.verifySignUp(phone: phone, otp: otp);
+    await remoteDataSource.verifySignUp(
+      phone: ParentPhoneUtils.normalizeForApi(phone),
+      otp: otp,
+    );
     return unit;
   });
 
@@ -101,7 +107,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required String phone,
     required String password,
   }) => _guard(() async {
-    await remoteDataSource.preSignIn(phone: phone, password: password);
+    await remoteDataSource.preSignIn(
+      phone: ParentPhoneUtils.normalizeForApi(phone),
+      password: password,
+    );
     return unit;
   });
 
@@ -109,14 +118,21 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, UserEntity>> verifySignIn({
     required String phone,
     required String otp,
-  }) => _guard(() => remoteDataSource.verifySignIn(phone: phone, otp: otp));
+  }) => _guard(
+        () => remoteDataSource.verifySignIn(
+          phone: ParentPhoneUtils.normalizeForApi(phone),
+          otp: otp,
+        ),
+      );
 
   // ── Reset Password ───────────────────────────────────────────────────────────
 
   @override
   Future<Either<Failure, Unit>> resetPassword({required String phone}) =>
       _guard(() async {
-        await remoteDataSource.resetPassword(phone: phone);
+        await remoteDataSource.resetPassword(
+          phone: ParentPhoneUtils.normalizeForApi(phone),
+        );
         return unit;
       });
 
@@ -125,7 +141,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required String phone,
     required String otp,
   }) => _guard(() async {
-    await remoteDataSource.verifyPasswordOtp(phone: phone, otp: otp);
+    await remoteDataSource.verifyPasswordOtp(
+      phone: ParentPhoneUtils.normalizeForApi(phone),
+      otp: otp,
+    );
     return unit;
   });
 
@@ -138,7 +157,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String token,
   }) => _guard(() async {
     await remoteDataSource.changePassword(
-      phone: phone,
+      phone: ParentPhoneUtils.normalizeForApi(phone),
       password: password,
       token: token,
     );
@@ -162,8 +181,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }) => _guard(() async {
     await remoteDataSource.createDoctor(
       doctorName: doctorName,
-      email: email,
-      phone: phone,
+      email: email.trim().toLowerCase(),
+      phone: ParentPhoneUtils.normalizeForApi(phone),
       password: password,
       detectionPrice: detectionPrice,
       expires: expires,

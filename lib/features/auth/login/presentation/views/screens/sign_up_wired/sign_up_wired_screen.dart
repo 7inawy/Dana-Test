@@ -151,7 +151,7 @@ class _SignUpWiredViewState extends State<_SignUpWiredView> {
                       (v == null || v.trim().isEmpty) ? 'Required' : null,
                 ),
                 DropdownButtonFormField<String>(
-                  value: _childGender,
+                  initialValue: _childGender,
                   items: const [
                     DropdownMenuItem(value: 'male', child: Text('Male')),
                     DropdownMenuItem(value: 'female', child: Text('Female')),

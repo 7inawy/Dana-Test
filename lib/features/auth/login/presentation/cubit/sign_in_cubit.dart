@@ -1,3 +1,4 @@
+import 'package:dana/core/utils/parent_phone_utils.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_in_state.dart';
 import 'package:dana/features/auth/login/domain/usecases/pre_sign_in_usecase.dart';
 import 'package:dana/features/auth/login/domain/usecases/verify_sign_in_usecase.dart';
@@ -28,13 +29,15 @@ class SignInCubit extends Cubit<SignInState> {
       return;
     }
 
+    final apiPhone = ParentPhoneUtils.normalizeForApi(_phone);
+
     emit(const SignInLoading());
     final result = await preSignInUseCase(
-      PreSignInParams(phone: _phone, password: _password),
+      PreSignInParams(phone: apiPhone, password: _password),
     );
     result.fold(
       (f) => emit(SignInFailure(message: f.message)),
-      (_) => emit(SignInOtpSent(phone: _phone)),
+      (_) => emit(SignInOtpSent(phone: apiPhone)),
     );
   }
 
@@ -42,7 +45,10 @@ class SignInCubit extends Cubit<SignInState> {
   Future<void> verifySignIn({required String otp}) async {
     emit(const SignInLoading());
     final result = await verifySignInUseCase(
-      VerifySignInParams(phone: _phone, otp: otp),
+      VerifySignInParams(
+        phone: ParentPhoneUtils.normalizeForApi(_phone),
+        otp: otp,
+      ),
     );
     result.fold(
       (f) => emit(SignInFailure(message: f.message)),

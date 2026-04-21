@@ -14,14 +14,6 @@ class _LoginPhoneFieldState extends State<LoginPhoneField> {
   final TextEditingController _controller = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() {
-      context.read<SignInCubit>().updatePhone(_controller.text);
-    });
-  }
-
-  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -29,6 +21,10 @@ class _LoginPhoneFieldState extends State<LoginPhoneField> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPhoneField(controller: _controller);
+    return CustomPhoneField(
+      controller: _controller,
+      onNormalizedNumberChanged: (n) =>
+          context.read<SignInCubit>().updatePhone(n),
+    );
   }
 }

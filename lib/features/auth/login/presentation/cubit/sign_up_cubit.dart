@@ -1,3 +1,4 @@
+import 'package:dana/core/utils/parent_phone_utils.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_up_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,7 +46,7 @@ class SignUpCubit extends Cubit<SignUpState> {
   void updatePassword(String value) => _password = value;
 
   // ── Getter للـ OTP screen ─────────────────────────────────────────────────
-  String get phone => _phone;
+  String get phone => ParentPhoneUtils.normalizeForApi(_phone);
 
   // ── Validation ────────────────────────────────────────────────────────────
   String? validateStep1() {
@@ -111,13 +112,16 @@ class SignUpCubit extends Cubit<SignUpState> {
 
     emit(const SignUpLoading());
 
+    final apiPhone = ParentPhoneUtils.normalizeForApi(_phone);
+    final apiEmail = _email.trim().toLowerCase();
+
     final result = await preSignUpUseCase(
       PreSignUpParams(
-        parentName: _parentName,
-        email: _email,
-        phone: _phone,
-        government: _government,
-        address: _address,
+        parentName: _parentName.trim(),
+        email: apiEmail,
+        phone: apiPhone,
+        government: _government.trim(),
+        address: _address.trim(),
         password: _password,
         children: [
           ChildData(
@@ -131,7 +135,7 @@ class SignUpCubit extends Cubit<SignUpState> {
 
     result.fold(
       (f) => emit(SignUpFailure(message: f.message)),
-      (_) => emit(SignUpOtpSent(phone: _phone)),
+      (_) => emit(SignUpOtpSent(phone: apiPhone)),
     );
   }
 
@@ -139,7 +143,10 @@ class SignUpCubit extends Cubit<SignUpState> {
   Future<void> verifySignUp({required String otp}) async {
     emit(const SignUpLoading());
     final result = await verifySignUpUseCase(
-      VerifySignUpParams(phone: _phone, otp: otp),
+      VerifySignUpParams(
+        phone: ParentPhoneUtils.normalizeForApi(_phone),
+        otp: otp,
+      ),
     );
     result.fold(
       (f) => emit(SignUpFailure(message: f.message)),

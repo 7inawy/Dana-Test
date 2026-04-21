@@ -1,4 +1,5 @@
 import 'package:dana/core/utils/app_colors.dart';
+import 'package:dana/core/utils/parent_phone_utils.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/providers/app_theme_provider.dart';
@@ -12,9 +13,12 @@ import 'package:intl_phone_field/phone_number.dart';
 import 'package:provider/provider.dart';
 
 class PhoneField extends StatefulWidget {
-  const PhoneField({super.key, this.controller});
+  const PhoneField({super.key, this.controller, this.onNormalizedNumberChanged});
 
   final TextEditingController? controller;
+
+  /// Fired with [ParentPhoneUtils.normalizeForApi] whenever the intl field changes.
+  final ValueChanged<String>? onNormalizedNumberChanged;
 
   @override
   State<PhoneField> createState() => _PhoneFieldState();
@@ -74,6 +78,16 @@ class _PhoneFieldState extends State<PhoneField> {
       validator: _nationalValidator,
       onCountryChanged: (country) {
         setState(() => _countryIso = country.code);
+      },
+      onChanged: (PhoneNumber pn) {
+        final nationalDigits = pn.number.replaceAll(RegExp(r'\D'), '');
+        if (nationalDigits.isEmpty) {
+          widget.onNormalizedNumberChanged?.call('');
+          return;
+        }
+        widget.onNormalizedNumberChanged?.call(
+          ParentPhoneUtils.normalizeForApi(pn.completeNumber),
+        );
       },
 
       decoration: InputDecoration(
