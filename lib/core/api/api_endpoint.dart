@@ -1,4 +1,23 @@
 class ApiEndpoint {
+  /// Routes that must not send `Authorization` (signup/login/reset), even if a
+  /// stale token exists in storage — some backends error or 500 when they see
+  /// a JWT on these endpoints.
+  static bool isPublicParentAuthPath(String path) {
+    final p = path.toLowerCase();
+    const suffixes = <String>[
+      '/v1/parent/pre-signup',
+      '/v1/parent/verify-signup',
+      '/v1/parent/pre-signin',
+      '/v1/parent/verify-signin',
+      '/v1/parent/reset-password',
+      '/v1/parent/verify-password-otp',
+    ];
+    for (final s in suffixes) {
+      if (p.contains(s)) return true;
+    }
+    return false;
+  }
+
   // ── Parent / Auth ────────────────────────────────────────────────────────────
   static const String preSignUp           = '/v1/parent/pre-SignUp';
   static const String verifySignUp        = '/v1/parent/verify-signUp';

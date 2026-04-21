@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../api/api_endpoint.dart';
 import 'auth_session.dart';
 
 class DioAuthInterceptor extends Interceptor {
@@ -10,6 +11,11 @@ class DioAuthInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     try {
+      final path = options.uri.path;
+      if (ApiEndpoint.isPublicParentAuthPath(path)) {
+        handler.next(options);
+        return;
+      }
       final token = await _session.token();
       if (token != null && token.trim().isNotEmpty) {
         options.headers['Authorization'] = 'Bearer $token';
