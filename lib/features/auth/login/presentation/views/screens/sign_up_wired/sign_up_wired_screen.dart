@@ -1,6 +1,7 @@
 import 'package:dana/core/di/injection_container.dart';
 import 'package:dana/core/utils/app_routes.dart';
 import 'package:dana/core/widgets/otp_bottom_sheet.dart';
+import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_up_cubit.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_up_state.dart';
 import 'package:flutter/material.dart';
@@ -195,6 +196,25 @@ class _SignUpWiredViewState extends State<_SignUpWiredView> {
                       child: Text(loading ? 'Sending OTP...' : 'Create account'),
                     );
                   },
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      context.l10n.alreadyHaveAccount,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          AppRoutes.login,
+                        );
+                      },
+                      child: Text(context.l10n.signIn),
+                    ),
+                  ],
                 ),
               ],
             ),
