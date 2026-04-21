@@ -32,9 +32,18 @@ class AuthRepositoryImpl implements AuthRepository {
   //   }
   // }
   Future<Either<Failure, T>> _guard<T>(Future<T> Function() call) async {
-    if (!await networkInfo.isConnected) {
-      print('🔴 Network disconnected');
-      return const Left(NetworkFailure(message: 'لا يوجد اتصال بالإنترنت'));
+    // `internet_connection_checker_plus` can report false negatives on some
+    // Android emulators/devices (DNS/VPN/captive portal). Blocking all auth
+    // calls here makes the app look "unwired" even when the API is reachable.
+    //
+    // Prefer attempting the HTTP request and surfacing real failures via Dio.
+    try {
+      final connected = await networkInfo.isConnected;
+      if (!connected) {
+        print('⚠️ Connectivity check reported offline; attempting request anyway');
+      }
+    } catch (e) {
+      print('⚠️ Connectivity check failed ($e); attempting request anyway');
     }
     try {
       print('🔹 Calling remote data source...');
