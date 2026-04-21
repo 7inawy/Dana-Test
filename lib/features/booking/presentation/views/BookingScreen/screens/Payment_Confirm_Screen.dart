@@ -12,10 +12,33 @@ import 'package:dana/features/booking/presentation/views/BookingScreen/widgets/b
 import 'package:dana/features/booking/presentation/views/BookingScreen/widgets/patient_header_card.dart';
 import 'package:dana/features/parent_profile/data/repo/parent_profile_repository.dart';
 import 'package:dana/providers/app_theme_provider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+String _bookingErrorMessage(Object e) {
+  if (e is DioException) {
+    final d = e.response?.data;
+    if (d is Map) {
+      final m = d['message']?.toString();
+      if (m != null && m.isNotEmpty) return m;
+      final resp = d['response'];
+      if (resp is Map) {
+        final m2 = resp['message']?.toString();
+        if (m2 != null && m2.isNotEmpty) return m2;
+        final data = resp['data'];
+        if (data is Map) {
+          final m3 = data['message']?.toString();
+          if (m3 != null && m3.isNotEmpty) return m3;
+        }
+      }
+    }
+    return e.message?.isNotEmpty == true ? e.message! : e.toString();
+  }
+  return e.toString();
+}
 
 class PaymentSuccessScreen extends StatefulWidget {
   static const String routeName = 'PaymentSuccessScreen';
@@ -52,6 +75,10 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
     try {
       final me = await sl<ParentProfileRepository>().getMe();
       final parentId = me.id;
+      final detectionPrice = (draft.doctor.detectionPrice > 0
+              ? draft.doctor.detectionPrice
+              : 250)
+          .round();
       final result = await sl<BookingRepo>().createBooking(
         doctorId: draft.doctor.doctorId,
         parentId: parentId,
@@ -60,6 +87,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
         time: draft.timeHm,
         paymentMethod: draft.paymentMethod!,
         visitStatus: draft.visitStatus,
+        detectionPrice: detectionPrice,
         notes: draft.notes,
       );
       if (!mounted) return;
@@ -78,7 +106,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
+        SnackBar(content: Text(_bookingErrorMessage(e))),
       );
     } finally {
       if (mounted) setState(() => _submitting = false);

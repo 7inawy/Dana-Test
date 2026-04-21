@@ -41,6 +41,7 @@ class BookingRepo {
     required String time,
     required String paymentMethod,
     required String visitStatus,
+    required int detectionPrice,
     String? notes,
   }) async {
     final response = await service.createBooking(
@@ -51,6 +52,7 @@ class BookingRepo {
       time: time,
       paymentMethod: paymentMethod,
       visitStatus: visitStatus,
+      detectionPrice: detectionPrice,
       notes: notes,
     );
 

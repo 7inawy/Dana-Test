@@ -15,6 +15,7 @@ class BookingService {
     required String time,
     required String paymentMethod,
     required String visitStatus,
+    required int detectionPrice,
     String? notes,
   }) {
     return dio.post(
@@ -27,7 +28,8 @@ class BookingService {
         'time': time,
         'paymentMethod': paymentMethod,
         'visitStatus': visitStatus,
-        if (notes != null) 'notes': notes,
+        'detectionPrice': detectionPrice,
+        if (notes != null && notes.isNotEmpty) 'notes': notes,
       },
       options: Options(headers: {'Content-Type': 'application/json'}),
     );

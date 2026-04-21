@@ -17,6 +17,7 @@ class BookingCubit extends Cubit<BookingState> {
     required String time,
     required String paymentMethod,
     required String visitStatus,
+    required int detectionPrice,
     String? notes,
   }) async {
     emit(BookingLoading());
@@ -29,6 +30,7 @@ class BookingCubit extends Cubit<BookingState> {
         time: time,
         paymentMethod: paymentMethod,
         visitStatus: visitStatus,
+        detectionPrice: detectionPrice,
         notes: notes,
       );
       emit(BookingCreateSuccess(result));

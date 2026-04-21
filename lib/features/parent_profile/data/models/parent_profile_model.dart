@@ -17,11 +17,29 @@ class ParentProfileModel {
       id: json['_id']?.toString() ?? '',
       parentName: json['parentName']?.toString() ?? '',
       phone: json['phone']?.toString() ?? '',
-      children: childrenJson
-          .whereType<Map>()
-          .map((c) => ParentChildModel.fromJson(c.cast<String, dynamic>()))
-          .toList(),
+      children: _childrenFromList(childrenJson),
     );
+  }
+
+  /// Backend may return full child objects or an array of child ObjectId strings.
+  static List<ParentChildModel> _childrenFromList(List<dynamic> raw) {
+    final out = <ParentChildModel>[];
+    for (final c in raw) {
+      if (c is String && c.isNotEmpty) {
+        final tail = c.length > 4 ? c.substring(c.length - 4) : c;
+        out.add(
+          ParentChildModel(
+            id: c,
+            childName: 'طفل ···$tail',
+            gender: 'male',
+            birthDate: null,
+          ),
+        );
+      } else if (c is Map) {
+        out.add(ParentChildModel.fromJson(c.cast<String, dynamic>()));
+      }
+    }
+    return out;
   }
 }
 
