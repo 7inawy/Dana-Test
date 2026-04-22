@@ -38,7 +38,7 @@ class SignUpCubit extends Cubit<SignUpState> {
   String _email = '';
 
   void updatePhone(String value) => _phone = value;
-  void updateEmail(String value) => _email = value;
+  void updateEmail(String value) => _email = value.trim();
 
   // ── Step 4: Password ──────────────────────────────────────────────────────
   String _password = '';
@@ -65,6 +65,11 @@ class SignUpCubit extends Cubit<SignUpState> {
   String? validateStep3() {
     if (_phone.trim().isEmpty) return 'من فضلك ادخل رقم الهاتف';
     if (_email.trim().isEmpty) return 'من فضلك ادخل البريد الإلكتروني';
+
+    final email = _email.trim().toLowerCase();
+    // Minimal, practical email validation for UI gating.
+    final emailOk = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
+    if (!emailOk) return 'من فضلك ادخل بريد إلكتروني صحيح';
     return null;
   }
 
