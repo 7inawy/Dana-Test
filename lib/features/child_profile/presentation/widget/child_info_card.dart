@@ -5,14 +5,18 @@ import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/child_profile/child_profile_args.dart';
 import 'package:dana/features/child_profile/data/models/growth_record_model.dart';
+import 'package:dana/features/child_profile/data/models/skill_api_models.dart';
+import 'package:dana/features/child_profile/presentation/bottom_sheets/update_data_bottom_sheet.dart'
+    show showUpdateMeasurementsBottomSheet;
 import 'package:dana/features/child_profile/presentation/cubit/growth_cubit.dart';
 import 'package:dana/features/child_profile/presentation/cubit/growth_state.dart';
+import 'package:dana/features/child_profile/presentation/cubit/skills_cubit.dart';
+import 'package:dana/features/child_profile/presentation/cubit/skills_state.dart';
 import 'package:dana/features/child_profile/presentation/widget/custom_stat_card.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 (int years, int months) _ageFromBirth(DateTime? birthDate) {
   if (birthDate == null) return (0, 0);
@@ -48,6 +52,40 @@ String _deltaFor(
   final sign = d > 0 ? '+' : '';
   final val = d == d.roundToDouble() ? d.toStringAsFixed(0) : d.toStringAsFixed(1);
   return '$sign$val $unit';
+}
+
+/// Average checklist completion across skills that have at least one item.
+int? _averageSkillDevelopmentPercent(SkillsState s) {
+  late final List<SkillApiModel> skills;
+  late final Map<String, int> checked;
+  late final Map<String, int> total;
+  if (s is SkillsLoaded) {
+    skills = s.skills;
+    checked = s.skillCheckedById;
+    total = s.skillTotalById;
+  } else if (s is ChecklistLoading) {
+    skills = s.skills;
+    checked = s.skillCheckedById;
+    total = s.skillTotalById;
+  } else if (s is ChecklistLoaded) {
+    skills = s.skills;
+    checked = s.skillCheckedById;
+    total = s.skillTotalById;
+  } else {
+    return null;
+  }
+  if (skills.isEmpty) return null;
+  var sum = 0;
+  var n = 0;
+  for (final sk in skills) {
+    final t = total[sk.id] ?? 0;
+    if (t <= 0) continue;
+    final c = checked[sk.id] ?? 0;
+    sum += ((c * 100) / t).round();
+    n++;
+  }
+  if (n == 0) return null;
+  return (sum / n).round();
 }
 
 class ChildInfoCard extends StatelessWidget {
@@ -116,110 +154,126 @@ class ChildInfoCard extends StatelessWidget {
           );
         }
 
+        final headerInk = loaded != null
+            ? () => showUpdateMeasurementsBottomSheet(context)
+            : null;
+
         return CustomFrame(
           child: Column(
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  avatar(48.w),
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsetsDirectional.only(start: 12.w),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                name.isEmpty ? '…' : name,
-                                style: AppTextStyle.semibold16TextHeading(context),
-                              ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                ageText.isEmpty ? '—' : ageText,
-                                style: AppTextStyle.medium12TextBody(context),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(top: 12.h),
-                                child: Row(
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(AppRadius.radius_sm),
+                  onTap: headerInk,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4.h),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        avatar(48.w),
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsetsDirectional.only(start: 12.w),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 4.h,
-                                        horizontal: 16.w,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: isDark
-                                            ? AppColors.primary_50_dark
-                                            : AppColors.primary_50_light,
-                                        borderRadius: BorderRadius.circular(
-                                          AppRadius.radius_full,
-                                        ),
-                                        border: Border.all(
-                                          width: AppRadius.stroke_thin,
-                                          color: isDark
-                                              ? AppColors.primary_200_dark
-                                              : AppColors.primary_200_light,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          isGirl ? context.l10n.girl : context.l10n.boy,
-                                          style: AppTextStyle.medium12Primary(
-                                            context,
-                                          ),
-                                        ),
-                                      ),
+                                    Text(
+                                      name.isEmpty ? '…' : name,
+                                      style: AppTextStyle.semibold16TextHeading(context),
                                     ),
-                                    Container(
-                                      margin: EdgeInsetsDirectional.only(
-                                        start: 8.w,
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 4.h,
-                                        horizontal: 16.w,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: isDark
-                                            ? AppColors.bg_success_subtle_dark
-                                            : AppColors.bg_success_subtle_light,
-                                        borderRadius: BorderRadius.circular(
-                                          AppRadius.radius_full,
-                                        ),
-                                        border: Border.all(
-                                          width: AppRadius.stroke_thin,
-                                          color: isDark
-                                              ? AppColors.success_default_dark
-                                              : AppColors.success_default_light,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          context.l10n.growthStatusHealthy,
-                                          style: AppTextStyle.medium12Succes(
-                                            context,
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      ageText.isEmpty ? '—' : ageText,
+                                      style: AppTextStyle.medium12TextBody(context),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 12.h),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 4.h,
+                                              horizontal: 16.w,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: isDark
+                                                  ? AppColors.primary_50_dark
+                                                  : AppColors.primary_50_light,
+                                              borderRadius: BorderRadius.circular(
+                                                AppRadius.radius_full,
+                                              ),
+                                              border: Border.all(
+                                                width: AppRadius.stroke_thin,
+                                                color: isDark
+                                                    ? AppColors.primary_200_dark
+                                                    : AppColors.primary_200_light,
+                                              ),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                isGirl ? context.l10n.girl : context.l10n.boy,
+                                                style: AppTextStyle.medium12Primary(
+                                                  context,
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          Container(
+                                            margin: EdgeInsetsDirectional.only(
+                                              start: 8.w,
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 4.h,
+                                              horizontal: 16.w,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: isDark
+                                                  ? AppColors.bg_success_subtle_dark
+                                                  : AppColors.bg_success_subtle_light,
+                                              borderRadius: BorderRadius.circular(
+                                                AppRadius.radius_full,
+                                              ),
+                                              border: Border.all(
+                                                width: AppRadius.stroke_thin,
+                                                color: isDark
+                                                    ? AppColors.success_default_dark
+                                                    : AppColors.success_default_light,
+                                              ),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                context.l10n.growthStatusHealthy,
+                                                style: AppTextStyle.medium12Succes(
+                                                  context,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+                                Icon(
+                                  loaded != null ? Icons.edit_outlined : Icons.info_outline,
+                                  size: 20.w,
+                                  color: isDark
+                                      ? AppColors.text_heading_dark
+                                      : AppColors.text_heading_light,
+                                ),
+                              ],
+                            ),
                           ),
-                          SvgPicture.asset(
-                            'assets/Icons/arrow_drop_icon.svg',
-                            width: 20.w,
-                            height: 20.w,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
               Divider(
                 height: 28.h,
@@ -253,11 +307,16 @@ class ChildInfoCard extends StatelessWidget {
                       iconPath: 'assets/Icons/child_profile/brain_icon.svg',
                     ),
                     SizedBox(width: 8.w),
-                    CustomStatCard(
-                      title: context.l10n.growthIndicator,
-                      value: '—',
-                      change: '—',
-                      iconPath: 'assets/Icons/child_profile/indicator_icon.svg',
+                    BlocBuilder<SkillsCubit, SkillsState>(
+                      builder: (context, sk) {
+                        final pct = _averageSkillDevelopmentPercent(sk);
+                        return CustomStatCard(
+                          title: context.l10n.growthIndicator,
+                          value: pct != null ? '$pct %' : '—',
+                          change: '—',
+                          iconPath: 'assets/Icons/child_profile/indicator_icon.svg',
+                        );
+                      },
                     ),
                   ],
                 ),

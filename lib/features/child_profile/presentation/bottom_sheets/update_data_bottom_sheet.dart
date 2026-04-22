@@ -9,12 +9,57 @@ import 'package:dana/core/widgets/home_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 
 import '../cubit/growth_cubit.dart';
 
+/// Opens [UpdateDataBottomSheet] with [GrowthCubit] in scope (modal route safe).
+Future<void> showUpdateMeasurementsBottomSheet(BuildContext hostContext) async {
+  final growth = hostContext.read<GrowthCubit>();
+  final themeProvider = hostContext.read<AppThemeProvider>();
+  final isDark =
+      themeProvider.appTheme == ThemeMode.dark ||
+      (themeProvider.appTheme == ThemeMode.system &&
+          MediaQuery.of(hostContext).platformBrightness == Brightness.dark);
+
+  await showModalBottomSheet<void>(
+    context: hostContext,
+    isScrollControlled: true,
+    backgroundColor: isDark
+        ? AppColors.bg_surface_default_dark
+        : AppColors.bg_surface_default_light,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+    ),
+    builder: (sheetContext) => BlocProvider.value(
+      value: growth,
+      child: UpdateDataBottomSheet(
+        onSaved: () {
+          if (!hostContext.mounted) return;
+          showModalBottomSheet<void>(
+            context: hostContext,
+            isScrollControlled: true,
+            backgroundColor: isDark
+                ? AppColors.bg_surface_default_dark
+                : AppColors.bg_surface_default_light,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+            ),
+            builder: (_) => ConfirmDataBottomSheet(
+              firstText: hostContext.l10n.growthCelebrationTitle,
+              secondText: hostContext.l10n.growthSavedMessage,
+            ),
+          );
+        },
+      ),
+    ),
+  );
+}
+
 class UpdateDataBottomSheet extends StatefulWidget {
-  const UpdateDataBottomSheet({super.key});
+  const UpdateDataBottomSheet({super.key, this.onSaved});
+
+  /// Called after a successful save and sheet dismiss, using the **host** screen context.
+  final VoidCallback? onSaved;
 
   @override
   State<UpdateDataBottomSheet> createState() => _UpdateDataBottomSheetState();
@@ -127,22 +172,7 @@ class _UpdateDataBottomSheetState extends State<UpdateDataBottomSheet> {
                             headCircumference: headCircumference!,
                           );
                       Navigator.pop(context);
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: isDark
-                            ? AppColors.bg_surface_default_dark
-                            : AppColors.bg_surface_default_light,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(20.r),
-                          ),
-                        ),
-                        builder: (_) => ConfirmDataBottomSheet(
-                          firstText: l10n.growthCelebrationTitle,
-                          secondText: l10n.growthSavedMessage,
-                        ),
-                      );
+                      widget.onSaved?.call();
                     }
                   : () {},
             ),

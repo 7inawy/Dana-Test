@@ -6,7 +6,8 @@ import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/home/widgets/statistics_chart.dart';
 import 'package:dana/providers/app_theme_provider.dart';
-import 'package:dana/features/child_profile/presentation/bottom_sheets/update_data_bottom_sheet.dart';
+import 'package:dana/features/child_profile/presentation/bottom_sheets/update_data_bottom_sheet.dart'
+    show showUpdateMeasurementsBottomSheet;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -99,21 +100,7 @@ class GrowthCurveSection extends StatelessWidget {
                 ),
               ],
             ),
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: isDark
-                    ? AppColors.bg_surface_default_dark
-                    : AppColors.bg_surface_default_light,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(20.r),
-                  ),
-                ),
-                builder: (_) => const UpdateDataBottomSheet(),
-              );
-            },
+            onTap: () => showUpdateMeasurementsBottomSheet(context),
           ),
         ],
       ),

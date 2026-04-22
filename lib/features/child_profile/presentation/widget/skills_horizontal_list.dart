@@ -1,12 +1,48 @@
+import 'package:dana/core/utils/app_colors.dart';
+import 'package:dana/features/child_profile/data/models/skill_api_models.dart';
+import 'package:dana/features/child_profile/presentation/bottom_sheets/skill_checklist_bottom_sheet.dart';
 import 'package:dana/features/child_profile/presentation/widget/skill_card.dart';
+import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../data/model/skill_card_model.dart';
-import '../bottom_sheets/skill_checklist_bottom_sheet.dart';
 import '../cubit/skills_cubit.dart';
 import '../cubit/skills_state.dart';
+
+void _openSkillChecklist(
+  BuildContext hostContext, {
+  required SkillsCubit cubit,
+  required String skillId,
+  required String title,
+}) {
+  final themeProvider = hostContext.read<AppThemeProvider>();
+  final isDark =
+      themeProvider.appTheme == ThemeMode.dark ||
+      (themeProvider.appTheme == ThemeMode.system &&
+          MediaQuery.of(hostContext).platformBrightness == Brightness.dark);
+
+  cubit.loadChecklist(skillId);
+  showModalBottomSheet<void>(
+    context: hostContext,
+    isScrollControlled: true,
+    backgroundColor: isDark
+        ? AppColors.bg_surface_default_dark
+        : AppColors.bg_surface_default_light,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+    ),
+    builder: (_) => BlocProvider.value(
+      value: cubit,
+      child: SkillChecklistBottomSheet(
+        skillId: skillId,
+        title: title,
+        description: '',
+      ),
+    ),
+  );
+}
 
 class SkillsHorizontalList extends StatelessWidget {
   const SkillsHorizontalList({super.key});
@@ -24,11 +60,27 @@ class SkillsHorizontalList extends StatelessWidget {
             if (state is SkillsError) {
               return Center(child: Text(state.message));
             }
-            final skills = state is SkillsLoaded
-                ? state.skills
-                : state is ChecklistLoaded
-                    ? state.skills
-                    : const [];
+
+            late final List<SkillApiModel> skillList;
+            late final Map<String, int> checked;
+            late final Map<String, int> total;
+            if (state is SkillsLoaded) {
+              skillList = state.skills;
+              checked = state.skillCheckedById;
+              total = state.skillTotalById;
+            } else if (state is ChecklistLoaded) {
+              skillList = state.skills;
+              checked = state.skillCheckedById;
+              total = state.skillTotalById;
+            } else if (state is ChecklistLoading) {
+              skillList = state.skills;
+              checked = state.skillCheckedById;
+              total = state.skillTotalById;
+            } else {
+              skillList = const [];
+              checked = const {};
+              total = const {};
+            }
 
             final iconSrcs = [
               'assets/Icons/child_profile/motor_skill_icon.svg',
@@ -37,15 +89,21 @@ class SkillsHorizontalList extends StatelessWidget {
               'assets/Icons/child_profile/social_skill_icon.svg',
             ];
 
+            final cubit = context.read<SkillsCubit>();
+
             final cards = <SkillCardData>[];
-            for (int i = 0; i < skills.length; i++) {
-              final s = skills[i];
+            for (var i = 0; i < skillList.length; i++) {
+              final s = skillList[i];
+              final done = checked[s.id] ?? 0;
+              final tot = total[s.id] ?? 0;
+              final countLabel = tot > 0 ? '$done/$tot' : '—';
+
               cards.add(
                 SkillCardData(
                   title: s.name,
                   subtitle: '',
                   iconSrc: iconSrcs[i % iconSrcs.length],
-                  count: '${s.itemCount}/0',
+                  count: countLabel,
                   bottomSheetTitle: s.name,
                   bottomSheetDescription: '',
                   bottomSheetItems: const [],
@@ -55,22 +113,29 @@ class SkillsHorizontalList extends StatelessWidget {
 
             return Row(
               children: [
-                for (int i = 0; i < cards.length; i++) ...[
+                for (var i = 0; i < cards.length; i++) ...[
                   GestureDetector(
                     onTap: () {
-                      final skillId = skills[i].id;
-                      context.read<SkillsCubit>().loadChecklist(skillId);
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (_) => SkillChecklistBottomSheet(
-                          skillId: skillId,
-                          title: cards[i].bottomSheetTitle,
-                          description: cards[i].bottomSheetDescription,
-                        ),
+                      final s = skillList[i];
+                      _openSkillChecklist(
+                        context,
+                        cubit: cubit,
+                        skillId: s.id,
+                        title: cards[i].title,
                       );
                     },
-                    child: SkillCard(data: cards[i]),
+                    child: SkillCard(
+                      data: cards[i],
+                      onExpandTap: () {
+                        final s = skillList[i];
+                        _openSkillChecklist(
+                          context,
+                          cubit: cubit,
+                          skillId: s.id,
+                          title: cards[i].title,
+                        );
+                      },
+                    ),
                   ),
                   if (i < cards.length - 1) SizedBox(width: 8.w),
                 ],
