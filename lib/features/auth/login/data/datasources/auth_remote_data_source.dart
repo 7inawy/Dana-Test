@@ -416,7 +416,7 @@ abstract class AuthRemoteDataSource {
   });
 
   /// Step 2 – Verify sign-up OTP
-  Future<void> verifySignUp({required String phone, required String otp});
+  Future<String> verifySignUp({required String phone, required String otp});
 
   /// Step 3 – Pre sign-in (sends OTP)
   Future<void> preSignIn({required String phone, required String password});

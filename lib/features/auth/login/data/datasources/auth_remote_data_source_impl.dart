@@ -22,6 +22,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     throw ServerException(message: msg);
   }
 
+  bool _isEmptyBody(dynamic raw) {
+    if (raw == null) return true;
+    if (raw is String) return raw.trim().isEmpty;
+    if (raw is Map) return raw.isEmpty;
+    if (raw is List) return raw.isEmpty;
+    return false;
+  }
+
   // ── Parent Auth ──────────────────────────────────────────────────────────────
 
   @override
@@ -69,6 +77,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'فشل التسجيل');
     } on DioException catch (e) {
+      // Backend sometimes returns 400 with an empty body for duplicate accounts.
+      // Provide a stable message so the UI can offer "Login / Edit info".
+      if (e.response?.statusCode == 400 && _isEmptyBody(e.response?.data)) {
+        throw const ServerException(message: 'Account already exists');
+      }
       final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
         message: ApiError.messageFromDecoded(
@@ -83,7 +96,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> verifySignUp({
+  Future<String> verifySignUp({
     required String phone,
     required String otp,
   }) async {
@@ -97,6 +110,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'كود التحقق غير صحيح');
+
+      final accessToken = (data is Map ? data['accessToken'] : null);
+      final token =
+          (accessToken is Map ? accessToken['access_token'] : null) as String?;
+      if (token == null || token.trim().isEmpty) {
+        throw const ServerException(message: 'لم يتم استلام التوكن');
+      }
+      return token;
     } on DioException catch (e) {
       final data = ApiResponse.decode(e.response?.data);
       throw ServerException(

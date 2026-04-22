@@ -21,7 +21,7 @@ abstract class AuthRepository {
   });
 
   /// Step 2: تأكيد كود OTP بعد التسجيل
-  Future<Either<Failure, Unit>> verifySignUp({
+  Future<Either<Failure, String>> verifySignUp({
     required String phone,
     required String otp,
   });

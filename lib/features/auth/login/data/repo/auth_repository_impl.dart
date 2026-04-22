@@ -91,15 +91,15 @@ class AuthRepositoryImpl implements AuthRepository {
   });
 
   @override
-  Future<Either<Failure, Unit>> verifySignUp({
+  Future<Either<Failure, String>> verifySignUp({
     required String phone,
     required String otp,
   }) => _guard(() async {
-    await remoteDataSource.verifySignUp(
+    final token = await remoteDataSource.verifySignUp(
       phone: ParentPhoneUtils.normalizeForApi(phone),
       otp: otp,
     );
-    return unit;
+    return token;
   });
 
   // ── Sign In ──────────────────────────────────────────────────────────────────

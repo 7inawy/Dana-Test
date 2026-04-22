@@ -3,6 +3,7 @@ import 'package:dana/core/utils/app_sizes.dart';
 import 'package:dana/core/di/injection_container.dart';
 import 'package:dana/core/utils/app_routes.dart';
 import 'package:dana/core/widgets/otp_bottom_sheet.dart';
+import 'package:dana/core/auth/auth_session.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_up_cubit.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_up_state.dart';
 
@@ -81,18 +82,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
           } else if (state is SignUpVerified) {
             if (!context.mounted) return;
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Account verified. Please login.'),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-            Navigator.pushReplacementNamed(context, AppRoutes.login);
+            await sl<AuthSession>().setToken(state.token);
+            if (!context.mounted) return;
+            Navigator.pushReplacementNamed(context, AppRoutes.home);
           } else if (state is SignUpFailure) {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            final msg = state.message;
+            final lower = msg.toLowerCase();
+            final alreadyExists =
+                lower.contains('already') ||
+                lower.contains('exist') ||
+                msg.contains('موجود') ||
+                msg.contains('مسجل');
+
+            if (alreadyExists && context.mounted) {
+              await showDialog<void>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Account already exists'),
+                  content: Text(msg),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      child: const Text('Edit info'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        Navigator.pushReplacementNamed(context, AppRoutes.login);
+                      },
+                      child: const Text('Login'),
+                    ),
+                  ],
+                ),
+              );
+              return;
+            }
+
+            if (!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
+                content: Text(msg),
                 behavior: SnackBarBehavior.floating,
                 backgroundColor: Colors.red,
               ),

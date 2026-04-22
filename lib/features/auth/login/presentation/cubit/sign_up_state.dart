@@ -24,7 +24,11 @@ class SignUpOtpSent extends SignUpState {
 
 /// verifySignUp نجح – الحساب اتأكد
 class SignUpVerified extends SignUpState {
-  const SignUpVerified();
+  final String token;
+  const SignUpVerified({required this.token});
+
+  @override
+  List<Object?> get props => [token];
 }
 
 class SignUpFailure extends SignUpState {
