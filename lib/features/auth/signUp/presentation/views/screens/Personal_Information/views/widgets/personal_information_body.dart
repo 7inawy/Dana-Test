@@ -13,7 +13,8 @@ class PersonalInformationBody extends StatefulWidget {
   const PersonalInformationBody({super.key, required this.onNext});
 
   @override
-  State<PersonalInformationBody> createState() => _PersonalInformationBodyState();
+  State<PersonalInformationBody> createState() =>
+      _PersonalInformationBodyState();
 }
 
 class _PersonalInformationBodyState extends State<PersonalInformationBody> {

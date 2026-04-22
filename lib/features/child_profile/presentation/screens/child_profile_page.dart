@@ -157,8 +157,9 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
                               padding: EdgeInsets.symmetric(vertical: 12.h),
                               child: Text(
                                 context.l10n.developmentJourney,
-                                style:
-                                    AppTextStyle.medium16TextHeading(context),
+                                style: AppTextStyle.medium16TextHeading(
+                                  context,
+                                ),
                               ),
                             ),
                             SkillsHorizontalList(),

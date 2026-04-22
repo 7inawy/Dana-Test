@@ -66,8 +66,9 @@ class SignUpCubit extends Cubit<SignUpState> {
     if (_phone.trim().isEmpty) return 'من فضلك ادخل رقم الهاتف';
     final normalizedPhone = ParentPhoneUtils.normalizeForApi(_phone);
     // Egyptian phone numbers are 11 digits and start with 01
-    final phoneOk =
-        RegExp(r'^01[0-9]{9}$').hasMatch(normalizedPhone.replaceAll(' ', ''));
+    final phoneOk = RegExp(
+      r'^01[0-9]{9}$',
+    ).hasMatch(normalizedPhone.replaceAll(' ', ''));
     if (!phoneOk) return 'من فضلك ادخل رقم هاتف صحيح';
     if (_email.trim().isEmpty) return 'من فضلك ادخل البريد الإلكتروني';
 

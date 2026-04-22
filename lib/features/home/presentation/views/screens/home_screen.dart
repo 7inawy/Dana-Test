@@ -233,10 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                             SizedBox(height: 4.h),
                                             Text(
-                                              context.formatAge(
-                                                age.$1,
-                                                age.$2,
-                                              ),
+                                              context.formatAge(age.$1, age.$2),
                                               style:
                                                   AppTextStyle.medium12TextBody(
                                                     context,
@@ -326,10 +323,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                       xDates: sorted
                                           .map((e) => e.recordDate)
                                           .toList(),
-                                      heightCm:
-                                          sorted.map((e) => e.height).toList(),
-                                      weightKg:
-                                          sorted.map((e) => e.weight).toList(),
+                                      heightCm: sorted
+                                          .map((e) => e.height)
+                                          .toList(),
+                                      weightKg: sorted
+                                          .map((e) => e.weight)
+                                          .toList(),
                                       headCircumferenceCm: sorted
                                           .map((e) => e.headCircumference)
                                           .toList(),
@@ -366,8 +365,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Text(
                                 context.l10n.alwaysBestForChildCare,
-                                style:
-                                    AppTextStyle.medium16TextHeading(context),
+                                style: AppTextStyle.medium16TextHeading(
+                                  context,
+                                ),
                               ),
                               GestureDetector(
                                 onTap: () {
@@ -377,8 +377,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 },
                                 child: Text(
                                   context.l10n.viewAll,
-                                  style:
-                                      AppTextStyle.regular12TextBody(context),
+                                  style: AppTextStyle.regular12TextBody(
+                                    context,
+                                  ),
                                 ),
                               ),
                             ],
@@ -401,8 +402,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   padding: EdgeInsets.symmetric(vertical: 12.h),
                                   child: Text(
                                     dState.message,
-                                    style:
-                                        AppTextStyle.medium12TextBody(context),
+                                    style: AppTextStyle.medium12TextBody(
+                                      context,
+                                    ),
                                   ),
                                 );
                               }
@@ -410,8 +412,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 final list = dState.doctors;
                                 if (list.isEmpty) {
                                   return Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 12.h),
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 12.h,
+                                    ),
                                     child: Text(
                                       context.l10n.doctorsListEmpty,
                                       style: AppTextStyle.medium12TextBody(
@@ -425,14 +428,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    children: List.generate(list.length,
-                                        (index) {
+                                    children: List.generate(list.length, (
+                                      index,
+                                    ) {
                                       final d = list[index];
                                       return Container(
                                         margin: EdgeInsets.only(
                                           right: index == 0 ? 0 : 4,
-                                          left:
-                                              index == list.length - 1 ? 0 : 4,
+                                          left: index == list.length - 1
+                                              ? 0
+                                              : 4,
                                         ),
                                         child: DoctorCard(
                                           imageSrc: d.cardImageSrc,

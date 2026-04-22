@@ -109,7 +109,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     TextButton(
                       onPressed: () {
                         Navigator.of(ctx).pop();
-                        Navigator.pushReplacementNamed(context, AppRoutes.login);
+                        Navigator.pushReplacementNamed(
+                          context,
+                          AppRoutes.login,
+                        );
                       },
                       child: const Text('Login'),
                     ),

@@ -189,21 +189,23 @@ class _ExaminationScreenState extends State<ExaminationScreen> {
                         );
                         return ExaminationBody(
                           sections: _sections,
-                          onAnswerChanged:
-                              (sectionIndex, questionIndex, option) {
+                          onAnswerChanged: (sectionIndex, questionIndex, option) {
                             setState(() {
                               _sections[sectionIndex]
-                                  .questions[questionIndex]
-                                  .selectedOption = option;
+                                      .questions[questionIndex]
+                                      .selectedOption =
+                                  option;
 
                               if (sectionIndex < _sectionQuestions.length &&
                                   questionIndex <
                                       _sectionQuestions[sectionIndex].length) {
-                                final qid = _sectionQuestions[sectionIndex]
-                                    [questionIndex]
-                                    .id;
+                                final qid =
+                                    _sectionQuestions[sectionIndex][questionIndex]
+                                        .id;
                                 if (qid.isNotEmpty) {
-                                  _answersByQuestionId[qid] = _mapOption(option);
+                                  _answersByQuestionId[qid] = _mapOption(
+                                    option,
+                                  );
                                 }
                               }
                             });
