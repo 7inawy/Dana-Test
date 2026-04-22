@@ -50,10 +50,7 @@ class PatientHeaderCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Text(
-                ' $visit',
-                style: AppTextStyle.bold12TextBody(context),
-              ),
+              Text(' $visit', style: AppTextStyle.bold12TextBody(context)),
             ],
           ),
           Text(

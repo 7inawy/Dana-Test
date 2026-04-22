@@ -34,4 +34,3 @@ class VideosCubit extends Cubit<VideosState> {
     }
   }
 }
-

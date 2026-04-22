@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import '../../../../core/utils/app_assets.dart';
 import '../../../../l10n/app_localizations.dart';
 
-
 class BookModel {
   final String id;
   final String title;

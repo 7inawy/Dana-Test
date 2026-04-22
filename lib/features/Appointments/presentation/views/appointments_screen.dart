@@ -10,6 +10,7 @@ import 'package:dana/features/parent_profile/data/repo/parent_profile_repository
 import 'package:dana/features/booking/presentation/cubit/booking_cubit.dart';
 import 'package:dana/features/booking/presentation/cubit/booking_state.dart';
 import 'package:dana/providers/app_theme_provider.dart';
+import 'package:dana/core/errors/error_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,7 +43,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
       await _bookingCubit.getMyAppointmentsByParent(parentId: me.id);
     } catch (e) {
       if (!mounted) return;
-      _bookingCubit.reportLoadError(e.toString());
+      _bookingCubit.reportLoadError(ErrorMapper.message(e));
     }
   }
 
@@ -129,12 +130,28 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (state is BookingError) {
-                      return Center(child: Text(state.error));
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(state.error, textAlign: TextAlign.center),
+                            SizedBox(height: 12.h),
+                            ElevatedButton(
+                              onPressed: _loadBookings,
+                              child: const Text('إعادة المحاولة'),
+                            ),
+                          ],
+                        ),
+                      );
                     }
-                    final bookings =
-                        state is BookingSuccess ? state.bookings : <Booking>[];
+                    final bookings = state is BookingSuccess
+                        ? state.bookings
+                        : <Booking>[];
                     final appts =
-                        bookings.map((b) => _mapBookingToAppointment(context, b)).toList();
+                        bookings
+                            .map((b) => _mapBookingToAppointment(context, b))
+                            .toList()
+                          ..sort((a, b) => a.date.compareTo(b.date));
                     return buildBody(appts);
                   },
                 ),
@@ -152,18 +169,21 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
         return AppointmentsList(
           appointments: appointments,
           status: Status.upcoming,
+          onRefresh: _loadBookings,
         );
 
       case 'completed':
         return AppointmentsList(
           appointments: appointments,
           status: Status.completed,
+          onRefresh: _loadBookings,
         );
 
       case 'cancelled':
         return AppointmentsList(
           appointments: appointments,
           status: Status.cancelled,
+          onRefresh: _loadBookings,
         );
 
       default:

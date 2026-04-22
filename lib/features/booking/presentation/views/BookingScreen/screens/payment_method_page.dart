@@ -192,10 +192,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   style: AppTextStyle.regular16TextBody(context),
                 ),
                 SizedBox(height: 24.h),
-                Text(
-                  'المريض',
-                  style: AppTextStyle.bold12TextHeading(context),
-                ),
+                Text('المريض', style: AppTextStyle.bold12TextHeading(context)),
                 SizedBox(height: AppSizes.h8),
                 if (_loadingChildren)
                   Padding(

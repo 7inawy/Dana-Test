@@ -26,4 +26,3 @@ class TextBooksError extends TextBooksState {
   final String message;
   const TextBooksError(this.message);
 }
-

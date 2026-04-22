@@ -27,12 +27,7 @@ class LargeAvatar extends StatelessWidget {
     }
     if (url.isNotEmpty && url.startsWith('assets/')) {
       return ClipOval(
-        child: Image.asset(
-          url,
-          width: 90.w,
-          height: 90.h,
-          fit: BoxFit.cover,
-        ),
+        child: Image.asset(url, width: 90.w, height: 90.h, fit: BoxFit.cover),
       );
     }
     return ClipOval(

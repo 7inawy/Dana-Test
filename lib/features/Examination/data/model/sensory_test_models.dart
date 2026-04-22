@@ -46,9 +46,9 @@ class SensoryTestAnswer {
   SensoryTestAnswer({required this.questionId, required this.selectedValue});
 
   Map<String, dynamic> toJson() => {
-        'questionId': questionId,
-        'selectedValue': selectedValue,
-      };
+    'questionId': questionId,
+    'selectedValue': selectedValue,
+  };
 }
 
 class SensoryTestResult {
@@ -78,4 +78,3 @@ class SensoryTestResult {
     );
   }
 }
-

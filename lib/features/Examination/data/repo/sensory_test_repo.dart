@@ -11,7 +11,5 @@ class SensoryTestRepo {
   Future<SensoryTestResult> submit({
     required String childId,
     required List<SensoryTestAnswer> answers,
-  }) =>
-      service.submit(childId: childId, answers: answers);
+  }) => service.submit(childId: childId, answers: answers);
 }
-

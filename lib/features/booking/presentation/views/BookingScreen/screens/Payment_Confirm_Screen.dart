@@ -66,19 +66,18 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
   Future<void> _submitBooking() async {
     final draft = _draft;
     if (draft == null || !draft.canSubmit) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('بيانات الحجز غير مكتملة')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('بيانات الحجز غير مكتملة')));
       return;
     }
     setState(() => _submitting = true);
     try {
       final me = await sl<ParentProfileRepository>().getMe();
       final parentId = me.id;
-      final detectionPrice = (draft.doctor.detectionPrice > 0
-              ? draft.doctor.detectionPrice
-              : 250)
-          .round();
+      final detectionPrice =
+          (draft.doctor.detectionPrice > 0 ? draft.doctor.detectionPrice : 250)
+              .round();
       final result = await sl<BookingRepo>().createBooking(
         doctorId: draft.doctor.doctorId,
         parentId: parentId,
@@ -105,9 +104,9 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
       showConfirmationSheet();
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_bookingErrorMessage(e))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_bookingErrorMessage(e))));
     } finally {
       if (mounted) setState(() => _submitting = false);
     }

@@ -11,14 +11,11 @@ class SkillsRepo {
   Future<List<SkillChecklistItemApiModel>> getChecklist({
     required String skillId,
     required String childId,
-  }) =>
-      service.getChecklist(skillId: skillId, childId: childId);
+  }) => service.getChecklist(skillId: skillId, childId: childId);
 
   Future<void> toggleItem({
     required String childId,
     required String itemId,
     required bool checked,
-  }) =>
-      service.toggleItem(childId: childId, itemId: itemId, checked: checked);
+  }) => service.toggleItem(childId: childId, itemId: itemId, checked: checked);
 }
-

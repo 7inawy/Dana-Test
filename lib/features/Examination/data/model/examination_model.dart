@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -31,11 +30,5 @@ class ExamSection {
   final String? subtitle;
   final List<ExamQuestion> questions;
 
-  ExamSection({
-    required this.title,
-    this.subtitle,
-    required this.questions,
-  });
+  ExamSection({required this.title, this.subtitle, required this.questions});
 }
-
-

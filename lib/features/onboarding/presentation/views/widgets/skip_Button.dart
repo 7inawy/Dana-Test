@@ -9,8 +9,8 @@ class SkipButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
     return TextButton(
-
-      onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.signup),
+      onPressed: () =>
+          Navigator.pushReplacementNamed(context, AppRoutes.signup),
       child: Text(locale.skip, style: AppTextStyle.medium12TextBody(context)),
     );
   }

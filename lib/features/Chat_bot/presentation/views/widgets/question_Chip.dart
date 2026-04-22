@@ -3,16 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/utils/app_colors.dart';
 
-
 class QuestionChip extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const QuestionChip({
-    super.key,
-    required this.label,
-    required this.onTap,
-  });
+  const QuestionChip({super.key, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

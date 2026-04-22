@@ -1,4 +1,5 @@
 import 'package:dana/core/utils/app_colors.dart';
+import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/child_profile/data/models/skill_api_models.dart';
 import 'package:dana/features/child_profile/presentation/bottom_sheets/skill_checklist_bottom_sheet.dart';
 import 'package:dana/features/child_profile/presentation/widget/skill_card.dart';
@@ -80,6 +81,16 @@ class SkillsHorizontalList extends StatelessWidget {
               skillList = const [];
               checked = const {};
               total = const {};
+            }
+
+            if (skillList.isEmpty) {
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+                child: Text(
+                  context.l10n.skillsNotAvailableDesc,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              );
             }
 
             final iconSrcs = [

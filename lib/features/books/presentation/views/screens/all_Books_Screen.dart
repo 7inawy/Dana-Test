@@ -39,86 +39,86 @@ class AllBooksScreen extends StatelessWidget {
       value: sl<TextBooksCubit>()..load(),
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: isDark
+              ? AppColors.bg_card_default_dark
+              : AppColors.bg_card_default_light,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          automaticallyImplyLeading: false,
+          toolbarHeight: 56.w,
+          titleSpacing: 0,
+          title: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomAppBarButton(
+                  iconSrc: 'assets/Icons/search_icon.svg',
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (_) => BlocProvider.value(
+                        value: context.read<TextBooksCubit>(),
+                        child: SearchScreen(searchType: SearchType.books),
+                      ),
+                    );
+                  },
+                ),
+                Text(
+                  l10n.books,
+                  style: AppTextStyle.medium16TextHeading(context),
+                ),
+                CustomAppBarButton(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
         backgroundColor: isDark
-            ? AppColors.bg_card_default_dark
-            : AppColors.bg_card_default_light,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        automaticallyImplyLeading: false,
-        toolbarHeight: 56.w,
-        titleSpacing: 0,
-        title: Padding(
+            ? AppColors.bg_surface_default_dark
+            : AppColors.bg_surface_default_light,
+        body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            crossAxisAlignment: isRtl
+                ? CrossAxisAlignment.start
+                : CrossAxisAlignment.end,
             children: [
-              CustomAppBarButton(
-                iconSrc: 'assets/Icons/search_icon.svg',
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (_) => BlocProvider.value(
-                      value: context.read<TextBooksCubit>(),
-                      child: SearchScreen(searchType: SearchType.books),
-                    ),
-                  );
-                },
-              ),
+              SizedBox(height: 16.h),
               Text(
-                l10n.books,
+                l10n.featuredBooks,
+                textAlign: isRtl ? TextAlign.right : TextAlign.left,
                 style: AppTextStyle.medium16TextHeading(context),
               ),
-              CustomAppBarButton(
-                onTap: () {
-                  Navigator.pop(context);
-                },
+              SizedBox(height: 12.h),
+              Expanded(
+                child: GridView.builder(
+                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8.w,
+                    mainAxisSpacing: 16.h,
+                    childAspectRatio: 0.8,
+                  ),
+                  itemCount: books.length,
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ReadBookScreen(book: books[index]),
+                      ),
+                    ),
+                    child: BookCardHorizontal(book: books[index]),
+                  ),
+                ),
               ),
             ],
           ),
         ),
-      ),
-      backgroundColor: isDark
-          ? AppColors.bg_surface_default_dark
-          : AppColors.bg_surface_default_light,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.w),
-        child: Column(
-          crossAxisAlignment: isRtl
-              ? CrossAxisAlignment.start
-              : CrossAxisAlignment.end,
-          children: [
-            SizedBox(height: 16.h),
-            Text(
-              l10n.featuredBooks,
-              textAlign: isRtl ? TextAlign.right : TextAlign.left,
-              style: AppTextStyle.medium16TextHeading(context),
-            ),
-            SizedBox(height: 12.h),
-            Expanded(
-              child: GridView.builder(
-                padding: EdgeInsets.symmetric(vertical: 8.h),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8.w,
-                  mainAxisSpacing: 16.h,
-                  childAspectRatio: 0.8,
-                ),
-                itemCount: books.length,
-                itemBuilder: (context, index) => GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ReadBookScreen(book: books[index]),
-                    ),
-                  ),
-                  child: BookCardHorizontal(book: books[index]),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
       ),
     );
   }

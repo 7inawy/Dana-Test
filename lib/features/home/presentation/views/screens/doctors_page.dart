@@ -79,8 +79,7 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
           child: BlocBuilder<DoctorsListCubit, DoctorsListState>(
             builder: (context, state) {
-              if (state is DoctorsListLoading ||
-                  state is DoctorsListInitial) {
+              if (state is DoctorsListLoading || state is DoctorsListInitial) {
                 return const Center(child: CircularProgressIndicator());
               }
               if (state is DoctorsListError) {

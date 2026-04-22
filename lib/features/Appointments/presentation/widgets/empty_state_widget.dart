@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmptyStateWidget extends StatelessWidget {
-  const EmptyStateWidget({super.key});
+  const EmptyStateWidget({super.key, this.title, this.description});
+
+  final String? title;
+  final String? description;
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +25,14 @@ class EmptyStateWidget extends StatelessWidget {
           ),
           SizedBox(height: 40.h),
           Text(
-            'لا توجد حجوزات حالياً', // نص ثابت لجميع الحالات
+            title ?? 'لا توجد حجوزات حالياً',
             style: AppTextStyle.semibold16TextHeading(context),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 8.h),
           Text(
-            'لم يتم تسجيل أي استشارات لطفلك بعد. نحن هنا دائمًا لتقديم الدعم، ومستعدون لمساعدتك في أي وقت للاطمئنان عليه.', // نص ثابت لجميع الحالات
+            description ??
+                'لم يتم تسجيل أي استشارات لطفلك بعد. نحن هنا دائمًا لتقديم الدعم، ومستعدون لمساعدتك في أي وقت للاطمئنان عليه.',
             style: AppTextStyle.medium12TextBody(context),
             textAlign: TextAlign.center,
           ),

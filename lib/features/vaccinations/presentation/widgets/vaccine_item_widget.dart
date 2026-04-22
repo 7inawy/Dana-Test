@@ -186,80 +186,103 @@ class _VaccineItemWidgetState extends State<VaccineItemWidget> {
                                     builder: (_) => StatefulBuilder(
                                       builder: (context, setModalState) =>
                                           ConfirmVaccineBottomSheet(
-                                      firstText:
-                                          context.l10n.vaccineSuccessTitle,
-                                      firstTextStyle:
-                                          AppTextStyle.semibold20Success(
-                                            context,
-                                          ),
-                                      secondText:
-                                          context.l10n.vaccineSuccessDesc,
-                                      photoSrc:
-                                          'assets/Icons/vaccine/vaccine_done.svg',
-                                      extraWidgets: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              top: 24.h,
-                                              bottom: 8.h,
-                                            ),
-                                            child: Text(
-                                              context.l10n.vaccineDateLabel,
-                                              style:
-                                                  AppTextStyle.medium12TextHeading(
-                                                    context,
+                                            firstText: context
+                                                .l10n
+                                                .vaccineSuccessTitle,
+                                            firstTextStyle:
+                                                AppTextStyle.semibold20Success(
+                                                  context,
+                                                ),
+                                            secondText:
+                                                context.l10n.vaccineSuccessDesc,
+                                            photoSrc:
+                                                'assets/Icons/vaccine/vaccine_done.svg',
+                                            extraWidgets: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                    top: 24.h,
+                                                    bottom: 8.h,
                                                   ),
+                                                  child: Text(
+                                                    context
+                                                        .l10n
+                                                        .vaccineDateLabel,
+                                                    style:
+                                                        AppTextStyle.medium12TextHeading(
+                                                          context,
+                                                        ),
+                                                  ),
+                                                ),
+                                                CustomTextField(
+                                                  hintText: context
+                                                      .l10n
+                                                      .vaccineDateHint,
+                                                  readOnly: true,
+                                                  icon: Icons
+                                                      .calendar_month_rounded,
+                                                  controller:
+                                                      _takenDateController,
+                                                  onTap: () async {
+                                                    final picked =
+                                                        await showDatePicker(
+                                                          context: context,
+                                                          initialDate:
+                                                              DateTime.now(),
+                                                          firstDate: DateTime(
+                                                            1900,
+                                                          ),
+                                                          lastDate:
+                                                              DateTime.now(),
+                                                          locale: const Locale(
+                                                            "ar",
+                                                          ),
+                                                        );
+                                                    if (picked != null) {
+                                                      setModalState(() {
+                                                        _selectedTakenDate =
+                                                            picked;
+                                                        _takenDateController
+                                                            .text = formatDate(
+                                                          context,
+                                                          picked,
+                                                        );
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                          CustomTextField(
-                                            hintText:
-                                                context.l10n.vaccineDateHint,
-                                            readOnly: true,
-                                            icon: Icons.calendar_month_rounded,
-                                            controller: _takenDateController,
-                                            onTap: () async {
-                                              final picked = await showDatePicker(
-                                                context: context,
-                                                initialDate: DateTime.now(),
-                                                firstDate: DateTime(1900),
-                                                lastDate: DateTime.now(),
-                                                locale: const Locale("ar"),
-                                              );
-                                              if (picked != null) {
-                                                setModalState(() {
-                                                  _selectedTakenDate = picked;
-                                                  _takenDateController.text =
-                                                      formatDate(context, picked);
-                                                });
+                                            buttonText:
+                                                context.l10n.saveToRecord,
+                                            onConfirm: () async {
+                                              final childId =
+                                                  widget.item.childId;
+                                              final vaccinationId =
+                                                  widget.item.vaccinationId;
+                                              final takenDate =
+                                                  _selectedTakenDate;
+                                              if (childId == null ||
+                                                  childId.isEmpty ||
+                                                  vaccinationId == null ||
+                                                  vaccinationId.isEmpty ||
+                                                  takenDate == null) {
+                                                return;
                                               }
+                                              await context
+                                                  .read<
+                                                    VaccinationScheduleCubit
+                                                  >()
+                                                  .markTaken(
+                                                    childId: childId,
+                                                    vaccinationId:
+                                                        vaccinationId,
+                                                    takenDate: takenDate,
+                                                  );
                                             },
                                           ),
-                                        ],
-                                      ),
-                                      buttonText: context.l10n.saveToRecord,
-                                      onConfirm: () async {
-                                        final childId = widget.item.childId;
-                                        final vaccinationId =
-                                            widget.item.vaccinationId;
-                                        final takenDate = _selectedTakenDate;
-                                        if (childId == null ||
-                                            childId.isEmpty ||
-                                            vaccinationId == null ||
-                                            vaccinationId.isEmpty ||
-                                            takenDate == null) {
-                                          return;
-                                        }
-                                        await context
-                                            .read<VaccinationScheduleCubit>()
-                                            .markTaken(
-                                              childId: childId,
-                                              vaccinationId: vaccinationId,
-                                              takenDate: takenDate,
-                                            );
-                                      },
-                                    ),
                                     ),
                                   );
                                 },

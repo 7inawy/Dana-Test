@@ -49,7 +49,9 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
     _phoneCtrl = TextEditingController(text: p.phone);
     _phoneForApi = ParentPhoneUtils.normalizeForApi(p.phone);
     final gov = p.government.trim();
-    _governorate = gov.isNotEmpty && _govItems.contains(gov) ? gov : _govItems.first;
+    _governorate = gov.isNotEmpty && _govItems.contains(gov)
+        ? gov
+        : _govItems.first;
   }
 
   @override
@@ -65,25 +67,23 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
     final gov = _governorate ?? _govItems.first;
     setState(() => _saving = true);
     final err = await context.read<ParentProfileCubit>().updateProfile(
-          parentName: _nameCtrl.text,
-          email: _emailCtrl.text,
-          phone: _phoneForApi.isNotEmpty
-              ? _phoneForApi
-              : ParentPhoneUtils.normalizeForApi(_phoneCtrl.text),
-          government: gov,
-          address: _addressCtrl.text,
-        );
+      parentName: _nameCtrl.text,
+      email: _emailCtrl.text,
+      phone: _phoneForApi.isNotEmpty
+          ? _phoneForApi
+          : ParentPhoneUtils.normalizeForApi(_phoneCtrl.text),
+      government: gov,
+      address: _addressCtrl.text,
+    );
     if (!mounted) return;
     setState(() => _saving = false);
     if (err == null) {
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.done)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.done)));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(err)),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
     }
   }
 

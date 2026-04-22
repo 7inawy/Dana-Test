@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/utils/app_colors.dart';
+import 'package:dana/extensions/localization_extension.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../providers/app_theme_provider.dart';
 
@@ -131,73 +132,99 @@ class _ExaminationScreenState extends State<ExaminationScreen> {
 
     return BlocProvider.value(
       value: _cubit,
-      child: Scaffold(
-        appBar: CustomAppBar(title: l10n.examinationTitle, isDark: isDark),
-        backgroundColor: isDark
-            ? AppColors.bg_surface_default_dark
-            : AppColors.bg_surface_default_light,
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: AppSizes.h12),
-                VideosTabBar(
-                  activeTab: _activeTab,
-                  onTabChanged: (t) => setState(() => _activeTab = t),
-                ),
-                SizedBox(height: AppSizes.h12),
-                Expanded(
-                  child: BlocBuilder<SensoryTestCubit, SensoryTestState>(
-                    builder: (context, state) {
-                      if (state is SensoryTestLoading ||
-                          state is SensoryTestInitial) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (state is SensoryTestError) {
-                        return Center(child: Text(state.message));
-                      }
-                      final questions = state is SensoryTestLoaded
-                          ? state.questions
-                          : state is SensoryTestSubmitting
-                              ? state.questions
-                              : <SensoryQuestion>[];
-                      _sections = _buildSectionsFromQuestions(context, questions);
-                      return ExaminationBody(
-                        sections: _sections,
-                        onAnswerChanged: (sectionIndex, questionIndex, option) {
-                          setState(() {
-                            _sections[sectionIndex]
-                                .questions[questionIndex]
-                                .selectedOption = option;
+      child: BlocListener<SensoryTestCubit, SensoryTestState>(
+        listenWhen: (_, s) => s is SensoryTestSubmitError,
+        listener: (context, state) {
+          if (state is! SensoryTestSubmitError) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                state.message.isNotEmpty
+                    ? state.message
+                    : context.l10n.sensorySubmitFailed,
+              ),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        },
+        child: Scaffold(
+          appBar: CustomAppBar(title: l10n.examinationTitle, isDark: isDark),
+          backgroundColor: isDark
+              ? AppColors.bg_surface_default_dark
+              : AppColors.bg_surface_default_light,
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: AppSizes.h12),
+                  VideosTabBar(
+                    activeTab: _activeTab,
+                    onTabChanged: (t) => setState(() => _activeTab = t),
+                  ),
+                  SizedBox(height: AppSizes.h12),
+                  Expanded(
+                    child: BlocBuilder<SensoryTestCubit, SensoryTestState>(
+                      builder: (context, state) {
+                        if (state is SensoryTestLoading ||
+                            state is SensoryTestInitial) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (state is SensoryTestError) {
+                          return Center(child: Text(state.message));
+                        }
+                        final questions = state is SensoryTestLoaded
+                            ? state.questions
+                            : state is SensoryTestSubmitting
+                            ? state.questions
+                            : state is SensoryTestSubmitError
+                            ? state.questions
+                            : <SensoryQuestion>[];
+                        _sections = _buildSectionsFromQuestions(
+                          context,
+                          questions,
+                        );
+                        return ExaminationBody(
+                          sections: _sections,
+                          onAnswerChanged:
+                              (sectionIndex, questionIndex, option) {
+                            setState(() {
+                              _sections[sectionIndex]
+                                  .questions[questionIndex]
+                                  .selectedOption = option;
 
-                            if (sectionIndex < _sectionQuestions.length &&
-                                questionIndex < _sectionQuestions[sectionIndex].length) {
-                              final qid =
-                                  _sectionQuestions[sectionIndex][questionIndex].id;
-                              if (qid.isNotEmpty) {
-                                _answersByQuestionId[qid] = _mapOption(option);
+                              if (sectionIndex < _sectionQuestions.length &&
+                                  questionIndex <
+                                      _sectionQuestions[sectionIndex].length) {
+                                final qid = _sectionQuestions[sectionIndex]
+                                    [questionIndex]
+                                    .id;
+                                if (qid.isNotEmpty) {
+                                  _answersByQuestionId[qid] = _mapOption(option);
+                                }
                               }
-                            }
-                          });
-                        },
-                      );
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  ShowResultButton(
+                    isEnabled: _allAnswered(),
+                    label: l10n.showResult,
+                    onTap: () async {
+                      final result = await context
+                          .read<SensoryTestCubit>()
+                          .submit(_answersByQuestionId);
+                      if (result == null || !mounted) return;
+                      _showResultForLevel(context, result.level);
                     },
                   ),
-                ),
-                ShowResultButton(
-                  isEnabled: _allAnswered(),
-                  label: l10n.showResult,
-                  onTap: () async {
-                    final result = await context
-                        .read<SensoryTestCubit>()
-                        .submit(_answersByQuestionId);
-                    if (result == null || !mounted) return;
-                    _showResultForLevel(context, result.level);
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

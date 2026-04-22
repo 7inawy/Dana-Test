@@ -12,10 +12,13 @@ class SkillsService {
     final data = res.data;
     final list = data is List
         ? data
-        : (data is Map && data['response'] is Map && (data['response'] as Map)['data'] is List)
-            ? (data['response'] as Map)['data'] as List
-            : null;
-    if (list == null) throw const FormatException('Unexpected skills response shape');
+        : (data is Map &&
+              data['response'] is Map &&
+              (data['response'] as Map)['data'] is List)
+        ? (data['response'] as Map)['data'] as List
+        : null;
+    if (list == null)
+      throw const FormatException('Unexpected skills response shape');
     return list
         .whereType<Map>()
         .map((e) => SkillApiModel.fromJson(e.cast<String, dynamic>()))
@@ -30,13 +33,18 @@ class SkillsService {
     final data = res.data;
     final list = data is List
         ? data
-        : (data is Map && data['response'] is Map && (data['response'] as Map)['data'] is List)
-            ? (data['response'] as Map)['data'] as List
-            : null;
-    if (list == null) throw const FormatException('Unexpected checklist response shape');
+        : (data is Map &&
+              data['response'] is Map &&
+              (data['response'] as Map)['data'] is List)
+        ? (data['response'] as Map)['data'] as List
+        : null;
+    if (list == null)
+      throw const FormatException('Unexpected checklist response shape');
     return list
         .whereType<Map>()
-        .map((e) => SkillChecklistItemApiModel.fromJson(e.cast<String, dynamic>()))
+        .map(
+          (e) => SkillChecklistItemApiModel.fromJson(e.cast<String, dynamic>()),
+        )
         .toList();
   }
 
@@ -52,4 +60,3 @@ class SkillsService {
     );
   }
 }
-

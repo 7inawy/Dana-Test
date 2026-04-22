@@ -13,6 +13,7 @@ import 'package:dana/features/home/presentation/views/screens/home_screen.dart';
 import 'package:dana/features/onboarding/presentation/views/screens/onboard_screen.dart';
 import 'package:dana/features/splash/views/screens/splash_screen.dart';
 import 'package:dana/l10n/app_localizations.dart';
+import 'package:dana/core/navigation/app_navigator.dart';
 import 'package:dana/providers/app_language_provider.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:dana/features/child_profile/child_profile_args.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       builder: (context, child) {
         return MaterialApp(
+          navigatorKey: AppNavigator.key,
           debugShowCheckedModeBanner: false,
           theme: MyThemeData.lightTheme,
           darkTheme: MyThemeData.darkTheme,
@@ -75,9 +77,7 @@ class MyApp extends StatelessWidget {
                 builder: (ctx) {
                   final arg = settings.arguments;
                   final doctor = arg is Doctor ? arg : null;
-                  return ChatScreen(
-                    doctor: doctor ?? getSampleDoctor(ctx),
-                  );
+                  return ChatScreen(doctor: doctor ?? getSampleDoctor(ctx));
                 },
               );
             }
@@ -124,6 +124,7 @@ class MyApp extends StatelessWidget {
           child: const DoctorTimeScreen(),
         );
       },
+
       /// Appointments
       AppRoutes.appointments: (_) => AppointmentsScreen(),
 
@@ -142,9 +143,7 @@ class MyApp extends StatelessWidget {
       /// Child Profile
       AppRoutes.childProfile: (context) {
         final raw = ModalRoute.of(context)?.settings.arguments;
-        return ChildProfileScreen(
-          args: raw is ChildProfileArgs ? raw : null,
-        );
+        return ChildProfileScreen(args: raw is ChildProfileArgs ? raw : null);
       },
 
       /// Vaccine

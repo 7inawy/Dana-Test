@@ -67,7 +67,10 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
         BlocProvider.value(value: _vaccinationCubit),
       ],
       child: Scaffold(
-        appBar: CustomAppBar(title: context.l10n.childWorldTitle, isDark: isDark),
+        appBar: CustomAppBar(
+          title: context.l10n.childWorldTitle,
+          isDark: isDark,
+        ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
           child: BlocBuilder<GrowthCubit, GrowthState>(

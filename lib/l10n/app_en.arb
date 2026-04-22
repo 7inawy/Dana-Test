@@ -162,6 +162,9 @@
   "rateDoctor": "Rate doctor",
   "rateDoctorTitle": "How was your consultation?",
   "rateDoctorDesc": "We’d love your feedback on your experience with Dr. Islam Ghoneim. Your rating helps us improve care.",
+  "ratingNotAllowedTitle": "Rating not available yet",
+  "ratingNotAllowedDesc": "You can rate the doctor only after the appointment is completed.",
+  "ratingSubmitFailed": "We couldn’t submit your rating right now. Please try again later.",
   "sendRating": "Submit rating",
   "rate": "Rate",
 
@@ -411,6 +414,10 @@
   "resultSensitivityTitle": "Needs Attention: Your Child Has Some Sensitivity",
   "resultSensitivityDescription": "Your answers show that your child is more affected by certain sensory stimuli (such as sounds or touch) than usual, which may be causing some of their reactions. They need you to observe what bothers them and avoid it, while trying some calming sensory activities at home to help them adapt.",
   "sensoryActivitiesPlan": "Sensory Activities Plan for Home",
+  "sensorySubmitFailed": "We couldn’t submit your answers right now. Please try again later.",
+
+  "skillsNotAvailableTitle": "Skills are not available yet",
+  "skillsNotAvailableDesc": "We’ll show your child’s skills and progress as soon as they are available on the server.",
   "sectionHeaderTitle": "Initial Assessment of Sensory Challenges",
   "sectionHeaderSubtitle": "Quick questions to help us understand how your child responds to surrounding stimuli.",
   "examinationTitle": "Examine Your Child",

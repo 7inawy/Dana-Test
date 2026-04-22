@@ -167,10 +167,10 @@ class _UpdateDataBottomSheetState extends State<UpdateDataBottomSheet> {
               onTap: isButtonEnabled
                   ? () {
                       context.read<GrowthCubit>().submit(
-                            height: childHeight!,
-                            weight: childWeight!,
-                            headCircumference: headCircumference!,
-                          );
+                        height: childHeight!,
+                        weight: childWeight!,
+                        headCircumference: headCircumference!,
+                      );
                       Navigator.pop(context);
                       widget.onSaved?.call();
                     }

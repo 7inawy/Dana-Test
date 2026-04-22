@@ -4,7 +4,6 @@ import '../screens/view_all_screen.dart';
 import 'section_header.dart';
 import 'video_horizontal_list.dart';
 
-
 class SectionRow extends StatelessWidget {
   final VideoSection section;
 

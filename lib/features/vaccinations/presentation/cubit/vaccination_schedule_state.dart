@@ -16,14 +16,10 @@ class VaccinationScheduleLoaded extends VaccinationScheduleState {
   final String childId;
   final List<ChildVaccinationScheduleItem> items;
 
-  const VaccinationScheduleLoaded({
-    required this.childId,
-    required this.items,
-  });
+  const VaccinationScheduleLoaded({required this.childId, required this.items});
 }
 
 class VaccinationScheduleError extends VaccinationScheduleState {
   final String message;
   const VaccinationScheduleError(this.message);
 }
-

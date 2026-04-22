@@ -25,7 +25,10 @@ class VideosService {
   }
 
   Future<List<VideoModel>> search(String query) async {
-    final res = await dio.get(ApiEndpoint.videosSearch, queryParameters: {'q': query});
+    final res = await dio.get(
+      ApiEndpoint.videosSearch,
+      queryParameters: {'q': query},
+    );
     final list = ResponseUnwrap.unwrapList(res.data);
     return list
         .whereType<Map>()
@@ -33,4 +36,3 @@ class VideosService {
         .toList();
   }
 }
-

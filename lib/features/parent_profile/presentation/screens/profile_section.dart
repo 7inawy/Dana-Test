@@ -86,8 +86,7 @@ class _ProfileSectionState extends State<ProfileSection> {
           }
         },
         builder: (context, state) {
-          final loaded =
-              state is ParentProfileLoaded ? state.profile : null;
+          final loaded = state is ParentProfileLoaded ? state.profile : null;
           final children = loaded == null
               ? <ChildModel>[]
               : loaded.children.map(_mapApiChildToUi).toList();
@@ -109,7 +108,8 @@ class _ProfileSectionState extends State<ProfileSection> {
                         children: [
                           CircleAvatar(
                             radius: 36.r,
-                            backgroundImage: (img != null &&
+                            backgroundImage:
+                                (img != null &&
                                     img.isNotEmpty &&
                                     img.startsWith('http'))
                                 ? NetworkImage(img)
@@ -123,7 +123,9 @@ class _ProfileSectionState extends State<ProfileSection> {
                             SizedBox(
                               height: 20.h,
                               child: const Center(
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               ),
                             ),
                           ] else if (state is ParentProfileError &&
@@ -138,11 +140,10 @@ class _ProfileSectionState extends State<ProfileSection> {
                             ),
                           ] else ...[
                             Text(
-                              parentName.isNotEmpty
-                                  ? parentName
-                                  : '—',
-                              style:
-                                  AppTextStyle.semibold16TextHeading(context),
+                              parentName.isNotEmpty ? parentName : '—',
+                              style: AppTextStyle.semibold16TextHeading(
+                                context,
+                              ),
                             ),
                             SizedBox(height: 4.h),
                             Text(
@@ -180,7 +181,8 @@ class _ProfileSectionState extends State<ProfileSection> {
                                         isScrollControlled: true,
                                         backgroundColor: isDark
                                             ? AppColors.bg_surface_default_dark
-                                            : AppColors.bg_surface_default_light,
+                                            : AppColors
+                                                  .bg_surface_default_light,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(20.r),
@@ -209,8 +211,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                                 }
 
                                 return Padding(
-                                  padding:
-                                      EdgeInsetsDirectional.only(end: 4.w),
+                                  padding: EdgeInsetsDirectional.only(end: 4.w),
                                   child: ChildCard(child: children[index]),
                                 );
                               },
@@ -310,9 +311,9 @@ class _ProfileSectionState extends State<ProfileSection> {
                             final themeProvider = ctx.watch<AppThemeProvider>();
                             final sheetDark =
                                 themeProvider.appTheme == ThemeMode.dark ||
-                                    (themeProvider.appTheme == ThemeMode.system &&
-                                        MediaQuery.of(ctx).platformBrightness ==
-                                            Brightness.dark);
+                                (themeProvider.appTheme == ThemeMode.system &&
+                                    MediaQuery.of(ctx).platformBrightness ==
+                                        Brightness.dark);
 
                             return Container(
                               decoration: BoxDecoration(
@@ -338,8 +339,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                     ),
                     CustomTextFrame(
                       text: context.l10n.logout,
-                      textStyle:
-                          AppTextStyle.medium16ErrorDefault(context),
+                      textStyle: AppTextStyle.medium16ErrorDefault(context),
                       bottomMargin: 60.h,
                       width: double.infinity,
                       preIconSrc: 'assets/Icons/profile/logOut_icon.svg',

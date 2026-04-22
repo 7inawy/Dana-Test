@@ -34,8 +34,5 @@ class VideoSection {
   final String title;
   final List<VideoModel> videos;
 
-  const VideoSection({
-    required this.title,
-    required this.videos,
-  });
+  const VideoSection({required this.title, required this.videos});
 }

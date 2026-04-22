@@ -16,4 +16,3 @@ class AuthSession {
 
   Future<void> clear() => _tokenStorage.clearToken();
 }
-

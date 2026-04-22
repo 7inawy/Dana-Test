@@ -22,7 +22,9 @@ class ChildVaccinationScheduleItem {
         (json['vaccine'] as Map?)?.cast<String, dynamic>() ?? const {},
       ),
       dueDate: due ?? DateTime.now(),
-      takenDate: (takenRaw == null || takenRaw.isEmpty) ? null : DateTime.tryParse(takenRaw),
+      takenDate: (takenRaw == null || takenRaw.isEmpty)
+          ? null
+          : DateTime.tryParse(takenRaw),
       status: json['status']?.toString() ?? '',
     );
   }
@@ -56,4 +58,3 @@ class VaccineDefinition {
     );
   }
 }
-

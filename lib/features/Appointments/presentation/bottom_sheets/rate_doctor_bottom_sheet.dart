@@ -7,6 +7,7 @@ import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/Appointments/presentation/widgets/rating_card.dart';
 import 'package:dana/features/booking/presentation/views/BookingScreen/widgets/doctor_details_widget.dart';
 import 'package:dana/features/booking/presentation/cubit/booking_cubit.dart';
+import 'package:dana/features/booking/presentation/cubit/booking_state.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -94,10 +95,25 @@ class _RateDoctorBottomSheetState extends State<RateDoctorBottomSheet> {
                         return;
                       }
                       await context.read<BookingCubit>().rateBooking(
-                            bookingId: bookingId,
-                            rating: rating,
-                          );
-                      if (mounted) Navigator.pop(context);
+                        bookingId: bookingId,
+                        rating: rating,
+                      );
+                      if (!mounted) return;
+                      final st = context.read<BookingCubit>().state;
+                      if (st is BookingError) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              st.error.isNotEmpty
+                                  ? st.error
+                                  : context.l10n.ratingSubmitFailed,
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                        return;
+                      }
+                      Navigator.pop(context);
                     }
                   : () {},
             ),

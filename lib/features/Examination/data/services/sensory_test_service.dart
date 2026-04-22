@@ -12,11 +12,15 @@ class SensoryTestService {
     final data = res.data;
     final list = data is List
         ? data
-        : (data is Map && data['response'] is Map && (data['response'] as Map)['data'] is List)
-            ? (data['response'] as Map)['data'] as List
-            : null;
+        : (data is Map &&
+              data['response'] is Map &&
+              (data['response'] as Map)['data'] is List)
+        ? (data['response'] as Map)['data'] as List
+        : null;
     if (list == null) {
-      throw const FormatException('Unexpected sensory-test questions response shape');
+      throw const FormatException(
+        'Unexpected sensory-test questions response shape',
+      );
     }
     return list
         .whereType<Map>()
@@ -37,7 +41,8 @@ class SensoryTestService {
     if (data is Map) {
       return SensoryTestResult.fromJson(data.cast<String, dynamic>());
     }
-    throw const FormatException('Unexpected sensory-test submit response shape');
+    throw const FormatException(
+      'Unexpected sensory-test submit response shape',
+    );
   }
 }
-

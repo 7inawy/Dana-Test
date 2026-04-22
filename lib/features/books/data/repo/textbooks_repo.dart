@@ -12,4 +12,3 @@ class TextBooksRepo {
 
   Future<List<BookModel>> search(String q) => service.search(q);
 }
-

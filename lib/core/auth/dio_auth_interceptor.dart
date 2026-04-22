@@ -9,7 +9,10 @@ class DioAuthInterceptor extends Interceptor {
   DioAuthInterceptor(this._session);
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     try {
       final path = options.uri.path;
       if (ApiEndpoint.isPublicParentAuthPath(path)) {
@@ -26,4 +29,3 @@ class DioAuthInterceptor extends Interceptor {
     handler.next(options);
   }
 }
-

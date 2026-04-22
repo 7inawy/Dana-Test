@@ -25,4 +25,3 @@ class ErrorMapper {
     return error.toString();
   }
 }
-

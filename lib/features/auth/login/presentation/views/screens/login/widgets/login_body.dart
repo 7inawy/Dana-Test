@@ -20,7 +20,7 @@ class LoginBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignInCubit, SignInState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is SignInOtpSent) {
           OtpBottomSheet.show(
             context,
@@ -31,7 +31,8 @@ class LoginBody extends StatelessWidget {
           );
         } else if (state is SignInSuccess) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          sl<AuthSession>().setToken(state.user.token);
+          await sl<AuthSession>().setToken(state.user.token);
+          if (!context.mounted) return;
           Navigator.pushReplacementNamed(context, AppRoutes.home);
         } else if (state is SignInFailure) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();

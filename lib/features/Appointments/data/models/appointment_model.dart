@@ -6,8 +6,10 @@ class Appointment {
   final String? bookingId;
   final String? childId;
   final String? doctorId;
+
   /// Display name (may include localized "Dr" prefix).
   final String doctorName;
+
   /// Plain doctor name for API / rebook navigation.
   final String doctorNamePlain;
   final String specialty;

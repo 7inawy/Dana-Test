@@ -19,10 +19,7 @@ import '../../../../core/di/injection_container.dart';
 class ChangeAppointmentBottomSheet extends StatefulWidget {
   final Appointment appointment;
 
-  const ChangeAppointmentBottomSheet({
-    super.key,
-    required this.appointment,
-  });
+  const ChangeAppointmentBottomSheet({super.key, required this.appointment});
 
   @override
   State<ChangeAppointmentBottomSheet> createState() =>
@@ -69,9 +66,9 @@ class _ChangeAppointmentBottomSheetState
     if (_selectedDate == null ||
         _selectedTimeIndex < 0 ||
         _selectedTimeIndex >= AppointmentTimeData.availableTimes.length) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.selectAppointment)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.selectAppointment)));
       return;
     }
 
@@ -85,28 +82,28 @@ class _ChangeAppointmentBottomSheetState
           '${_selectedDate!.year.toString().padLeft(4, '0')}-${_selectedDate!.month.toString().padLeft(2, '0')}-${_selectedDate!.day.toString().padLeft(2, '0')}';
 
       final err = await context.read<BookingCubit>().changeAppointment(
-            bookingId: bookingId,
-            doctorId: doctorId,
-            parentId: me.id,
-            date: date,
-            time: time,
-          );
+        bookingId: bookingId,
+        doctorId: doctorId,
+        parentId: me.id,
+        date: date,
+        time: time,
+      );
       if (!context.mounted) return;
       if (err == null) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.bookingConfirmed)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.bookingConfirmed)));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(err)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(err)));
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     } finally {
       if (mounted) setState(() => _submitting = false);

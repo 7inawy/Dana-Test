@@ -69,7 +69,8 @@ class _ReadBookScreenState extends State<ReadBookScreen> {
         children: [
           BookInfoCard(book: widget.book),
           SizedBox(height: 16.h),
-          if (widget.book.chapters.isEmpty && (widget.book.link?.isNotEmpty == true))
+          if (widget.book.chapters.isEmpty &&
+              (widget.book.link?.isNotEmpty == true))
             Container(
               decoration: BoxDecoration(
                 color: isDark
@@ -103,88 +104,88 @@ class _ReadBookScreenState extends State<ReadBookScreen> {
               ),
             )
           else
-          Container(
-            decoration: BoxDecoration(
-              color: isDark
-                  ? AppColors.bg_card_default_dark
-                  : AppColors.bg_card_default_light,
-              borderRadius: BorderRadius.circular(AppRadius.radius_sm),
-            ),
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              crossAxisAlignment: isRtl
-                  ? CrossAxisAlignment.end
-                  : CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.circle,
-                      color: isDark
-                          ? AppColors.secondary_default_dark
-                          : AppColors.secondary_default_light,
-                      size: 6.w,
-                    ),
-                    Expanded(
-                      child: Divider(
-                        height: 1,
-                        color: isDark
-                            ? AppColors.secondary_default_dark
-                            : AppColors.secondary_default_light,
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        height: 1,
-                        color: isDark
-                            ? AppColors.secondary_default_dark
-                            : AppColors.secondary_default_light,
-                      ),
-                    ),
-                    Icon(
-                      Icons.circle,
-                      color: isDark
-                          ? AppColors.secondary_default_dark
-                          : AppColors.secondary_default_light,
-                      size: 6.w,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 24.h),
-                ...widget.book.chapters.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final chapter = entry.value;
-                  return Column(
-                    crossAxisAlignment: isRtl
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
+            Container(
+              decoration: BoxDecoration(
+                color: isDark
+                    ? AppColors.bg_card_default_dark
+                    : AppColors.bg_card_default_light,
+                borderRadius: BorderRadius.circular(AppRadius.radius_sm),
+              ),
+              padding: EdgeInsets.all(16.w),
+              child: Column(
+                crossAxisAlignment: isRtl
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Text(
-                        chapter.title,
-                        textAlign: isRtl ? TextAlign.right : TextAlign.left,
-                        textDirection: isRtl
-                            ? TextDirection.rtl
-                            : TextDirection.ltr,
-                        style: AppTextStyle.semibold16TextHeading(context),
+                      Icon(
+                        Icons.circle,
+                        color: isDark
+                            ? AppColors.secondary_default_dark
+                            : AppColors.secondary_default_light,
+                        size: 6.w,
                       ),
-                      SizedBox(height: 16.h),
-                      Text(
-                        chapter.body,
-                        textAlign: isRtl ? TextAlign.right : TextAlign.left,
-                        textDirection: isRtl
-                            ? TextDirection.rtl
-                            : TextDirection.ltr,
-                        style: AppTextStyle.regular12TextBody(context),
+                      Expanded(
+                        child: Divider(
+                          height: 1,
+                          color: isDark
+                              ? AppColors.secondary_default_dark
+                              : AppColors.secondary_default_light,
+                        ),
                       ),
-                      SizedBox(height: 32.h),
-                      BookDivider(pageNumber: index + 1),
-                      SizedBox(height: 32.h),
+                      Expanded(
+                        child: Divider(
+                          height: 1,
+                          color: isDark
+                              ? AppColors.secondary_default_dark
+                              : AppColors.secondary_default_light,
+                        ),
+                      ),
+                      Icon(
+                        Icons.circle,
+                        color: isDark
+                            ? AppColors.secondary_default_dark
+                            : AppColors.secondary_default_light,
+                        size: 6.w,
+                      ),
                     ],
-                  );
-                }),
-              ],
+                  ),
+                  SizedBox(height: 24.h),
+                  ...widget.book.chapters.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final chapter = entry.value;
+                    return Column(
+                      crossAxisAlignment: isRtl
+                          ? CrossAxisAlignment.end
+                          : CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          chapter.title,
+                          textAlign: isRtl ? TextAlign.right : TextAlign.left,
+                          textDirection: isRtl
+                              ? TextDirection.rtl
+                              : TextDirection.ltr,
+                          style: AppTextStyle.semibold16TextHeading(context),
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          chapter.body,
+                          textAlign: isRtl ? TextAlign.right : TextAlign.left,
+                          textDirection: isRtl
+                              ? TextDirection.rtl
+                              : TextDirection.ltr,
+                          style: AppTextStyle.regular12TextBody(context),
+                        ),
+                        SizedBox(height: 32.h),
+                        BookDivider(pageNumber: index + 1),
+                        SizedBox(height: 32.h),
+                      ],
+                    );
+                  }),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

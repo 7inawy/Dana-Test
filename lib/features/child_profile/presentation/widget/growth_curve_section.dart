@@ -42,16 +42,20 @@ class GrowthCurveSection extends StatelessWidget {
               builder: (context, state) {
                 final List<GrowthRecord> records = state is GrowthLoaded
                     ? (List<GrowthRecord>.of(state.records)
-                      ..sort((a, b) => a.recordDate.compareTo(b.recordDate)))
+                        ..sort((a, b) => a.recordDate.compareTo(b.recordDate)))
                     : <GrowthRecord>[];
-                final List<DateTime> xDates =
-                    records.map((r) => r.recordDate).toList();
-                final List<double> height =
-                    records.map((r) => r.height).toList();
-                final List<double> weight =
-                    records.map((r) => r.weight).toList();
-                final List<double> head =
-                    records.map((r) => r.headCircumference).toList();
+                final List<DateTime> xDates = records
+                    .map((r) => r.recordDate)
+                    .toList();
+                final List<double> height = records
+                    .map((r) => r.height)
+                    .toList();
+                final List<double> weight = records
+                    .map((r) => r.weight)
+                    .toList();
+                final List<double> head = records
+                    .map((r) => r.headCircumference)
+                    .toList();
                 return StatisticsChart(
                   xDates: xDates,
                   heightCm: height,

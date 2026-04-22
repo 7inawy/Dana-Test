@@ -36,4 +36,3 @@ class GrowthError extends GrowthState {
   final String message;
   const GrowthError(this.message);
 }
-

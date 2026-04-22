@@ -65,10 +65,7 @@ class DoctorCard extends StatelessWidget {
                     style: AppTextStyle.semibold20TextHeading(context),
                   ),
                   SizedBox(height: 8.h),
-                  Text(
-                    spec,
-                    style: AppTextStyle.bold12TextBody(context),
-                  ),
+                  Text(spec, style: AppTextStyle.bold12TextBody(context)),
                   SizedBox(height: 8.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,

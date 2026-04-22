@@ -12,4 +12,3 @@ class VideosRepo {
 
   Future<List<VideoModel>> search(String query) => service.search(query);
 }
-

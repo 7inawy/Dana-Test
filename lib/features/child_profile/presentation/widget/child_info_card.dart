@@ -33,7 +33,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 String _statValue(double v, String unit) {
   if (v <= 0) return '—';
-  final s = v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(1);
+  final s = v == v.roundToDouble()
+      ? v.toStringAsFixed(0)
+      : v.toStringAsFixed(1);
   return '$s $unit';
 }
 
@@ -44,13 +46,16 @@ String _deltaFor(
   String unit,
 ) {
   if (latest == null || records.length < 2) return '—';
-  final sorted = [...records]..sort((a, b) => a.recordDate.compareTo(b.recordDate));
+  final sorted = [...records]
+    ..sort((a, b) => a.recordDate.compareTo(b.recordDate));
   final prev = sorted.length >= 2 ? sorted[sorted.length - 2] : null;
   if (prev == null) return '—';
   final d = pick(latest) - pick(prev);
   if (d.abs() < 1e-6) return '—';
   final sign = d > 0 ? '+' : '';
-  final val = d == d.roundToDouble() ? d.toStringAsFixed(0) : d.toStringAsFixed(1);
+  final val = d == d.roundToDouble()
+      ? d.toStringAsFixed(0)
+      : d.toStringAsFixed(1);
   return '$sign$val $unit';
 }
 
@@ -121,11 +126,19 @@ class ChildInfoCard extends StatelessWidget {
 
         final heightVal = _statValue(latest?.height ?? 0, context.l10n.cm);
         final weightVal = _statValue(latest?.weight ?? 0, context.l10n.kg);
-        final headVal = _statValue(latest?.headCircumference ?? 0, context.l10n.cm);
+        final headVal = _statValue(
+          latest?.headCircumference ?? 0,
+          context.l10n.cm,
+        );
 
         final dh = _deltaFor(latest, records, (e) => e.height, context.l10n.cm);
         final dw = _deltaFor(latest, records, (e) => e.weight, context.l10n.kg);
-        final dhc = _deltaFor(latest, records, (e) => e.headCircumference, context.l10n.cm);
+        final dhc = _deltaFor(
+          latest,
+          records,
+          (e) => e.headCircumference,
+          context.l10n.cm,
+        );
 
         Widget avatar(double w) {
           final u = profileUrl;
@@ -184,12 +197,16 @@ class ChildInfoCard extends StatelessWidget {
                                   children: [
                                     Text(
                                       name.isEmpty ? '…' : name,
-                                      style: AppTextStyle.semibold16TextHeading(context),
+                                      style: AppTextStyle.semibold16TextHeading(
+                                        context,
+                                      ),
                                     ),
                                     SizedBox(height: 4.h),
                                     Text(
                                       ageText.isEmpty ? '—' : ageText,
-                                      style: AppTextStyle.medium12TextBody(context),
+                                      style: AppTextStyle.medium12TextBody(
+                                        context,
+                                      ),
                                     ),
                                     Padding(
                                       padding: EdgeInsets.only(top: 12.h),
@@ -204,22 +221,27 @@ class ChildInfoCard extends StatelessWidget {
                                               color: isDark
                                                   ? AppColors.primary_50_dark
                                                   : AppColors.primary_50_light,
-                                              borderRadius: BorderRadius.circular(
-                                                AppRadius.radius_full,
-                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                    AppRadius.radius_full,
+                                                  ),
                                               border: Border.all(
                                                 width: AppRadius.stroke_thin,
                                                 color: isDark
                                                     ? AppColors.primary_200_dark
-                                                    : AppColors.primary_200_light,
+                                                    : AppColors
+                                                          .primary_200_light,
                                               ),
                                             ),
                                             child: Center(
                                               child: Text(
-                                                isGirl ? context.l10n.girl : context.l10n.boy,
-                                                style: AppTextStyle.medium12Primary(
-                                                  context,
-                                                ),
+                                                isGirl
+                                                    ? context.l10n.girl
+                                                    : context.l10n.boy,
+                                                style:
+                                                    AppTextStyle.medium12Primary(
+                                                      context,
+                                                    ),
                                               ),
                                             ),
                                           ),
@@ -233,24 +255,32 @@ class ChildInfoCard extends StatelessWidget {
                                             ),
                                             decoration: BoxDecoration(
                                               color: isDark
-                                                  ? AppColors.bg_success_subtle_dark
-                                                  : AppColors.bg_success_subtle_light,
-                                              borderRadius: BorderRadius.circular(
-                                                AppRadius.radius_full,
-                                              ),
+                                                  ? AppColors
+                                                        .bg_success_subtle_dark
+                                                  : AppColors
+                                                        .bg_success_subtle_light,
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                    AppRadius.radius_full,
+                                                  ),
                                               border: Border.all(
                                                 width: AppRadius.stroke_thin,
                                                 color: isDark
-                                                    ? AppColors.success_default_dark
-                                                    : AppColors.success_default_light,
+                                                    ? AppColors
+                                                          .success_default_dark
+                                                    : AppColors
+                                                          .success_default_light,
                                               ),
                                             ),
                                             child: Center(
                                               child: Text(
-                                                context.l10n.growthStatusHealthy,
-                                                style: AppTextStyle.medium12Succes(
-                                                  context,
-                                                ),
+                                                context
+                                                    .l10n
+                                                    .growthStatusHealthy,
+                                                style:
+                                                    AppTextStyle.medium12Succes(
+                                                      context,
+                                                    ),
                                               ),
                                             ),
                                           ),
@@ -260,7 +290,9 @@ class ChildInfoCard extends StatelessWidget {
                                   ],
                                 ),
                                 Icon(
-                                  loaded != null ? Icons.edit_outlined : Icons.info_outline,
+                                  loaded != null
+                                      ? Icons.edit_outlined
+                                      : Icons.info_outline,
                                   size: 20.w,
                                   color: isDark
                                       ? AppColors.text_heading_dark
@@ -314,7 +346,8 @@ class ChildInfoCard extends StatelessWidget {
                           title: context.l10n.growthIndicator,
                           value: pct != null ? '$pct %' : '—',
                           change: '—',
-                          iconPath: 'assets/Icons/child_profile/indicator_icon.svg',
+                          iconPath:
+                              'assets/Icons/child_profile/indicator_icon.svg',
                         );
                       },
                     ),

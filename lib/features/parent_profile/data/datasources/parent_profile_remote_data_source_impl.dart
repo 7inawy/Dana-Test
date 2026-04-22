@@ -4,26 +4,17 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import '../../../../core/api/api_endpoint.dart';
+import '../../../../core/api/api_error.dart';
+import '../../../../core/api/api_response.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../models/parent_profile_model.dart';
 import 'parent_profile_remote_data_source.dart';
 
-class ParentProfileRemoteDataSourceImpl implements ParentProfileRemoteDataSource {
+class ParentProfileRemoteDataSourceImpl
+    implements ParentProfileRemoteDataSource {
   final Dio dio;
 
   ParentProfileRemoteDataSourceImpl({required this.dio});
-
-  dynamic _decode(dynamic raw) => raw is String ? jsonDecode(raw) : raw;
-
-  Map<String, dynamic> _unwrapData(dynamic decoded) {
-    if (decoded is Map && decoded['response'] is Map) {
-      final r = decoded['response'] as Map;
-      final data = r['data'];
-      if (data is Map) return data.cast<String, dynamic>();
-    }
-    if (decoded is Map) return decoded.cast<String, dynamic>();
-    throw const ServerException(message: 'Unexpected response shape');
-  }
 
   @override
   Future<ParentProfileModel> patchMe(Map<String, dynamic> body) async {
@@ -33,13 +24,16 @@ class ParentProfileRemoteDataSourceImpl implements ParentProfileRemoteDataSource
         data: body,
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
-      final decoded = _decode(res.data);
-      final data = _unwrapData(decoded);
+      final decoded = ApiResponse.decode(res.data);
+      final data = ApiResponse.unwrapMap(decoded);
       return ParentProfileModel.fromJson(data);
     } on DioException catch (e) {
-      final decoded = _decode(e.response?.data);
-      final msg = (decoded is Map ? decoded['message'] : null)?.toString();
-      throw ServerException(message: msg ?? 'Failed to update profile');
+      final msg = ApiError.messageFromDio(
+        e,
+        fallback: 'Failed to update profile',
+        decode: ApiResponse.decode,
+      );
+      throw ServerException(message: msg);
     }
   }
 
@@ -47,13 +41,16 @@ class ParentProfileRemoteDataSourceImpl implements ParentProfileRemoteDataSource
   Future<ParentProfileModel> getMe() async {
     try {
       final res = await dio.get(ApiEndpoint.parentMe);
-      final decoded = _decode(res.data);
-      final data = _unwrapData(decoded);
+      final decoded = ApiResponse.decode(res.data);
+      final data = ApiResponse.unwrapMap(decoded);
       return ParentProfileModel.fromJson(data);
     } on DioException catch (e) {
-      final decoded = _decode(e.response?.data);
-      final msg = (decoded is Map ? decoded['message'] : null)?.toString();
-      throw ServerException(message: msg ?? 'Failed to load profile');
+      final msg = ApiError.messageFromDio(
+        e,
+        fallback: 'Failed to load profile',
+        decode: ApiResponse.decode,
+      );
+      throw ServerException(message: msg);
     }
   }
 
@@ -73,8 +70,8 @@ class ParentProfileRemoteDataSourceImpl implements ParentProfileRemoteDataSource
         },
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
-      final decoded = _decode(res.data);
-      final data = _unwrapData(decoded);
+      final decoded = ApiResponse.decode(res.data);
+      final data = ApiResponse.unwrapMap(decoded);
       // Backend returns whole parent; fallback to re-fetch via getMe for correctness.
       final children = ParentProfileModel.fromJson(data).children;
       if (children.isEmpty) {
@@ -82,9 +79,12 @@ class ParentProfileRemoteDataSourceImpl implements ParentProfileRemoteDataSource
       }
       return children.last;
     } on DioException catch (e) {
-      final decoded = _decode(e.response?.data);
-      final msg = (decoded is Map ? decoded['message'] : null)?.toString();
-      throw ServerException(message: msg ?? 'Failed to add child');
+      final msg = ApiError.messageFromDio(
+        e,
+        fallback: 'Failed to add child',
+        decode: ApiResponse.decode,
+      );
+      throw ServerException(message: msg);
     }
   }
 
@@ -117,8 +117,8 @@ class ParentProfileRemoteDataSourceImpl implements ParentProfileRemoteDataSource
         data: formData,
       );
 
-      final decoded = _decode(res.data);
-      final data = _unwrapData(decoded);
+      final decoded = ApiResponse.decode(res.data);
+      final data = ApiResponse.unwrapMap(decoded);
       final children = ParentProfileModel.fromJson(data).children;
       final updated = children.where((c) => c.id == childId).toList();
       if (updated.isEmpty) {
@@ -126,10 +126,12 @@ class ParentProfileRemoteDataSourceImpl implements ParentProfileRemoteDataSource
       }
       return updated.first;
     } on DioException catch (e) {
-      final decoded = _decode(e.response?.data);
-      final msg = (decoded is Map ? decoded['message'] : null)?.toString();
-      throw ServerException(message: msg ?? 'Failed to update child');
+      final msg = ApiError.messageFromDio(
+        e,
+        fallback: 'Failed to update child',
+        decode: ApiResponse.decode,
+      );
+      throw ServerException(message: msg);
     }
   }
 }
-

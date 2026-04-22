@@ -49,8 +49,8 @@ class PublicDoctorModel {
       address: json['address']?.toString() ?? '',
       profileImageUrl:
           (rawImg != null && rawImg.isNotEmpty && rawImg.startsWith('http'))
-              ? rawImg
-              : null,
+          ? rawImg
+          : null,
       ratingAverage: (json['ratingAverage'] as num?)?.toDouble() ?? 0,
       ratingQuantity: (json['ratingQuantity'] as num?)?.toInt() ?? 0,
       detectionPrice: (json['detectionPrice'] as num?)?.toDouble() ?? 0,

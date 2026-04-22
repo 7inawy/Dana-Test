@@ -1,5 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dana/core/errors/error_mapper.dart';
 import '../../data/repo/booking_repo.dart';
 import 'booking_state.dart';
 import '../../data/models/booking_create_result.dart';
@@ -11,23 +11,6 @@ class BookingCubit extends Cubit<BookingState> {
   BookingCubit(this.repo) : super(BookingInitial());
 
   void reportLoadError(String message) => emit(BookingError(message));
-
-  String _apiErrorMessage(Object e) {
-    if (e is DioException) {
-      final d = e.response?.data;
-      if (d is Map) {
-        final m = d['message']?.toString();
-        if (m != null && m.isNotEmpty) return m;
-        final resp = d['response'];
-        if (resp is Map) {
-          final m2 = resp['message']?.toString();
-          if (m2 != null && m2.isNotEmpty) return m2;
-        }
-      }
-      if (e.message != null && e.message!.isNotEmpty) return e.message!;
-    }
-    return e.toString();
-  }
 
   Future<void> _reloadParentBookings(String parentId) async {
     _lastParentId = parentId;
@@ -62,7 +45,7 @@ class BookingCubit extends Cubit<BookingState> {
       emit(BookingCreateSuccess(result));
       return result;
     } catch (e) {
-      emit(BookingError(e.toString()));
+      emit(BookingError(ErrorMapper.message(e)));
       return null;
     }
   }
@@ -74,7 +57,7 @@ class BookingCubit extends Cubit<BookingState> {
       final bookings = await repo.getBookings();
       emit(BookingSuccess(bookings));
     } catch (e) {
-      emit(BookingError(e.toString()));
+      emit(BookingError(ErrorMapper.message(e)));
     }
   }
 
@@ -83,7 +66,7 @@ class BookingCubit extends Cubit<BookingState> {
     try {
       await _reloadParentBookings(parentId);
     } catch (e) {
-      emit(BookingError(_apiErrorMessage(e)));
+      emit(BookingError(ErrorMapper.message(e)));
     }
   }
 
@@ -101,7 +84,7 @@ class BookingCubit extends Cubit<BookingState> {
         await getBookings();
       }
     } catch (e) {
-      emit(BookingError(_apiErrorMessage(e)));
+      emit(BookingError(ErrorMapper.message(e)));
     }
   }
 
@@ -111,7 +94,7 @@ class BookingCubit extends Cubit<BookingState> {
       final b = await repo.getBookingById(bookingId: bookingId);
       emit(BookingSingleSuccess(b));
     } catch (e) {
-      emit(BookingError(e.toString()));
+      emit(BookingError(ErrorMapper.message(e)));
     }
   }
 
@@ -129,7 +112,7 @@ class BookingCubit extends Cubit<BookingState> {
       }
       return null;
     } catch (e) {
-      final msg = _apiErrorMessage(e);
+      final msg = ErrorMapper.message(e);
       if (parentId != null && parentId.isNotEmpty) {
         try {
           await _reloadParentBookings(parentId);
@@ -156,7 +139,7 @@ class BookingCubit extends Cubit<BookingState> {
       }
       return null;
     } catch (e) {
-      final msg = _apiErrorMessage(e);
+      final msg = ErrorMapper.message(e);
       if (parentId != null && parentId.isNotEmpty) {
         try {
           await _reloadParentBookings(parentId);
@@ -191,7 +174,7 @@ class BookingCubit extends Cubit<BookingState> {
       await getMyAppointmentsByParent(parentId: parentId);
       return null;
     } catch (e) {
-      final msg = _apiErrorMessage(e);
+      final msg = ErrorMapper.message(e);
       try {
         await getMyAppointmentsByParent(parentId: parentId);
       } catch (_) {

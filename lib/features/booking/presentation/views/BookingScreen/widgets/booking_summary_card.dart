@@ -118,10 +118,7 @@ class BookingSummaryCard extends StatelessWidget {
                       context.l10n.bookingNumber,
                       style: AppTextStyle.semibold12TextHeading(context),
                     ),
-                    Text(
-                      idLabel,
-                      style: AppTextStyle.bold12TextBody(context),
-                    ),
+                    Text(idLabel, style: AppTextStyle.bold12TextBody(context)),
                   ],
                 ),
               ),

@@ -136,12 +136,17 @@ class SkillsOverviewCard extends StatelessWidget {
                         style: AppTextStyle.semibold16TextHeading(context),
                       ),
                       SizedBox(height: 16.h),
-                      if (skills.isEmpty)
+                      if (skills.isEmpty) ...[
                         Text(
-                          '—',
+                          context.l10n.skillsNotAvailableTitle,
+                          style: AppTextStyle.semibold16TextHeading(context),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          context.l10n.skillsNotAvailableDesc,
                           style: AppTextStyle.regular12TextBody(context),
-                        )
-                      else if (visibleSkills.isEmpty)
+                        ),
+                      ] else if (visibleSkills.isEmpty)
                         Text(
                           '—',
                           style: AppTextStyle.regular12TextBody(context),

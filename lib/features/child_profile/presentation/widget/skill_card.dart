@@ -11,13 +11,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class SkillCard extends StatelessWidget {
-  const SkillCard({
-    super.key,
-    required this.data,
-    this.onExpandTap,
-  });
+  const SkillCard({super.key, required this.data, this.onExpandTap});
 
   final SkillCardData data;
+
   /// Opens the real checklist sheet; when null the expand control is hidden.
   final VoidCallback? onExpandTap;
 
@@ -48,12 +45,12 @@ class SkillCard extends StatelessWidget {
             ),
             child: SvgPicture.asset(
               data.iconSrc,
-            colorFilter: ColorFilter.mode(
-              isDark
-                  ? AppColors.secondary_default_dark
-                  : AppColors.secondary_default_light,
-              BlendMode.srcIn,
-            ),
+              colorFilter: ColorFilter.mode(
+                isDark
+                    ? AppColors.secondary_default_dark
+                    : AppColors.secondary_default_light,
+                BlendMode.srcIn,
+              ),
             ),
           ),
 

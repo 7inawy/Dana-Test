@@ -64,7 +64,8 @@ class VideoCard extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.radius_md),
-                child: (video.imageUrl.startsWith('http://') ||
+                child:
+                    (video.imageUrl.startsWith('http://') ||
                         video.imageUrl.startsWith('https://'))
                     ? Image.network(
                         video.imageUrl,

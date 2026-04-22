@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/exceptions.dart';
+import '../../../../../core/log/app_logger.dart';
 import '../../../../../core/utils/parent_phone_utils.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/network/network_info.dart';
@@ -41,21 +42,22 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final connected = await networkInfo.isConnected;
       if (!connected) {
-        print('⚠️ Connectivity check reported offline; attempting request anyway');
+        AppLogger.warn(
+          'Connectivity check reported offline; attempting request anyway',
+        );
       }
     } catch (e) {
-      print('⚠️ Connectivity check failed ($e); attempting request anyway');
+      AppLogger.warn(
+        'Connectivity check failed ($e); attempting request anyway',
+      );
     }
     try {
-      print('🔹 Calling remote data source...');
       final result = await call();
-      print('✅ Remote call success: $result');
       return Right(result);
     } on ServerException catch (e) {
-      print('🔴 ServerException: ${e.message}');
       return Left(ServerFailure(message: e.message));
     } catch (e) {
-      print('🔴 Unknown Exception: $e');
+      AppLogger.error('Unknown exception in AuthRepository', error: e);
       return const Left(UnknownFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
@@ -119,11 +121,11 @@ class AuthRepositoryImpl implements AuthRepository {
     required String phone,
     required String otp,
   }) => _guard(
-        () => remoteDataSource.verifySignIn(
-          phone: ParentPhoneUtils.normalizeForApi(phone),
-          otp: otp,
-        ),
-      );
+    () => remoteDataSource.verifySignIn(
+      phone: ParentPhoneUtils.normalizeForApi(phone),
+      otp: otp,
+    ),
+  );
 
   // ── Reset Password ───────────────────────────────────────────────────────────
 

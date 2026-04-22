@@ -1,4 +1,5 @@
 import 'package:dana/my_app.dart';
+import 'package:dana/core/config/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,9 +8,12 @@ import 'package:dana/providers/app_language_provider.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:dana/core/di/injection_container.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  AppConfig.validate();
 
   await init();
 
@@ -23,15 +27,26 @@ void main() async {
   final languageProvider = AppLanguageProvider();
   await languageProvider.loadLanguage();
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: languageProvider),
-        ChangeNotifierProvider.value(value: themeProvider),
-      ],
-      child: const Dana(),
-    ),
+  final app = MultiProvider(
+    providers: [
+      ChangeNotifierProvider.value(value: languageProvider),
+      ChangeNotifierProvider.value(value: themeProvider),
+    ],
+    child: const Dana(),
   );
+
+  // Crash reporting is opt-in via --dart-define=SENTRY_DSN=...
+  if (AppConfig.sentryDsn.trim().isEmpty) {
+    runApp(app);
+    return;
+  }
+
+  await SentryFlutter.init((options) {
+    options.dsn = AppConfig.sentryDsn;
+    options.sendDefaultPii = false;
+    options.tracesSampleRate =
+        0.0; // enable later if you want performance tracing
+  }, appRunner: () => runApp(app));
 }
 
 class Dana extends StatelessWidget {

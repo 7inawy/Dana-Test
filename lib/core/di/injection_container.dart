@@ -119,6 +119,8 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import '../config/app_config.dart';
 import '../auth/auth_session.dart';
 import '../auth/dio_auth_interceptor.dart';
+import '../auth/dio_error_interceptor.dart';
+import '../auth/dio_unauthorized_interceptor.dart';
 import '../auth/token_storage.dart';
 import '../../features/auth/login/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/login/data/datasources/auth_remote_data_source_impl.dart';
@@ -299,20 +301,20 @@ Future<void> init() async {
   sl.registerLazySingleton<TokenStorage>(() => TokenStorage(sl()));
   sl.registerLazySingleton<AuthSession>(() => AuthSession(sl()));
 
-  sl.registerLazySingleton<Dio>(
-    () {
-      final dio = Dio(
-        BaseOptions(
-          baseUrl: AppConfig.apiBaseUrl,
-          connectTimeout: const Duration(seconds: 15),
-          receiveTimeout: const Duration(seconds: 15),
-          headers: {'Accept': 'application/json'},
-        ),
-      );
-      dio.interceptors.add(DioAuthInterceptor(sl<AuthSession>()));
-      return dio;
-    },
-  );
+  sl.registerLazySingleton<Dio>(() {
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: AppConfig.apiBaseUrl,
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 15),
+        headers: {'Accept': 'application/json'},
+      ),
+    );
+    dio.interceptors.add(DioErrorInterceptor());
+    dio.interceptors.add(DioAuthInterceptor(sl<AuthSession>()));
+    dio.interceptors.add(DioUnauthorizedInterceptor(sl<AuthSession>()));
+    return dio;
+  });
 
   sl.registerLazySingleton<ApiManger>(() => ApiManger(sl()));
 
@@ -369,7 +371,9 @@ Future<void> init() async {
   sl.registerLazySingleton<ChildVaccinationService>(
     () => ChildVaccinationService(sl()),
   );
-  sl.registerLazySingleton<ChildVaccinationRepo>(() => ChildVaccinationRepo(sl()));
+  sl.registerLazySingleton<ChildVaccinationRepo>(
+    () => ChildVaccinationRepo(sl()),
+  );
 
   sl.registerLazySingleton<ChildVaccinationScheduleService>(
     () => ChildVaccinationScheduleService(sl()),

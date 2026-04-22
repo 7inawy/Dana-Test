@@ -11,7 +11,7 @@ class SensoryTestCubit extends Cubit<SensoryTestState> {
   final ParentProfileRepository parentRepo;
 
   SensoryTestCubit({required this.repo, required this.parentRepo})
-      : super(const SensoryTestInitial());
+    : super(const SensoryTestInitial());
 
   Future<void> loadQuestions() async {
     emit(const SensoryTestLoading());
@@ -23,13 +23,15 @@ class SensoryTestCubit extends Cubit<SensoryTestState> {
     }
   }
 
-  Future<SensoryTestResult?> submit(Map<String, int> answersByQuestionId) async {
+  Future<SensoryTestResult?> submit(
+    Map<String, int> answersByQuestionId,
+  ) async {
     final current = state;
     final questions = current is SensoryTestLoaded
         ? current.questions
         : current is SensoryTestSubmitting
-            ? current.questions
-            : <SensoryQuestion>[];
+        ? current.questions
+        : <SensoryQuestion>[];
     emit(SensoryTestSubmitting(questions));
 
     try {
@@ -39,10 +41,7 @@ class SensoryTestCubit extends Cubit<SensoryTestState> {
 
       final answers = answersByQuestionId.entries
           .map(
-            (e) => SensoryTestAnswer(
-              questionId: e.key,
-              selectedValue: e.value,
-            ),
+            (e) => SensoryTestAnswer(questionId: e.key, selectedValue: e.value),
           )
           .toList();
 
@@ -50,9 +49,8 @@ class SensoryTestCubit extends Cubit<SensoryTestState> {
       emit(SensoryTestSubmitted(result));
       return result;
     } catch (e) {
-      emit(SensoryTestError(ErrorMapper.message(e)));
+      emit(SensoryTestSubmitError(questions, ErrorMapper.message(e)));
       return null;
     }
   }
 }
-

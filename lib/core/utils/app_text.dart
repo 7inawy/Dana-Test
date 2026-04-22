@@ -1,5 +1,5 @@
-class AppText{
-  static const String myBabyHealth='صحّة أولادك... كلها في مكان واحد!';
+class AppText {
+  static const String myBabyHealth = 'صحّة أولادك... كلها في مكان واحد!';
   static const String babyHealthRecord =
       'انسى الورق والملفات.\n'
       'دلوقتي كل تفاصيل صحة طفلك متسجّلة بأمان:\n'
@@ -14,8 +14,8 @@ class AppText{
   static const String smartSymptomCheck =
       'حاسس إن طفلك تعبان؟\n'
       'سأل المساعد الذكي عن الأعراض بالعربي عشان تاخد إرشاد مبدئي، وتفهم إيه المطلوب، وممكن كمان تحجز كشف في نفس اللحظة.';
-  static const String skip='تخطي';
-  static const String next='التالي';
+  static const String skip = 'تخطي';
+  static const String next = 'التالي';
   static const String getToKnowYou = 'خلينا نتعرف عليك';
   static const String fillBasicInfo =
       'املأ بياناتك الأساسية عشان نقدر نجهزلك تجربة تناسبك وتساعدك تتابع صحة ولادك بسهولة';
@@ -29,7 +29,8 @@ class AppText{
   static const String alreadyHaveAccount = 'عندك حساب؟';
   static const String login = 'سجّل دخول';
   static const String addYourChildren = 'ضيف أولادك وابدأ رحلتك معاهم';
-  static const String startNow = 'ابدأ دلوقتي وخلي كل حاجة تخص ولادك قريبة منك دايمًا';
+  static const String startNow =
+      'ابدأ دلوقتي وخلي كل حاجة تخص ولادك قريبة منك دايمًا';
   static const String childName = 'اسم الطفل';
   static const String enterChildName = 'أدخل اسم ابنك';
   static const String childBirthDate = 'تاريخ ميلاده';
@@ -52,7 +53,8 @@ class AppText{
       'بعتنالك كود مكوّن من 6 أرقام على رقمك +20 10 1234 5678\nدخل الكود هنا عشان نأكد إن الرقم بتاعك مظبوط.';
   static const String resendCode = 'أرسلك كود تاني ؟';
   static const String choosePassword = 'اختار كلمة سر تحمي حسابك';
-  static const String passwordHint = 'خليها سهلة عليك وصعبة على غيرك، عشان تقدر تدخل بأمان في أي وقت.';
+  static const String passwordHint =
+      'خليها سهلة عليك وصعبة على غيرك، عشان تقدر تدخل بأمان في أي وقت.';
   static const String password = 'كلمة المرور';
   static const String enterStrongPassword = 'أدخل كلمة مرور قوية';
   static const String confirmPassword = 'تأكيد كلمة المرور';
@@ -84,5 +86,5 @@ class AppText{
   static const String fourPointFiveK = '4.5 الف';
   static const String patient = 'مريض';
   static const String novabber = 'نوفمبر';
-  static const String availableTime='الوقت المتاح';
+  static const String availableTime = 'الوقت المتاح';
 }

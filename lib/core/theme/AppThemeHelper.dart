@@ -28,10 +28,7 @@ class _Colors {
 
   Color get secondaryDefault => _parseColor('#EFA987');
   Color get borderCardDefault => _parseColor('#E3E7E8');
-  Color get ButtonPrimary=> _parseColor('#00AEC0');
-
-
-
+  Color get ButtonPrimary => _parseColor('#00AEC0');
 
   Color get background =>
       _c(t.colorsSystemLight?.backgrounds?.bgSurfaceDefault?.value, '#F9FAFA');
@@ -45,7 +42,6 @@ class _Colors {
   Color get icon =>
       _c(t.colorsSystemLight?.icon?.colorIconOnLight?.value, '#0F1C1D');
 }
-
 
 Color _parseColor(String hexColor) {
   hexColor = hexColor.replaceAll('#', '');
@@ -74,9 +70,23 @@ class _Text {
   }
 
   /// Body Sizes
-  TextStyle get sm => _ts(t.typographyArabic?.typeface?.size?.sM?.value, 14,weight: FontWeight.w500,color: Color(0xFF445A5D));
-  TextStyle get md => _ts(t.typographyArabic?.typeface?.size?.mD?.value, 16,weight: FontWeight.w400,color: Color(0xFF445A5D));
-  TextStyle get lg => _ts(t.typographyArabic?.typeface?.size?.lG?.value, 18,weight: FontWeight.w600,);
+  TextStyle get sm => _ts(
+    t.typographyArabic?.typeface?.size?.sM?.value,
+    14,
+    weight: FontWeight.w500,
+    color: Color(0xFF445A5D),
+  );
+  TextStyle get md => _ts(
+    t.typographyArabic?.typeface?.size?.mD?.value,
+    16,
+    weight: FontWeight.w400,
+    color: Color(0xFF445A5D),
+  );
+  TextStyle get lg => _ts(
+    t.typographyArabic?.typeface?.size?.lG?.value,
+    18,
+    weight: FontWeight.w600,
+  );
   TextStyle get xl => _ts(t.typographyArabic?.typeface?.size?.xL?.value, 24);
 
   TextStyle get heading => _ts(
@@ -95,7 +105,7 @@ class _Text {
     t.typographyArabic?.typeface?.size?.d2XL?.value,
     24,
     weight: FontWeight.w600,
-      color: Color(0xFF0F1C1D)
+    color: Color(0xFF0F1C1D),
   );
 
   TextStyle get x4l => _ts(

@@ -1,7 +1,6 @@
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:flutter/foundation.dart';
 
-
 import 'network_info.dart';
 
 class NetworkInfoImpl implements NetworkInfo {
@@ -18,4 +17,3 @@ class NetworkInfoImpl implements NetworkInfo {
     return connectionChecker.hasInternetAccess;
   }
 }
-

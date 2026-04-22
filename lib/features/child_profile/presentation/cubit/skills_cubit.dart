@@ -12,7 +12,7 @@ class SkillsCubit extends Cubit<SkillsState> {
   final ParentProfileRepository parentRepo;
 
   SkillsCubit({required this.repo, required this.parentRepo})
-      : super(const SkillsInitial());
+    : super(const SkillsInitial());
 
   ParentChildModel? _pickChild(ParentProfileModel me, String? preferredId) {
     if (preferredId != null && preferredId.isNotEmpty) {
@@ -32,7 +32,10 @@ class SkillsCubit extends Cubit<SkillsState> {
     await Future.wait(
       skills.map((s) async {
         try {
-          final items = await repo.getChecklist(skillId: s.id, childId: childId);
+          final items = await repo.getChecklist(
+            skillId: s.id,
+            childId: childId,
+          );
           final c = items.where((e) => e.checked).length;
           checked[s.id] = c;
           total[s.id] = items.length;
@@ -124,8 +127,15 @@ class SkillsCubit extends Cubit<SkillsState> {
     final current = state;
     if (current is! ChecklistLoaded) return;
     try {
-      await repo.toggleItem(childId: current.childId, itemId: itemId, checked: checked);
-      final items = await repo.getChecklist(skillId: skillId, childId: current.childId);
+      await repo.toggleItem(
+        childId: current.childId,
+        itemId: itemId,
+        checked: checked,
+      );
+      final items = await repo.getChecklist(
+        skillId: skillId,
+        childId: current.childId,
+      );
       final done = items.where((e) => e.checked).length;
       final checkedMap = Map<String, int>.from(current.skillCheckedById);
       final totalMap = Map<String, int>.from(current.skillTotalById);

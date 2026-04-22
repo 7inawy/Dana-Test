@@ -13,7 +13,11 @@ import 'package:intl_phone_field/phone_number.dart';
 import 'package:provider/provider.dart';
 
 class PhoneField extends StatefulWidget {
-  const PhoneField({super.key, this.controller, this.onNormalizedNumberChanged});
+  const PhoneField({
+    super.key,
+    this.controller,
+    this.onNormalizedNumberChanged,
+  });
 
   final TextEditingController? controller;
 

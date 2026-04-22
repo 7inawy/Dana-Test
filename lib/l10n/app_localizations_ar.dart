@@ -319,6 +319,16 @@ class AppLocalizationsAr extends AppLocalizations {
       'نريد رأيك في تجربتك مع دكتور إسلام غنيم. تقييمك يساعدنا في تحسين الرعاية.';
 
   @override
+  String get ratingNotAllowedTitle => 'التقييم غير متاح حالياً';
+
+  @override
+  String get ratingNotAllowedDesc => 'تقدر تقيّم الطبيب بعد انتهاء الموعد.';
+
+  @override
+  String get ratingSubmitFailed =>
+      'مش قادرين نبعت تقييمك دلوقتي. جرّب تاني بعد شوية.';
+
+  @override
   String get sendRating => 'إرسال التقييم';
 
   @override
@@ -859,6 +869,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sensoryActivitiesPlan => 'خطة أنشطة حسية للمنزل';
+
+  @override
+  String get sensorySubmitFailed =>
+      'مش قادرين نبعت إجاباتك دلوقتي. جرّب تاني بعد شوية.';
+
+  @override
+  String get skillsNotAvailableTitle => 'المهارات غير متاحة حالياً';
+
+  @override
+  String get skillsNotAvailableDesc =>
+      'هنعرض مهارات وتطور طفلك أول ما تبقى متاحة على السيرفر.';
 
   @override
   String get sectionHeaderTitle => 'التقييم المبدئي للتحديات الحسية';

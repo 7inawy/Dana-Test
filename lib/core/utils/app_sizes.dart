@@ -1,5 +1,6 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-class AppSizes{
+
+class AppSizes {
   static double h48 = 48.h;
   static double h123 = 123.h;
   static double h1 = 1.h;

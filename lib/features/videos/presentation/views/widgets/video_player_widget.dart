@@ -31,7 +31,8 @@ class VideoPlayerWidget extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.radius_lg),
-          child: (video.imageUrl.startsWith('http://') ||
+          child:
+              (video.imageUrl.startsWith('http://') ||
                   video.imageUrl.startsWith('https://'))
               ? Image.network(
                   video.imageUrl,

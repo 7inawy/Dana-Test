@@ -44,10 +44,8 @@ class DoctorCard extends StatelessWidget {
         Image.network(
           src,
           fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => Image.asset(
-            'assets/Images/home/doctor1.png',
-            fit: BoxFit.cover,
-          ),
+          errorBuilder: (_, __, ___) =>
+              Image.asset('assets/Images/home/doctor1.png', fit: BoxFit.cover),
         ),
       );
     }
@@ -101,7 +99,10 @@ class DoctorCard extends StatelessWidget {
                               minHeight: 28,
                             ),
                             onPressed: onOpenChat,
-                            icon: const Icon(Icons.chat_bubble_outline, size: 16),
+                            icon: const Icon(
+                              Icons.chat_bubble_outline,
+                              size: 16,
+                            ),
                           ),
                         ],
                         Text(
@@ -112,7 +113,8 @@ class DoctorCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      (specialtyText != null && specialtyText!.trim().isNotEmpty)
+                      (specialtyText != null &&
+                              specialtyText!.trim().isNotEmpty)
                           ? specialtyText!.trim()
                           : context.l10n.physiotherapist,
                       maxLines: 1,
@@ -120,11 +122,12 @@ class DoctorCard extends StatelessWidget {
                       style: AppTextStyle.regular8TextBody(context),
                     ),
                     GestureDetector(
-                      onTap: onBookNow ??
+                      onTap:
+                          onBookNow ??
                           () {
-                            Navigator.of(context).pushNamed(
-                              AppRoutes.doctorTime,
-                            );
+                            Navigator.of(
+                              context,
+                            ).pushNamed(AppRoutes.doctorTime);
                           },
                       child: Container(
                         margin: EdgeInsets.only(top: 12.h),

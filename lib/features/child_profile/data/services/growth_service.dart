@@ -12,10 +12,13 @@ class GrowthService {
     final data = res.data;
     final list = data is List
         ? data
-        : (data is Map && data['response'] is Map && (data['response'] as Map)['data'] is List)
-            ? (data['response'] as Map)['data'] as List
-            : null;
-    if (list == null) throw const FormatException('Unexpected growth records response shape');
+        : (data is Map &&
+              data['response'] is Map &&
+              (data['response'] as Map)['data'] is List)
+        ? (data['response'] as Map)['data'] as List
+        : null;
+    if (list == null)
+      throw const FormatException('Unexpected growth records response shape');
     return list
         .whereType<Map>()
         .map((e) => GrowthRecord.fromJson(e.cast<String, dynamic>()))
@@ -26,7 +29,9 @@ class GrowthService {
     final res = await dio.get('/v1/child/$childId/growth/latest');
     final data = res.data;
     if (data is Map && data['data'] is Map) {
-      return GrowthRecord.fromJson((data['data'] as Map).cast<String, dynamic>());
+      return GrowthRecord.fromJson(
+        (data['data'] as Map).cast<String, dynamic>(),
+      );
     }
     if (data is Map) return GrowthRecord.fromJson(data.cast<String, dynamic>());
     throw const FormatException('Unexpected latest growth response shape');
@@ -52,10 +57,11 @@ class GrowthService {
     );
     final data = res.data;
     if (data is Map && data['data'] is Map) {
-      return GrowthRecord.fromJson((data['data'] as Map).cast<String, dynamic>());
+      return GrowthRecord.fromJson(
+        (data['data'] as Map).cast<String, dynamic>(),
+      );
     }
     if (data is Map) return GrowthRecord.fromJson(data.cast<String, dynamic>());
     throw const FormatException('Unexpected post growth response shape');
   }
 }
-

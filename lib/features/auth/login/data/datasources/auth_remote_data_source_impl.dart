@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import '../../../../../core/api/api_endpoint.dart';
+import '../../../../../core/api/api_error.dart';
+import '../../../../../core/api/api_response.dart';
 import '../../../../../core/errors/exceptions.dart';
 import '../model/user_model.dart';
 import 'auth_remote_data_source.dart';
@@ -14,26 +16,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl({required this.dio});
   // ── helpers ─────────────────────────────────────────────────────────────────
 
-  dynamic _decode(dynamic raw) => raw is String ? jsonDecode(raw) : raw;
-
   void _throwIfError(dynamic data, int? statusCode, String fallback) {
     if (statusCode != null && statusCode >= 200 && statusCode < 300) return;
-    final msg = _extractMessage(data) ?? fallback;
+    final msg = ApiError.messageFromDecoded(data, fallback: fallback);
     throw ServerException(message: msg);
-  }
-
-  String? _extractMessage(dynamic data) {
-    if (data is Map) {
-      final msg = data['message'];
-      if (msg != null) return msg.toString();
-      final errors = data['errors'];
-      if (errors is List && errors.isNotEmpty) return errors.first.toString();
-      if (errors is Map && errors.isNotEmpty) {
-        final v = errors.values.first;
-        return v is List ? v.first.toString() : v.toString();
-      }
-    }
-    return null;
   }
 
   // ── Parent Auth ──────────────────────────────────────────────────────────────
@@ -80,12 +66,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: formData,
       );
 
-      final data = _decode(response.data);
+      final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'فشل التسجيل');
     } on DioException catch (e) {
-      final data = _decode(e.response?.data);
+      final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
-        message: _extractMessage(data) ?? 'حدث خطأ في الخادم',
+        message: ApiError.messageFromDecoded(
+          data,
+          fallback: 'حدث خطأ في الخادم',
+        ),
       );
     } catch (e) {
       if (e is ServerException) rethrow;
@@ -106,12 +95,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
-      final data = _decode(response.data);
+      final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'كود التحقق غير صحيح');
     } on DioException catch (e) {
-      final data = _decode(e.response?.data);
+      final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
-        message: _extractMessage(data) ?? 'فشل التحقق من الكود',
+        message: ApiError.messageFromDecoded(
+          data,
+          fallback: 'فشل التحقق من الكود',
+        ),
       );
     } catch (e) {
       if (e is ServerException) rethrow;
@@ -132,12 +124,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
-      final data = _decode(response.data);
+      final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'بيانات الدخول غير صحيحة');
     } on DioException catch (e) {
-      final data = _decode(e.response?.data);
+      final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
-        message: _extractMessage(data) ?? 'حدث خطأ في الخادم',
+        message: ApiError.messageFromDecoded(
+          data,
+          fallback: 'حدث خطأ في الخادم',
+        ),
       );
     } catch (e) {
       if (e is ServerException) rethrow;
@@ -157,13 +152,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
-      dynamic data = _decode(response.data);
+      final data = ApiResponse.decode(response.data);
 
       if (response.statusCode != null &&
           response.statusCode! >= 200 &&
           response.statusCode! < 300) {
         // ✅ التوكن جوه accessToken.access_token
-        final accessToken = data['accessToken'];
+        final accessToken = (data is Map ? data['accessToken'] : null);
         final token =
             (accessToken is Map ? accessToken['access_token'] : null)
                 as String?;
@@ -176,12 +171,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
 
       throw ServerException(
-        message: _extractMessage(data) ?? 'فشل تسجيل الدخول',
+        message: ApiError.messageFromDecoded(
+          data,
+          fallback: 'فشل تسجيل الدخول',
+        ),
       );
     } on DioException catch (e) {
-      final data = _decode(e.response?.data);
+      final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
-        message: _extractMessage(data) ?? 'حدث خطأ في الخادم',
+        message: ApiError.messageFromDecoded(
+          data,
+          fallback: 'حدث خطأ في الخادم',
+        ),
       );
     } catch (e) {
       if (e is ServerException) rethrow;
@@ -198,12 +199,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: {'phone': phone},
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
-      final data = _decode(response.data);
+      final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'فشل إرسال كود إعادة التعيين');
     } on DioException catch (e) {
-      final data = _decode(e.response?.data);
+      final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
-        message: _extractMessage(data) ?? 'حدث خطأ في الخادم',
+        message: ApiError.messageFromDecoded(
+          data,
+          fallback: 'حدث خطأ في الخادم',
+        ),
       );
     } catch (e) {
       if (e is ServerException) rethrow;
@@ -223,12 +227,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: {'phone': phone, 'otp': int.tryParse(otp) ?? otp},
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
-      final data = _decode(response.data);
+      final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'كود التحقق غير صحيح');
     } on DioException catch (e) {
-      final data = _decode(e.response?.data);
+      final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
-        message: _extractMessage(data) ?? 'فشل التحقق من الكود',
+        message: ApiError.messageFromDecoded(
+          data,
+          fallback: 'فشل التحقق من الكود',
+        ),
       );
     } catch (e) {
       if (e is ServerException) rethrow;
@@ -254,12 +261,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           },
         ),
       );
-      final data = _decode(response.data);
+      final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'فشل تغيير كلمة المرور');
     } on DioException catch (e) {
-      final data = _decode(e.response?.data);
+      final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
-        message: _extractMessage(data) ?? 'حدث خطأ في الخادم',
+        message: ApiError.messageFromDecoded(
+          data,
+          fallback: 'حدث خطأ في الخادم',
+        ),
       );
     } catch (e) {
       if (e is ServerException) rethrow;
@@ -310,12 +320,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: formData,
       );
 
-      final data = _decode(response.data);
+      final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'فشل إنشاء حساب الطبيب');
     } on DioException catch (e) {
-      final data = _decode(e.response?.data);
+      final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
-        message: _extractMessage(data) ?? 'حدث خطأ في الخادم',
+        message: ApiError.messageFromDecoded(
+          data,
+          fallback: 'حدث خطأ في الخادم',
+        ),
       );
     } catch (e) {
       if (e is ServerException) rethrow;

@@ -1,8 +1,10 @@
 class ApiConstants {
   ApiConstants._();
 
-  static const String baseUrl =
-      'https://2940-196-139-178-175.ngrok-free.app/api';
+  // NOTE:
+  // Do NOT store a base URL in this file.
+  // Base URL is configured via `AppConfig.apiBaseUrl` (`--dart-define=API_BASE_URL=...`)
+  // to avoid accidentally shipping ngrok/local URLs.
 
   // ── Parent / Auth ────────────────────────────────────────────────────────────
   static const String preSignUp = '/v1/parent/pre-SignUp';

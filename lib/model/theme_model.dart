@@ -5,12 +5,13 @@ class ThemeModel {
   ColorsSystemLight? colorsSystemDark;
   NumericTokensMode1? numericTokensMode1;
 
-  ThemeModel(
-      {this.typographyArabic,
-        this.typographyEnglish,
-        this.colorsSystemLight,
-        this.colorsSystemDark,
-        this.numericTokensMode1});
+  ThemeModel({
+    this.typographyArabic,
+    this.typographyEnglish,
+    this.colorsSystemLight,
+    this.colorsSystemDark,
+    this.numericTokensMode1,
+  });
 
   ThemeModel.fromJson(Map<String, dynamic> json) {
     typographyArabic = json['typography-arabic'] != null
@@ -79,10 +80,12 @@ class Typeface {
   Typeface({this.family, this.weight, this.size});
 
   Typeface.fromJson(Map<String, dynamic> json) {
-    family =
-    json['Family'] != null ? new Family.fromJson(json['Family']) : null;
-    weight =
-    json['Weight'] != null ? new Weight.fromJson(json['Weight']) : null;
+    family = json['Family'] != null
+        ? new Family.fromJson(json['Family'])
+        : null;
+    weight = json['Weight'] != null
+        ? new Weight.fromJson(json['Weight'])
+        : null;
     size = json['Size'] != null ? new Size.fromJson(json['Size']) : null;
   }
 
@@ -108,8 +111,9 @@ class Family {
   Family({this.display, this.text});
 
   Family.fromJson(Map<String, dynamic> json) {
-    display =
-    json['Display'] != null ? new Display.fromJson(json['Display']) : null;
+    display = json['Display'] != null
+        ? new Display.fromJson(json['Display'])
+        : null;
     text = json['Text'] != null ? new Display.fromJson(json['Text']) : null;
   }
 
@@ -199,10 +203,12 @@ class Weight {
   Weight({this.regular, this.medium, this.semibold, this.bold});
 
   Weight.fromJson(Map<String, dynamic> json) {
-    regular =
-    json['Regular'] != null ? new Display.fromJson(json['Regular']) : null;
-    medium =
-    json['Medium'] != null ? new Display.fromJson(json['Medium']) : null;
+    regular = json['Regular'] != null
+        ? new Display.fromJson(json['Regular'])
+        : null;
+    medium = json['Medium'] != null
+        ? new Display.fromJson(json['Medium'])
+        : null;
     semibold = json['Semibold'] != null
         ? new Display.fromJson(json['Semibold'])
         : null;
@@ -239,17 +245,18 @@ class Size {
   Display? d6XL;
   Display? d7XL;
 
-  Size(
-      {this.sM,
-        this.mD,
-        this.lG,
-        this.xL,
-        this.d2XL,
-        this.d3XL,
-        this.d4XL,
-        this.d5XL,
-        this.d6XL,
-        this.d7XL});
+  Size({
+    this.sM,
+    this.mD,
+    this.lG,
+    this.xL,
+    this.d2XL,
+    this.d3XL,
+    this.d4XL,
+    this.d5XL,
+    this.d6XL,
+    this.d7XL,
+  });
 
   Size.fromJson(Map<String, dynamic> json) {
     sM = json['SM'] != null ? new Display.fromJson(json['SM']) : null;
@@ -310,15 +317,16 @@ class ColorsSystemLight {
   StatusColors? statusColors;
   Icon? icon;
 
-  ColorsSystemLight(
-      {this.primarySecondary,
-        this.backgrounds,
-        this.cards,
-        this.textSystem,
-        this.buttons,
-        this.neutralsWhite,
-        this.statusColors,
-        this.icon});
+  ColorsSystemLight({
+    this.primarySecondary,
+    this.backgrounds,
+    this.cards,
+    this.textSystem,
+    this.buttons,
+    this.neutralsWhite,
+    this.statusColors,
+    this.icon,
+  });
 
   ColorsSystemLight.fromJson(Map<String, dynamic> json) {
     primarySecondary = json['Primary & Secondary'] != null
@@ -331,8 +339,9 @@ class ColorsSystemLight {
     textSystem = json['Text System'] != null
         ? new TextSystem.fromJson(json['Text System'])
         : null;
-    buttons =
-    json['Buttons'] != null ? new Buttons.fromJson(json['Buttons']) : null;
+    buttons = json['Buttons'] != null
+        ? new Buttons.fromJson(json['Buttons'])
+        : null;
     neutralsWhite = json['Neutrals & White'] != null
         ? new NeutralsWhite.fromJson(json['Neutrals & White'])
         : null;
@@ -396,29 +405,30 @@ class PrimarySecondary {
   Display? colorSecondary800;
   Display? colorSecondary900;
 
-  PrimarySecondary(
-      {this.colorPrimaryDefault,
-        this.colorPrimary50,
-        this.colorPrimary100,
-        this.colorPrimary200,
-        this.colorPrimary300,
-        this.colorPrimary400,
-        this.colorPrimary500,
-        this.colorPrimary600,
-        this.colorPrimary700,
-        this.colorPrimary800,
-        this.colorPrimary900,
-        this.colorSecondaryDefault,
-        this.colorSecondary50,
-        this.colorSecondary100,
-        this.colorSecondary200,
-        this.colorSecondary300,
-        this.colorSecondary400,
-        this.colorSecondary500,
-        this.colorSecondary600,
-        this.colorSecondary700,
-        this.colorSecondary800,
-        this.colorSecondary900});
+  PrimarySecondary({
+    this.colorPrimaryDefault,
+    this.colorPrimary50,
+    this.colorPrimary100,
+    this.colorPrimary200,
+    this.colorPrimary300,
+    this.colorPrimary400,
+    this.colorPrimary500,
+    this.colorPrimary600,
+    this.colorPrimary700,
+    this.colorPrimary800,
+    this.colorPrimary900,
+    this.colorSecondaryDefault,
+    this.colorSecondary50,
+    this.colorSecondary100,
+    this.colorSecondary200,
+    this.colorSecondary300,
+    this.colorSecondary400,
+    this.colorSecondary500,
+    this.colorSecondary600,
+    this.colorSecondary700,
+    this.colorSecondary800,
+    this.colorSecondary900,
+  });
 
   PrimarySecondary.fromJson(Map<String, dynamic> json) {
     colorPrimaryDefault = json['color-primary-default'] != null
@@ -623,13 +633,14 @@ class TextSystem {
   Display? textButtonDisabled;
   Display? textButtonOutlined;
 
-  TextSystem(
-      {this.textHeading,
-        this.textBody,
-        this.textDisplay,
-        this.textButton,
-        this.textButtonDisabled,
-        this.textButtonOutlined});
+  TextSystem({
+    this.textHeading,
+    this.textBody,
+    this.textDisplay,
+    this.textButton,
+    this.textButtonDisabled,
+    this.textButtonOutlined,
+  });
 
   TextSystem.fromJson(Map<String, dynamic> json) {
     textHeading = json['text-heading'] != null
@@ -683,12 +694,13 @@ class Buttons {
   Display? borderButtonPrimary;
   Display? borderButtonOutlined;
 
-  Buttons(
-      {this.bgButtonPrimaryDefault2,
-        this.bgButtonPrimaryHover,
-        this.bgButtonPrimaryDisabled,
-        this.borderButtonPrimary,
-        this.borderButtonOutlined});
+  Buttons({
+    this.bgButtonPrimaryDefault2,
+    this.bgButtonPrimaryHover,
+    this.bgButtonPrimaryDisabled,
+    this.borderButtonPrimary,
+    this.borderButtonOutlined,
+  });
 
   Buttons.fromJson(Map<String, dynamic> json) {
     bgButtonPrimaryDefault2 = json['bg-button-primary-default 2'] != null
@@ -711,15 +723,15 @@ class Buttons {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.bgButtonPrimaryDefault2 != null) {
-      data['bg-button-primary-default 2'] =
-          this.bgButtonPrimaryDefault2!.toJson();
+      data['bg-button-primary-default 2'] = this.bgButtonPrimaryDefault2!
+          .toJson();
     }
     if (this.bgButtonPrimaryHover != null) {
       data['bg-button-primary-hover'] = this.bgButtonPrimaryHover!.toJson();
     }
     if (this.bgButtonPrimaryDisabled != null) {
-      data['bg-button-primary-disabled'] =
-          this.bgButtonPrimaryDisabled!.toJson();
+      data['bg-button-primary-disabled'] = this.bgButtonPrimaryDisabled!
+          .toJson();
     }
     if (this.borderButtonPrimary != null) {
       data['border-button-primary'] = this.borderButtonPrimary!.toJson();
@@ -759,13 +771,14 @@ class StatusColors {
   Display? colorSuccessDefault;
   Display? bgSuccessSubtle;
 
-  StatusColors(
-      {this.colorErrorDefault,
-        this.bgErrorSubtle,
-        this.colorWarningDefault,
-        this.bgWarningSubtle,
-        this.colorSuccessDefault,
-        this.bgSuccessSubtle});
+  StatusColors({
+    this.colorErrorDefault,
+    this.bgErrorSubtle,
+    this.colorWarningDefault,
+    this.bgWarningSubtle,
+    this.colorSuccessDefault,
+    this.bgSuccessSubtle,
+  });
 
   StatusColors.fromJson(Map<String, dynamic> json) {
     colorErrorDefault = json['color-error-default'] != null
@@ -850,10 +863,12 @@ class NumericTokensMode1 {
     cornerRadiusSystem = json['corner radius system'] != null
         ? new CornerRadiusSystem.fromJson(json['corner radius system'])
         : null;
-    stroke =
-    json['stroke'] != null ? new Stroke.fromJson(json['stroke']) : null;
-    spacing =
-    json['spacing'] != null ? new Spacing.fromJson(json['spacing']) : null;
+    stroke = json['stroke'] != null
+        ? new Stroke.fromJson(json['stroke'])
+        : null;
+    spacing = json['spacing'] != null
+        ? new Spacing.fromJson(json['spacing'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -879,13 +894,14 @@ class CornerRadiusSystem {
   Display? radiusXl;
   Display? radiusFull;
 
-  CornerRadiusSystem(
-      {this.radiusXs,
-        this.radiusSm,
-        this.radiusMd,
-        this.radiusLg,
-        this.radiusXl,
-        this.radiusFull});
+  CornerRadiusSystem({
+    this.radiusXs,
+    this.radiusSm,
+    this.radiusMd,
+    this.radiusLg,
+    this.radiusXl,
+    this.radiusFull,
+  });
 
   CornerRadiusSystem.fromJson(Map<String, dynamic> json) {
     radiusXs = json['radius-xs'] != null
@@ -976,15 +992,16 @@ class Spacing {
   Display? space2xl;
   Display? space3xl;
 
-  Spacing(
-      {this.space2xs,
-        this.spaceXs,
-        this.spaceSm,
-        this.spaceMd,
-        this.spaceLg,
-        this.spaceXl,
-        this.space2xl,
-        this.space3xl});
+  Spacing({
+    this.space2xs,
+    this.spaceXs,
+    this.spaceSm,
+    this.spaceMd,
+    this.spaceLg,
+    this.spaceXl,
+    this.space2xl,
+    this.space3xl,
+  });
 
   Spacing.fromJson(Map<String, dynamic> json) {
     space2xs = json['space-2xs'] != null
@@ -1045,7 +1062,8 @@ class Spacing {
 
 extension ThemeModelHelper on ThemeModel {
   String getFontFamily() {
-    return this.typographyArabic?.typeface?.family?.text?.value ?? 'DefaultFont';
+    return this.typographyArabic?.typeface?.family?.text?.value ??
+        'DefaultFont';
   }
 
   double getFontSize(String sizeKey) {

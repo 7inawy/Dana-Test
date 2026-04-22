@@ -52,7 +52,9 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
           onTap: () {
             if (!controller.hasDoctor) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('اختر طبيباً من قائمة الأطباء أولاً')),
+                const SnackBar(
+                  content: Text('اختر طبيباً من قائمة الأطباء أولاً'),
+                ),
               );
               return;
             }
@@ -64,10 +66,9 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
             }
             final draft = controller.buildDraftForPayment();
             if (draft != null) {
-              Navigator.of(context).pushNamed(
-                AppRoutes.paymentMethod,
-                arguments: draft,
-              );
+              Navigator.of(
+                context,
+              ).pushNamed(AppRoutes.paymentMethod, arguments: draft);
             }
           },
           text: context.l10n.nextButton,

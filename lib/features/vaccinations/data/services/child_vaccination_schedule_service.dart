@@ -18,24 +18,32 @@ class ChildVaccinationScheduleService {
   Future<List<ChildVaccinationScheduleItem>> getSchedule({
     required String childId,
   }) async {
-    final res = await dio.get('${ApiEndpoint.childVaccinations}$childId/childVaccinations');
+    final res = await dio.get(
+      '${ApiEndpoint.childVaccinations}$childId/childVaccinations',
+    );
     final data = res.data;
 
     // Postman examples show a plain array response for this endpoint.
     final list = data is List
         ? data
-        : (data is Map && data['response'] is Map && (data['response'] as Map)['data'] is List)
-            ? (data['response'] as Map)['data'] as List
-            : null;
+        : (data is Map &&
+              data['response'] is Map &&
+              (data['response'] as Map)['data'] is List)
+        ? (data['response'] as Map)['data'] as List
+        : null;
 
     if (list == null) {
-      throw const FormatException('Unexpected vaccination schedule response shape');
+      throw const FormatException(
+        'Unexpected vaccination schedule response shape',
+      );
     }
 
     return list
         .whereType<Map>()
-        .map((e) => ChildVaccinationScheduleItem.fromJson(e.cast<String, dynamic>()))
+        .map(
+          (e) =>
+              ChildVaccinationScheduleItem.fromJson(e.cast<String, dynamic>()),
+        )
         .toList();
   }
 }
-

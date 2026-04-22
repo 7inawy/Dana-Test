@@ -10,11 +10,13 @@ import '../../../booking/presentation/cubit/booking_cubit.dart';
 class AppointmentsList extends StatefulWidget {
   final List<Appointment> appointments;
   final Status status;
+  final Future<void> Function()? onRefresh;
 
   const AppointmentsList({
     super.key,
     required this.appointments,
     required this.status,
+    this.onRefresh,
   });
 
   @override
@@ -70,10 +72,35 @@ class _AppointmentsListState extends State<AppointmentsList> {
         .toList();
 
     if (filtered.isEmpty) {
-      return const EmptyStateWidget();
+      String title;
+      switch (widget.status) {
+        case Status.upcoming:
+          title = 'لا توجد حجوزات قادمة';
+          break;
+        case Status.completed:
+          title = 'لا توجد حجوزات مكتملة';
+          break;
+        case Status.cancelled:
+          title = 'لا توجد حجوزات ملغاة';
+          break;
+      }
+
+      final empty = EmptyStateWidget(title: title);
+      final onRefresh = widget.onRefresh;
+      if (onRefresh == null) return empty;
+
+      // Ensure pull-to-refresh works even when empty.
+      return RefreshIndicator(
+        onRefresh: onRefresh,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [SizedBox(height: 120), empty],
+        ),
+      );
     }
 
-    return ListView.builder(
+    final list = ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
       itemCount: filtered.length,
       itemBuilder: (context, index) {
         return AppointmentCard(
@@ -82,5 +109,9 @@ class _AppointmentsListState extends State<AppointmentsList> {
         );
       },
     );
+
+    final onRefresh = widget.onRefresh;
+    if (onRefresh == null) return list;
+    return RefreshIndicator(onRefresh: onRefresh, child: list);
   }
 }

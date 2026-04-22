@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
 
-import 'api_constant.dart';
-
 class ApiManger {
   final Dio dio;
 
@@ -13,7 +11,7 @@ class ApiManger {
     Map<String, dynamic>? headers,
   }) {
     return dio.get(
-      ApiConstant.baseUrl + endPoint,
+      endPoint,
       queryParameters: qureyParmetes,
       options: Options(headers: headers),
     );
@@ -26,7 +24,7 @@ class ApiManger {
     Map<String, dynamic>? headers,
   }) {
     return dio.post(
-      ApiConstant.baseUrl + endPoint,
+      endPoint,
       queryParameters: qureyParmetes,
       data: body,
       options: Options(headers: headers),

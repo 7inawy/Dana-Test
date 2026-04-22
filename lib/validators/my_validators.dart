@@ -14,8 +14,9 @@ class MyValidators {
     if (value == null || value.isEmpty) {
       return 'Please enter an email';
     }
-    if (!RegExp(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
-        .hasMatch(value)) {
+    if (!RegExp(
+      r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
+    ).hasMatch(value)) {
       return 'Please enter a valid email';
     }
     return null;
@@ -28,7 +29,7 @@ class MyValidators {
     if (!value.startsWith('010')) {
       return 'Phone number must start with 010';
     }
-    if (value.length < 11 || value.length>11) {
+    if (value.length < 11 || value.length > 11) {
       return 'Phone must be at least 11 characters long';
     }
 
@@ -49,7 +50,7 @@ class MyValidators {
     if (value == null || value.isEmpty) {
       return 'Please enter a national ID';
     }
-    if (value.length < 14 || value.length>14) {
+    if (value.length < 14 || value.length > 14) {
       return 'National ID must be at least 14 characters long';
     }
     return null;

@@ -95,9 +95,7 @@ class AppointmentController extends ChangeNotifier {
       imageUrl: imageUrl,
       detectionPrice: detectionPrice,
       availableDates: availableDateStrs,
-      availableTimes: timeSlots
-          .map(BookingDraft.timeToApi)
-          .toList(),
+      availableTimes: timeSlots.map(BookingDraft.timeToApi).toList(),
     );
   }
 

@@ -4,7 +4,12 @@ class Doctor {
   final int price;
   final String? profileImage;
 
-  Doctor({required this.id, required this.name, required this.price, this.profileImage});
+  Doctor({
+    required this.id,
+    required this.name,
+    required this.price,
+    this.profileImage,
+  });
 
   factory Doctor.fromJson(dynamic json) {
     if (json is String) {

@@ -15,8 +15,10 @@ class SkillsLoading extends SkillsState {
 class SkillsLoaded extends SkillsState {
   final String childId;
   final List<SkillApiModel> skills;
+
   /// Checked item count per skill id (from checklist API).
   final Map<String, int> skillCheckedById;
+
   /// Total checklist items per skill id.
   final Map<String, int> skillTotalById;
 
@@ -66,4 +68,3 @@ class SkillsError extends SkillsState {
   final String message;
   const SkillsError(this.message);
 }
-

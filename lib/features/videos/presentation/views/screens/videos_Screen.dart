@@ -93,7 +93,9 @@ class _VideosScreenState extends State<VideosScreen> {
                       if (state is VideosError) {
                         return Center(child: Text(state.message));
                       }
-                      final videos = state is VideosLoaded ? state.videos : <VideoModel>[];
+                      final videos = state is VideosLoaded
+                          ? state.videos
+                          : <VideoModel>[];
                       final sections = [
                         VideoSection(
                           title: context.l10n.videos,

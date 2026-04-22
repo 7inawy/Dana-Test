@@ -11,8 +11,7 @@ class VerifyPasswordOtpUseCase extends UseCase<Unit, VerifyPasswordOtpParams> {
 
   @override
   Future<Either<Failure, Unit>> call(VerifyPasswordOtpParams params) {
-    return repository.verifyPasswordOtp(
-        phone: params.phone, otp: params.otp);
+    return repository.verifyPasswordOtp(phone: params.phone, otp: params.otp);
   }
 }
 

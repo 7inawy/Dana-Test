@@ -18,13 +18,11 @@ class GrowthRepo {
     required double weight,
     required double headCircumference,
     required DateTime recordDate,
-  }) =>
-      service.postRecord(
-        childId: childId,
-        height: height,
-        weight: weight,
-        headCircumference: headCircumference,
-        recordDate: recordDate,
-      );
+  }) => service.postRecord(
+    childId: childId,
+    height: height,
+    weight: weight,
+    headCircumference: headCircumference,
+    recordDate: recordDate,
+  );
 }
-

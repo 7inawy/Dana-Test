@@ -63,115 +63,117 @@ class _BooksScreenState extends State<BooksScreen> {
     return BlocProvider.value(
       value: _textBooksCubit,
       child: Scaffold(
-      backgroundColor: isDark
-          ? AppColors.bg_surface_default_dark
-          : AppColors.bg_surface_default_light,
-      appBar: AppBar(
         backgroundColor: isDark
-            ? AppColors.bg_card_default_dark
-            : AppColors.bg_card_default_light,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        automaticallyImplyLeading: false,
-        toolbarHeight: 56.w,
-        titleSpacing: 0,
-        title: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomAppBarButton(
-                iconSrc: 'assets/Icons/search_icon.svg',
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (_) => BlocProvider.value(
-                      value: _textBooksCubit,
-                      child: SearchScreen(searchType: SearchType.books),
-                    ),
-                  );
-                },
-              ),
-              Text(
-                l10n.books,
-                style: AppTextStyle.medium16TextHeading(context),
-              ),
-              CustomAppBarButton(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: Column(
-            children: [
-              SizedBox(height: 12.h),
-              VideosTabBar(
-                activeTab: _activeTab,
-                onTabChanged: (t) => setState(() => _activeTab = t),
-              ),
-              Expanded(
-                child: BlocBuilder<TextBooksCubit, TextBooksState>(
-                  builder: (context, state) {
-                    if (state is TextBooksLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (state is TextBooksError) {
-                      return Center(child: Text(state.message));
-                    }
-                    final books = state is TextBooksLoaded ? state.books : <BookModel>[];
-                    final featured = books.take(4).toList();
-                    final guides = books.skip(4).toList();
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SizedBox(height: 16.h),
-                          BooksSectionHeader(
-                            title: l10n.featuredBooks,
-                            onViewAll: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => AllBooksScreen(
-                                  books: featured,
-                                  sectionTitle: l10n.featuredBooks,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 12.h),
-                          BooksHorizontalList(books: featured),
-                          SizedBox(height: 24.h),
-                          BooksSectionHeader(
-                            title: l10n.guideBooks,
-                            onViewAll: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => AllBooksScreen(
-                                  books: guides,
-                                  sectionTitle: l10n.guideBooks,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 12.h),
-                          BooksVerticalList(books: guides),
-                          SizedBox(height: 24.h),
-                        ],
+            ? AppColors.bg_surface_default_dark
+            : AppColors.bg_surface_default_light,
+        appBar: AppBar(
+          backgroundColor: isDark
+              ? AppColors.bg_card_default_dark
+              : AppColors.bg_card_default_light,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          automaticallyImplyLeading: false,
+          toolbarHeight: 56.w,
+          titleSpacing: 0,
+          title: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomAppBarButton(
+                  iconSrc: 'assets/Icons/search_icon.svg',
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (_) => BlocProvider.value(
+                        value: _textBooksCubit,
+                        child: SearchScreen(searchType: SearchType.books),
                       ),
                     );
                   },
                 ),
-              ),
-            ],
+                Text(
+                  l10n.books,
+                  style: AppTextStyle.medium16TextHeading(context),
+                ),
+                CustomAppBarButton(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
-      ),
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
+            child: Column(
+              children: [
+                SizedBox(height: 12.h),
+                VideosTabBar(
+                  activeTab: _activeTab,
+                  onTabChanged: (t) => setState(() => _activeTab = t),
+                ),
+                Expanded(
+                  child: BlocBuilder<TextBooksCubit, TextBooksState>(
+                    builder: (context, state) {
+                      if (state is TextBooksLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state is TextBooksError) {
+                        return Center(child: Text(state.message));
+                      }
+                      final books = state is TextBooksLoaded
+                          ? state.books
+                          : <BookModel>[];
+                      final featured = books.take(4).toList();
+                      final guides = books.skip(4).toList();
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            SizedBox(height: 16.h),
+                            BooksSectionHeader(
+                              title: l10n.featuredBooks,
+                              onViewAll: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AllBooksScreen(
+                                    books: featured,
+                                    sectionTitle: l10n.featuredBooks,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 12.h),
+                            BooksHorizontalList(books: featured),
+                            SizedBox(height: 24.h),
+                            BooksSectionHeader(
+                              title: l10n.guideBooks,
+                              onViewAll: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AllBooksScreen(
+                                    books: guides,
+                                    sectionTitle: l10n.guideBooks,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 12.h),
+                            BooksVerticalList(books: guides),
+                            SizedBox(height: 24.h),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

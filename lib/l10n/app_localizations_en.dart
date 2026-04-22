@@ -322,6 +322,17 @@ class AppLocalizationsEn extends AppLocalizations {
       'We’d love your feedback on your experience with Dr. Islam Ghoneim. Your rating helps us improve care.';
 
   @override
+  String get ratingNotAllowedTitle => 'Rating not available yet';
+
+  @override
+  String get ratingNotAllowedDesc =>
+      'You can rate the doctor only after the appointment is completed.';
+
+  @override
+  String get ratingSubmitFailed =>
+      'We couldn’t submit your rating right now. Please try again later.';
+
+  @override
   String get sendRating => 'Submit rating';
 
   @override
@@ -869,6 +880,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sensoryActivitiesPlan => 'Sensory Activities Plan for Home';
+
+  @override
+  String get sensorySubmitFailed =>
+      'We couldn’t submit your answers right now. Please try again later.';
+
+  @override
+  String get skillsNotAvailableTitle => 'Skills are not available yet';
+
+  @override
+  String get skillsNotAvailableDesc =>
+      'We’ll show your child’s skills and progress as soon as they are available on the server.';
 
   @override
   String get sectionHeaderTitle => 'Initial Assessment of Sensory Challenges';

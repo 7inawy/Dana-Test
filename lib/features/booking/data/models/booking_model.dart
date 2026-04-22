@@ -32,7 +32,9 @@ class Booking {
       paymentStatus: json['paymentStatus'] ?? '',
       child: Child.fromJson(json['childId']),
       doctor: Doctor.fromJson(json['doctorId']),
-      parentId: parentRaw is Map ? (parentRaw['_id']?.toString() ?? '') : parentRaw?.toString() ?? '',
+      parentId: parentRaw is Map
+          ? (parentRaw['_id']?.toString() ?? '')
+          : parentRaw?.toString() ?? '',
     );
   }
 }

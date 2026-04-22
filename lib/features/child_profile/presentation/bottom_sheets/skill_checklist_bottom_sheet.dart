@@ -39,7 +39,9 @@ class SkillChecklistBottomSheet extends StatelessWidget {
       ),
       child: BlocBuilder<SkillsCubit, SkillsState>(
         builder: (context, state) {
-          final items = state is ChecklistLoaded ? state.items : <SkillChecklistItemApiModel>[];
+          final items = state is ChecklistLoaded
+              ? state.items
+              : <SkillChecklistItemApiModel>[];
           final loading = state is ChecklistLoading || state is SkillsLoading;
 
           return SingleChildScrollView(
@@ -51,11 +53,15 @@ class SkillChecklistBottomSheet extends StatelessWidget {
                 SizedBox(height: 20.h),
                 Text(title, style: AppTextStyle.medium20TextDisplay(context)),
                 SizedBox(height: 8.h),
-                Text(description, style: AppTextStyle.regular16TextBody(context)),
+                Text(
+                  description,
+                  style: AppTextStyle.regular16TextBody(context),
+                ),
                 SizedBox(height: 12.h),
                 if (loading) const Center(child: CircularProgressIndicator()),
                 if (!loading)
-                  for (final item in items) _ChecklistRow(item: item, isDark: isDark, skillId: skillId),
+                  for (final item in items)
+                    _ChecklistRow(item: item, isDark: isDark, skillId: skillId),
                 SizedBox(height: 20.h),
               ],
             ),
@@ -82,10 +88,10 @@ class _ChecklistRow extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.read<SkillsCubit>().toggle(
-              skillId: skillId,
-              itemId: item.id,
-              checked: !item.checked,
-            );
+          skillId: skillId,
+          itemId: item.id,
+          checked: !item.checked,
+        );
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -94,20 +100,20 @@ class _ChecklistRow extends StatelessWidget {
         decoration: BoxDecoration(
           color: item.checked
               ? isDark
-                  ? AppColors.primary_50_dark
-                  : AppColors.primary_50_light
+                    ? AppColors.primary_50_dark
+                    : AppColors.primary_50_light
               : isDark
-                  ? AppColors.bg_card_default_dark
-                  : AppColors.bg_card_default_light,
+              ? AppColors.bg_card_default_dark
+              : AppColors.bg_card_default_light,
           borderRadius: BorderRadius.circular(AppRadius.radius_md),
           border: Border.all(
             color: item.checked
                 ? isDark
-                    ? AppColors.primary_default_dark
-                    : AppColors.primary_default_light
+                      ? AppColors.primary_default_dark
+                      : AppColors.primary_default_light
                 : isDark
-                    ? AppColors.border_card_default_dark
-                    : AppColors.border_card_default_light,
+                ? AppColors.border_card_default_dark
+                : AppColors.border_card_default_light,
           ),
         ),
         child: Row(
@@ -119,16 +125,19 @@ class _ChecklistRow extends StatelessWidget {
                 value: item.checked,
                 onChanged: (val) {
                   context.read<SkillsCubit>().toggle(
-                        skillId: skillId,
-                        itemId: item.id,
-                        checked: val ?? false,
-                      );
+                    skillId: skillId,
+                    itemId: item.id,
+                    checked: val ?? false,
+                  );
                 },
               ),
             ),
             SizedBox(width: 8.w),
             Expanded(
-              child: Text(item.title, style: AppTextStyle.medium16TextBody(context)),
+              child: Text(
+                item.title,
+                style: AppTextStyle.medium16TextBody(context),
+              ),
             ),
           ],
         ),
@@ -136,4 +145,3 @@ class _ChecklistRow extends StatelessWidget {
     );
   }
 }
-

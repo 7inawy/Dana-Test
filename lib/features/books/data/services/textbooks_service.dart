@@ -25,7 +25,10 @@ class TextBooksService {
   }
 
   Future<List<BookModel>> search(String query) async {
-    final res = await dio.get(ApiEndpoint.textBooksSearch, queryParameters: {'q': query});
+    final res = await dio.get(
+      ApiEndpoint.textBooksSearch,
+      queryParameters: {'q': query},
+    );
     final list = ResponseUnwrap.unwrapList(res.data);
     return list
         .whereType<Map>()
@@ -33,4 +36,3 @@ class TextBooksService {
         .toList();
   }
 }
-

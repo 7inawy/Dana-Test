@@ -21,4 +21,3 @@ abstract class ParentProfileRemoteDataSource {
     File? profileImage,
   });
 }
-

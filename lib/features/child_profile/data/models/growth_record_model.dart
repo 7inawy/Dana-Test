@@ -23,9 +23,9 @@ class GrowthRecord {
       weight: double.tryParse(json['weight']?.toString() ?? '') ?? 0,
       headCircumference:
           double.tryParse(json['headCircumference']?.toString() ?? '') ?? 0,
-      recordDate: DateTime.tryParse(json['recordDate']?.toString() ?? '') ??
+      recordDate:
+          DateTime.tryParse(json['recordDate']?.toString() ?? '') ??
           DateTime.now(),
     );
   }
 }
-

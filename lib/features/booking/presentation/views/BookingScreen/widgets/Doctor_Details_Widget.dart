@@ -43,12 +43,7 @@ class DoctorDetailsWidget extends StatelessWidget {
       }
       return ClipRRect(
         borderRadius: BorderRadius.circular(12.r),
-        child: Image.asset(
-          img,
-          height: 70.h,
-          width: 70.w,
-          fit: BoxFit.cover,
-        ),
+        child: Image.asset(img, height: 70.h, width: 70.w, fit: BoxFit.cover),
       );
     }
 
@@ -65,10 +60,7 @@ class DoctorDetailsWidget extends StatelessWidget {
                 style: AppTextStyle.semibold20TextHeading(context),
               ),
               SizedBox(height: 8.h),
-              Text(
-                spec,
-                style: AppTextStyle.bold12TextBody(context),
-              ),
+              Text(spec, style: AppTextStyle.bold12TextBody(context)),
               SizedBox(height: 8.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,

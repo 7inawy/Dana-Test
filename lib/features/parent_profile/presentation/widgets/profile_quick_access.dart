@@ -47,7 +47,8 @@ class ProfileQuickAccess extends StatelessWidget {
                         : AppColors.primary_50_light,
                     onTap: () {
                       final s = context.read<ParentProfileCubit>().state;
-                      if (s is! ParentProfileLoaded || s.profile.children.isEmpty) {
+                      if (s is! ParentProfileLoaded ||
+                          s.profile.children.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(context.l10n.addChildDesc)),
                         );
@@ -79,13 +80,14 @@ class ProfileQuickAccess extends StatelessWidget {
                         : AppColors.primary_50_light,
                     onTap: () {
                       final s = context.read<ParentProfileCubit>().state;
-                      final id = s is ParentProfileLoaded && s.profile.children.isNotEmpty
+                      final id =
+                          s is ParentProfileLoaded &&
+                              s.profile.children.isNotEmpty
                           ? s.profile.children.first.id
                           : null;
-                      Navigator.of(context).pushNamed(
-                        AppRoutes.vaccine,
-                        arguments: id,
-                      );
+                      Navigator.of(
+                        context,
+                      ).pushNamed(AppRoutes.vaccine, arguments: id);
                     },
                   ),
                 ),

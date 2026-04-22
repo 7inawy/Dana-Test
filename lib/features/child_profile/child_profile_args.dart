@@ -12,6 +12,7 @@ class ChildProfileArgs {
 
   final String childId;
   final String childName;
+
   /// Backend value, e.g. `male` / `female`.
   final String gender;
   final DateTime? birthDate;

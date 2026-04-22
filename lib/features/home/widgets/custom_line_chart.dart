@@ -21,7 +21,20 @@ class CustomLineChart extends StatelessWidget {
   final List<double> headCircumferenceCm;
 
   String _monthLabel(DateTime d) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return months[(d.month - 1).clamp(0, 11)];
   }
 
@@ -30,15 +43,25 @@ class CustomLineChart extends StatelessWidget {
     final count = xDates.length;
     final heightSpots = List.generate(
       count,
-      (i) => FlSpot(i.toDouble(), (i < heightCm.length ? heightCm[i] : 0).toDouble()),
+      (i) => FlSpot(
+        i.toDouble(),
+        (i < heightCm.length ? heightCm[i] : 0).toDouble(),
+      ),
     );
     final headSpots = List.generate(
       count,
-      (i) => FlSpot(i.toDouble(), (i < headCircumferenceCm.length ? headCircumferenceCm[i] : 0).toDouble()),
+      (i) => FlSpot(
+        i.toDouble(),
+        (i < headCircumferenceCm.length ? headCircumferenceCm[i] : 0)
+            .toDouble(),
+      ),
     );
     final weightSpots = List.generate(
       count,
-      (i) => FlSpot(i.toDouble(), (i < weightKg.length ? weightKg[i] : 0).toDouble()),
+      (i) => FlSpot(
+        i.toDouble(),
+        (i < weightKg.length ? weightKg[i] : 0).toDouble(),
+      ),
     );
 
     final allY = [
@@ -46,7 +69,9 @@ class CustomLineChart extends StatelessWidget {
       ...headSpots.map((s) => s.y),
       ...weightSpots.map((s) => s.y),
     ];
-    final maxY = allY.isEmpty ? 100.0 : (allY.reduce((a, b) => a > b ? a : b) + 5);
+    final maxY = allY.isEmpty
+        ? 100.0
+        : (allY.reduce((a, b) => a > b ? a : b) + 5);
     final minY = 0.0;
 
     return LineChart(

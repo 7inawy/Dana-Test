@@ -11,8 +11,7 @@ class ParentProfileCubit extends Cubit<ParentProfileState> {
 
   ParentProfileCubit(this.repo) : super(const ParentProfileInitial());
 
-  String _errMsg(Object e) =>
-      e is ServerException ? e.message : e.toString();
+  String _errMsg(Object e) => e is ServerException ? e.message : e.toString();
 
   Future<void> loadMe({bool silent = false}) async {
     if (!silent) emit(const ParentProfileLoading());
@@ -100,4 +99,3 @@ class ParentProfileCubit extends Cubit<ParentProfileState> {
     }
   }
 }
-

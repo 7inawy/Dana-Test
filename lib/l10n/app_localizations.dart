@@ -686,6 +686,24 @@ abstract class AppLocalizations {
   /// **'We’d love your feedback on your experience with Dr. Islam Ghoneim. Your rating helps us improve care.'**
   String get rateDoctorDesc;
 
+  /// No description provided for @ratingNotAllowedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating not available yet'**
+  String get ratingNotAllowedTitle;
+
+  /// No description provided for @ratingNotAllowedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You can rate the doctor only after the appointment is completed.'**
+  String get ratingNotAllowedDesc;
+
+  /// No description provided for @ratingSubmitFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn’t submit your rating right now. Please try again later.'**
+  String get ratingSubmitFailed;
+
   /// No description provided for @sendRating.
   ///
   /// In en, this message translates to:
@@ -1675,6 +1693,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sensory Activities Plan for Home'**
   String get sensoryActivitiesPlan;
+
+  /// No description provided for @sensorySubmitFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn’t submit your answers right now. Please try again later.'**
+  String get sensorySubmitFailed;
+
+  /// No description provided for @skillsNotAvailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Skills are not available yet'**
+  String get skillsNotAvailableTitle;
+
+  /// No description provided for @skillsNotAvailableDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'We’ll show your child’s skills and progress as soon as they are available on the server.'**
+  String get skillsNotAvailableDesc;
 
   /// No description provided for @sectionHeaderTitle.
   ///

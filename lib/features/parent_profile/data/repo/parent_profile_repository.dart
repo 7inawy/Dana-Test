@@ -18,21 +18,23 @@ class ParentProfileRepository {
     required String phone,
     required String government,
     required String address,
-  }) =>
-      remote.patchMe({
-        'parentName': parentName.trim(),
-        'email': email.trim().toLowerCase(),
-        'phone': ParentPhoneUtils.normalizeForApi(phone),
-        'government': government.trim(),
-        'address': address.trim(),
-      });
+  }) => remote.patchMe({
+    'parentName': parentName.trim(),
+    'email': email.trim().toLowerCase(),
+    'phone': ParentPhoneUtils.normalizeForApi(phone),
+    'government': government.trim(),
+    'address': address.trim(),
+  });
 
   Future<ParentChildModel> addChild({
     required String childName,
     required String gender,
     required DateTime birthDate,
-  }) =>
-      remote.addChild(childName: childName, gender: gender, birthDate: birthDate);
+  }) => remote.addChild(
+    childName: childName,
+    gender: gender,
+    birthDate: birthDate,
+  );
 
   Future<ParentChildModel> updateChild({
     required String childId,
@@ -40,13 +42,11 @@ class ParentProfileRepository {
     required String gender,
     required DateTime birthDate,
     File? profileImage,
-  }) =>
-      remote.updateChild(
-        childId: childId,
-        childName: childName,
-        gender: gender,
-        birthDate: birthDate,
-        profileImage: profileImage,
-      );
+  }) => remote.updateChild(
+    childId: childId,
+    childName: childName,
+    gender: gender,
+    birthDate: birthDate,
+    profileImage: profileImage,
+  );
 }
-

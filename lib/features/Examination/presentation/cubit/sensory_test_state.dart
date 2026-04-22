@@ -27,8 +27,13 @@ class SensoryTestSubmitted extends SensoryTestState {
   const SensoryTestSubmitted(this.result);
 }
 
+class SensoryTestSubmitError extends SensoryTestState {
+  final List<SensoryQuestion> questions;
+  final String message;
+  const SensoryTestSubmitError(this.questions, this.message);
+}
+
 class SensoryTestError extends SensoryTestState {
   final String message;
   const SensoryTestError(this.message);
 }
-

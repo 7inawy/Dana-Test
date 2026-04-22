@@ -12,7 +12,7 @@ class GrowthCubit extends Cubit<GrowthState> {
   final ParentProfileRepository parentRepo;
 
   GrowthCubit({required this.repo, required this.parentRepo})
-      : super(const GrowthInitial());
+    : super(const GrowthInitial());
 
   ParentChildModel? _pickChild(ParentProfileModel me, String? preferredId) {
     if (preferredId != null && preferredId.isNotEmpty) {
@@ -37,7 +37,10 @@ class GrowthCubit extends Cubit<GrowthState> {
       try {
         latest = await repo.getLatest(childId: resolvedId);
       } catch (_) {
-        latest = records.isNotEmpty ? (records..sort((a, b) => a.recordDate.compareTo(b.recordDate))).last : null;
+        latest = records.isNotEmpty
+            ? (records..sort((a, b) => a.recordDate.compareTo(b.recordDate)))
+                  .last
+            : null;
       }
       emit(
         GrowthLoaded(
@@ -82,7 +85,10 @@ class GrowthCubit extends Cubit<GrowthState> {
       try {
         latest = await repo.getLatest(childId: st.childId);
       } catch (_) {
-        latest = records.isNotEmpty ? (records..sort((a, b) => a.recordDate.compareTo(b.recordDate))).last : null;
+        latest = records.isNotEmpty
+            ? (records..sort((a, b) => a.recordDate.compareTo(b.recordDate)))
+                  .last
+            : null;
       }
       emit(
         GrowthLoaded(
@@ -100,4 +106,3 @@ class GrowthCubit extends Cubit<GrowthState> {
     }
   }
 }
-

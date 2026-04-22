@@ -92,112 +92,143 @@ class _VaccineScreenState extends State<VaccineScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              //تنبيه
-              Padding(
-                padding: EdgeInsets.all(2.r),
-                child: CustomPaint(
-                  painter: DashedRectPainter(
-                    color: isDark
-                        ? AppColors.primary_500_dark
-                        : AppColors.primary_500_light,
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
+                //تنبيه
+                Padding(
+                  padding: EdgeInsets.all(2.r),
+                  child: CustomPaint(
+                    painter: DashedRectPainter(
                       color: isDark
-                          ? AppColors.primary_50_dark
-                          : AppColors.primary_50_light,
-                      borderRadius: BorderRadius.circular(AppRadius.radius_sm),
+                          ? AppColors.primary_500_dark
+                          : AppColors.primary_500_light,
                     ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: 12.h,
-                      horizontal: 12.w,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/Icons/vaccine/warning_icon.svg',
-                              colorFilter: ColorFilter.mode(
-                                isDark
-                                    ? AppColors.icon_onLight_dark
-                                    : AppColors.icon_onLight_light,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                            SizedBox(width: 8.w),
-                            Text(
-                              context.l10n.warningTitle,
-                              style: AppTextStyle.semibold16TextHeading(
-                                context,
-                              ),
-                            ),
-                          ],
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? AppColors.primary_50_dark
+                            : AppColors.primary_50_light,
+                        borderRadius: BorderRadius.circular(
+                          AppRadius.radius_sm,
                         ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          context.l10n.vaccineWarningDescription,
-                          textAlign: TextAlign.center,
-                          style: AppTextStyle.medium12TextButtonOutlined(
-                            context,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              //التطعيمات
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-                child: BlocBuilder<VaccinationScheduleCubit, VaccinationScheduleState>(
-                  builder: (context, state) {
-                    if (state is VaccinationScheduleLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (state is VaccinationScheduleError) {
-                      return Column(
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12.h,
+                        horizontal: 12.w,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Center(child: Text(state.message)),
-                          SizedBox(height: 12.h),
-                          ElevatedButton(
-                            onPressed: () => context
-                                .read<VaccinationScheduleCubit>()
-                                .generateAndLoad(childId: widget.childId),
-                            child: const Text('Generate schedule'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/Icons/vaccine/warning_icon.svg',
+                                colorFilter: ColorFilter.mode(
+                                  isDark
+                                      ? AppColors.icon_onLight_dark
+                                      : AppColors.icon_onLight_light,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              Text(
+                                context.l10n.warningTitle,
+                                style: AppTextStyle.semibold16TextHeading(
+                                  context,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            context.l10n.vaccineWarningDescription,
+                            textAlign: TextAlign.center,
+                            style: AppTextStyle.medium12TextButtonOutlined(
+                              context,
+                            ),
                           ),
                         ],
-                      );
-                    }
-                    if (state is VaccinationScheduleInitial) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (state is VaccinationScheduleLoaded) {
-                      final items = state.items
-                          .map((e) => _mapScheduleToUi(
-                                context: context,
-                                childId: state.childId,
-                                item: e,
-                              ))
-                          .toList();
-                      if (items.isEmpty) {
-                        return ElevatedButton(
-                          onPressed: () => context
-                              .read<VaccinationScheduleCubit>()
-                              .generateAndLoad(childId: widget.childId),
-                          child: const Text('Generate schedule'),
-                        );
-                      }
-                      return Column(
-                        children: items.map((v) => VaccineItemWidget(item: v)).toList(),
-                      );
-                    }
-                    return const Center(child: CircularProgressIndicator());
-                  },
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                //التطعيمات
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
+                  child:
+                      BlocBuilder<
+                        VaccinationScheduleCubit,
+                        VaccinationScheduleState
+                      >(
+                        builder: (context, state) {
+                          if (state is VaccinationScheduleLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          if (state is VaccinationScheduleError) {
+                            return Column(
+                              children: [
+                                Center(child: Text(state.message)),
+                                SizedBox(height: 12.h),
+                                Wrap(
+                                  spacing: 12.w,
+                                  runSpacing: 8.h,
+                                  alignment: WrapAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () => context
+                                          .read<VaccinationScheduleCubit>()
+                                          .load(childId: widget.childId),
+                                      child: const Text('إعادة المحاولة'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () => context
+                                          .read<VaccinationScheduleCubit>()
+                                          .generateAndLoad(
+                                            childId: widget.childId,
+                                          ),
+                                      child: const Text('إنشاء جدول التطعيمات'),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          }
+                          if (state is VaccinationScheduleInitial) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          if (state is VaccinationScheduleLoaded) {
+                            final items = state.items
+                                .map(
+                                  (e) => _mapScheduleToUi(
+                                    context: context,
+                                    childId: state.childId,
+                                    item: e,
+                                  ),
+                                )
+                                .toList();
+                            if (items.isEmpty) {
+                              return ElevatedButton(
+                                onPressed: () => context
+                                    .read<VaccinationScheduleCubit>()
+                                    .generateAndLoad(childId: widget.childId),
+                                child: const Text('إنشاء جدول التطعيمات'),
+                              );
+                            }
+                            return Column(
+                              children: items
+                                  .map((v) => VaccineItemWidget(item: v))
+                                  .toList(),
+                            );
+                          }
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
+                ),
               ],
             ),
           ),

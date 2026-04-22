@@ -26,4 +26,3 @@ class VideosError extends VideosState {
   final String message;
   const VideosError(this.message);
 }
-

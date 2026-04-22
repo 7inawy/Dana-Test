@@ -11,7 +11,8 @@ class ResponseUnwrap {
   static dynamic unwrap(dynamic root) {
     if (root is Map) {
       final response = root['response'];
-      if (response is Map && response.containsKey('data')) return response['data'];
+      if (response is Map && response.containsKey('data'))
+        return response['data'];
       if (root.containsKey('data')) return root['data'];
     }
     return root;
@@ -29,4 +30,3 @@ class ResponseUnwrap {
     throw const FormatException('Unexpected response shape: expected map');
   }
 }
-

@@ -21,4 +21,3 @@ class ParentProfileError extends ParentProfileState {
   final String message;
   const ParentProfileError(this.message);
 }
-

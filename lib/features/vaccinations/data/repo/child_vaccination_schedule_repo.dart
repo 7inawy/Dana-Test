@@ -11,7 +11,5 @@ class ChildVaccinationScheduleRepo {
 
   Future<List<ChildVaccinationScheduleItem>> getSchedule({
     required String childId,
-  }) =>
-      service.getSchedule(childId: childId);
+  }) => service.getSchedule(childId: childId);
 }
-

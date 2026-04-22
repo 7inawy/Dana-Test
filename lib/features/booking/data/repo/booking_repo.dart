@@ -73,7 +73,9 @@ class BookingRepo {
   Future<List<Booking>> getMyAppointmentsByParent({
     required String parentId,
   }) async {
-    final response = await service.getMyAppointmentsByParent(parentId: parentId);
+    final response = await service.getMyAppointmentsByParent(
+      parentId: parentId,
+    );
     return _parseBookings(response.data);
   }
 

@@ -78,4 +78,3 @@ class VaccinationScheduleCubit extends Cubit<VaccinationScheduleState> {
     }
   }
 }
-

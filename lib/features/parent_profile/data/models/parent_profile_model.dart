@@ -29,9 +29,8 @@ class ParentProfileModel {
       email: json['email']?.toString() ?? '',
       government: json['government']?.toString() ?? '',
       address: json['address']?.toString() ?? '',
-      profileImageUrl: (rawImg != null &&
-              rawImg.isNotEmpty &&
-              rawImg.startsWith('http'))
+      profileImageUrl:
+          (rawImg != null && rawImg.isNotEmpty && rawImg.startsWith('http'))
           ? rawImg
           : null,
       children: _childrenFromList(childrenJson),
@@ -88,12 +87,10 @@ class ParentChildModel {
       childName: json['childName']?.toString() ?? '',
       gender: json['gender']?.toString() ?? '',
       birthDate: parsed,
-      profileImageUrl: (rawImg != null &&
-              rawImg.isNotEmpty &&
-              rawImg.startsWith('http'))
+      profileImageUrl:
+          (rawImg != null && rawImg.isNotEmpty && rawImg.startsWith('http'))
           ? rawImg
           : null,
     );
   }
 }
-

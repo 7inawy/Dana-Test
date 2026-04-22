@@ -35,8 +35,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void _search(String query) {
     setState(() {
       _hasSearched = query.trim().isNotEmpty;
-      if (widget.searchType == SearchType.books) {
-      }
+      if (widget.searchType == SearchType.books) {}
     });
 
     if (widget.searchType == SearchType.videos) {
@@ -64,7 +63,9 @@ class _SearchScreenState extends State<SearchScreen> {
           if (state is VideosError) {
             return const NoResultsWidget();
           }
-          final results = state is VideosSearchLoaded ? state.results : <VideoModel>[];
+          final results = state is VideosSearchLoaded
+              ? state.results
+              : <VideoModel>[];
           if (results.isEmpty) return const NoResultsWidget();
           return SearchResults(results: results);
         },
@@ -78,7 +79,9 @@ class _SearchScreenState extends State<SearchScreen> {
           if (state is TextBooksError) {
             return const NoResultsWidget();
           }
-          final results = state is TextBooksSearchLoaded ? state.results : <BookModel>[];
+          final results = state is TextBooksSearchLoaded
+              ? state.results
+              : <BookModel>[];
           if (results.isEmpty) return const NoResultsWidget();
           return BooksSearchResults(results: results);
         },

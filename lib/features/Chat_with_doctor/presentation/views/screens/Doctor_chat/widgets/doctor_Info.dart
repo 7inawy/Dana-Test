@@ -18,14 +18,8 @@ class DoctorInfo extends StatelessWidget {
           ? CrossAxisAlignment.end
           : CrossAxisAlignment.start,
       children: [
-        Text(
-          doctor.name,
-          style: AppTextStyle.semibold20TextHeading(context),
-        ),
-        Text(
-          doctor.specialty,
-          style: AppTextStyle.medium12TextBody(context),
-        ),
+        Text(doctor.name, style: AppTextStyle.semibold20TextHeading(context)),
+        Text(doctor.specialty, style: AppTextStyle.medium12TextBody(context)),
       ],
     );
   }

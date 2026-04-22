@@ -16,7 +16,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-ChildVaccinationScheduleItem? _nextPending(List<ChildVaccinationScheduleItem> items) {
+ChildVaccinationScheduleItem? _nextPending(
+  List<ChildVaccinationScheduleItem> items,
+) {
   final pending = items.where((e) {
     final s = e.status.toLowerCase();
     if (s == 'taken' || e.takenDate != null) return false;
@@ -49,7 +51,11 @@ class NextVaccineCard extends StatelessWidget {
               final next = _nextPending(vac.items);
               if (next != null) {
                 vaccineName = next.vaccine.name;
-                final due = DateTime(next.dueDate.year, next.dueDate.month, next.dueDate.day);
+                final due = DateTime(
+                  next.dueDate.year,
+                  next.dueDate.month,
+                  next.dueDate.day,
+                );
                 final today = DateTime.now();
                 final start = DateTime(today.year, today.month, today.day);
                 final days = due.difference(start).inDays;
@@ -61,7 +67,8 @@ class NextVaccineCard extends StatelessWidget {
                 vaccineName = context.l10n.vaccineTaken;
                 timeLine = '';
               }
-            } else if (vac is VaccinationScheduleLoading || vac is VaccinationScheduleInitial) {
+            } else if (vac is VaccinationScheduleLoading ||
+                vac is VaccinationScheduleInitial) {
               vaccineName = '…';
               timeLine = '';
             } else if (vac is VaccinationScheduleError) {
@@ -99,7 +106,9 @@ class NextVaccineCard extends StatelessWidget {
                           children: [
                             Text(
                               context.l10n.nextVaccineTitle,
-                              style: AppTextStyle.medium12WarningDefault(context),
+                              style: AppTextStyle.medium12WarningDefault(
+                                context,
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 4.h),
@@ -121,7 +130,9 @@ class NextVaccineCard extends StatelessWidget {
                                   Expanded(
                                     child: Text(
                                       timeLine,
-                                      style: AppTextStyle.medium8TextBody(context),
+                                      style: AppTextStyle.medium8TextBody(
+                                        context,
+                                      ),
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -138,7 +149,9 @@ class NextVaccineCard extends StatelessWidget {
                     height: 36.h,
                     color: Colors.transparent,
                     text: context.l10n.fullVaccinationRecord,
-                    textStyle: AppTextStyle.semibold12TextButtonOutlined(context),
+                    textStyle: AppTextStyle.semibold12TextButtonOutlined(
+                      context,
+                    ),
                     borderColor: isDark
                         ? AppColors.border_button_outlined_dark
                         : AppColors.border_button_outlined_light,

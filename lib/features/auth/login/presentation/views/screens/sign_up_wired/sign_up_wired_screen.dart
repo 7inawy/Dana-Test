@@ -108,9 +108,7 @@ class _SignUpWiredViewState extends State<_SignUpWiredView> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Sign up'),
-        ),
+        appBar: AppBar(title: const Text('Sign up')),
         body: SafeArea(
           child: Form(
             key: _formKey,
@@ -209,7 +207,9 @@ class _SignUpWiredViewState extends State<_SignUpWiredView> {
                               if (!_formKey.currentState!.validate()) return;
                               await _submit(context.read<SignUpCubit>());
                             },
-                      child: Text(loading ? 'Sending OTP...' : 'Create account'),
+                      child: Text(
+                        loading ? 'Sending OTP...' : 'Create account',
+                      ),
                     );
                   },
                 ),
@@ -240,4 +240,3 @@ class _SignUpWiredViewState extends State<_SignUpWiredView> {
     );
   }
 }
-
