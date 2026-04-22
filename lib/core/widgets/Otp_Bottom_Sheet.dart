@@ -110,7 +110,6 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
   // }
 
   void _handleOtpComplete(String pin) {
-    debugPrint('OTP entered: $pin');
     Navigator.pop(context);
     if (widget.onVerified != null) {
       widget.onVerified!(pin);

@@ -3,7 +3,8 @@ import 'package:dana/core/utils/app_raduis.dart';
 import 'package:dana/core/widgets/custom_elevetedButton.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:flutter/material.dart';
-import '../../../contact_info/presentation/views/screens/contant_Info_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dana/features/auth/login/presentation/cubit/sign_up_cubit.dart';
 import '../widgets/child_info_body.dart';
 
 ///ضيف اولادك
@@ -20,14 +21,40 @@ class ChildInfoScreen extends StatefulWidget {
 class _ChildInfoScreenState extends State<ChildInfoScreen> {
   int selectedIndex = 1;
 
+  final _childName = TextEditingController();
+  DateTime? _selectedBirthDate;
+
+  @override
+  void dispose() {
+    _childName.dispose();
+    super.dispose();
+  }
+
+  String _birthDateIso(DateTime d) {
+    final y = d.year.toString().padLeft(4, '0');
+    final m = d.month.toString().padLeft(2, '0');
+    final day = d.day.toString().padLeft(2, '0');
+    return '$y-$m-$day';
+  }
+
+  void _onNext() {
+    final cubit = context.read<SignUpCubit>();
+    cubit.updateChildName(_childName.text);
+    final bd = _selectedBirthDate;
+    cubit.updateChildBirthDate(bd != null ? _birthDateIso(bd) : '');
+    cubit.updateChildGender(selectedIndex == 2 ? 'female' : 'male');
+    final ok = cubit.onStep2Next();
+    if (!ok) return;
+    widget.onNext?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(AppRadius.space_xl),
         child: CustomElevatedButton(
-          onTap: () =>
-              Navigator.of(context).pushNamed(ContactInfoScreen.routeName),
+          onTap: _onNext,
           icon: Icons.arrow_forward_ios,
           text: context.l10n.next,
         ),
@@ -36,6 +63,8 @@ class _ChildInfoScreenState extends State<ChildInfoScreen> {
         child: ChildInfoBody(
           selectedIndex: selectedIndex,
           onGenderSelect: (i) => setState(() => selectedIndex = i),
+          childNameController: _childName,
+          onBirthDateChanged: (d) => _selectedBirthDate = d,
         ),
       ),
     );

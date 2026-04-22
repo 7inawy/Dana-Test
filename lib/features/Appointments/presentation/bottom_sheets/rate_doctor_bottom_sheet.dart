@@ -87,35 +87,35 @@ class _RateDoctorBottomSheetState extends State<RateDoctorBottomSheet> {
                   : (isDark
                         ? AppColors.bg_button_primary_disabled_dark
                         : AppColors.bg_button_primary_disabled_light),
-              onTap: isButtonEnabled
-                  ? () async {
-                      final bookingId = widget.bookingId;
-                      if (bookingId == null || bookingId.isEmpty) {
-                        Navigator.pop(context);
-                        return;
-                      }
-                      await context.read<BookingCubit>().rateBooking(
-                        bookingId: bookingId,
-                        rating: rating,
-                      );
-                      if (!mounted) return;
-                      final st = context.read<BookingCubit>().state;
-                      if (st is BookingError) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              st.error.isNotEmpty
-                                  ? st.error
-                                  : context.l10n.ratingSubmitFailed,
-                            ),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                        return;
-                      }
-                      Navigator.pop(context);
-                    }
-                  : () {},
+              onTap: () async {
+                if (!isButtonEnabled) return;
+                final bookingId = widget.bookingId;
+                if (bookingId == null || bookingId.isEmpty) {
+                  Navigator.pop(context);
+                  return;
+                }
+                await context.read<BookingCubit>().rateBooking(
+                  bookingId: bookingId,
+                  rating: rating,
+                );
+                if (!mounted) return;
+                final st = context.read<BookingCubit>().state;
+                if (st is BookingError) {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        st.error.isNotEmpty
+                            ? st.error
+                            : context.l10n.ratingSubmitFailed,
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                  return;
+                }
+                Navigator.pop(context);
+              },
             ),
             SizedBox(height: 20.h),
           ],

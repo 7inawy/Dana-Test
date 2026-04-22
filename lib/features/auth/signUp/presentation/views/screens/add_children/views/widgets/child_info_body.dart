@@ -10,11 +10,15 @@ import 'child_info_form_fields.dart';
 class ChildInfoBody extends StatefulWidget {
   final int selectedIndex;
   final ValueChanged<int> onGenderSelect;
+  final TextEditingController childNameController;
+  final ValueChanged<DateTime> onBirthDateChanged;
 
   const ChildInfoBody({
     super.key,
     required this.selectedIndex,
     required this.onGenderSelect,
+    required this.childNameController,
+    required this.onBirthDateChanged,
   });
 
   @override
@@ -38,7 +42,10 @@ class _ChildInfoBodyState extends State<ChildInfoBody> {
               subtitle: context.l10n.addChildDesc,
             ),
             SizedBox(height: AppSizes.h32),
-            const ChildInfoFormFields(),
+            ChildInfoFormFields(
+              childNameController: widget.childNameController,
+              onBirthDateChanged: widget.onBirthDateChanged,
+            ),
             SizedBox(height: AppSizes.h16),
             ChildGenderSection(
               selectedIndex: widget.selectedIndex,

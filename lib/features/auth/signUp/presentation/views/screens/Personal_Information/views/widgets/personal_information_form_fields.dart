@@ -9,7 +9,18 @@ import 'package:dana/core/utils/app_sizes.dart';
 import 'package:dana/l10n/app_localizations.dart';
 
 class PersonalInformationFormFields extends StatefulWidget {
-  const PersonalInformationFormFields({super.key});
+  const PersonalInformationFormFields({
+    super.key,
+    required this.nameController,
+    required this.addressController,
+    required this.government,
+    required this.onGovernmentChanged,
+  });
+
+  final TextEditingController nameController;
+  final TextEditingController addressController;
+  final String? government;
+  final ValueChanged<String?> onGovernmentChanged;
 
   @override
   State<PersonalInformationFormFields> createState() =>
@@ -18,8 +29,6 @@ class PersonalInformationFormFields extends StatefulWidget {
 
 class _PersonalInformationFormFieldsState
     extends State<PersonalInformationFormFields> {
-  String? goverName;
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,6 +39,7 @@ class _PersonalInformationFormFieldsState
           hintText: AppLocalizations.of(context)!.fullNameHint,
           keyboardType: TextInputType.name,
           borderWidth: AppRadius.stroke_regular,
+          controller: widget.nameController,
         ),
         SizedBox(height: AppSizes.h8),
         Text(
@@ -40,12 +50,8 @@ class _PersonalInformationFormFieldsState
         AnimatedDropdown(
           hintText: context.l10n.governorateHint,
           items: Governorates.egypt,
-          value: goverName,
-          onChanged: (val) {
-            setState(() {
-              goverName = val;
-            });
-          },
+          value: widget.government,
+          onChanged: widget.onGovernmentChanged,
         ),
         SizedBox(height: AppSizes.h8),
         CustomTextForm(
@@ -53,6 +59,7 @@ class _PersonalInformationFormFieldsState
           hintText: AppLocalizations.of(context)!.addressHint,
           borderWidth: AppRadius.stroke_regular,
           keyboardType: TextInputType.streetAddress,
+          controller: widget.addressController,
         ),
       ],
     );

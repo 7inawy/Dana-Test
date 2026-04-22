@@ -27,7 +27,7 @@ class ChildGenderSection extends StatelessWidget {
         CustomToggleSelector(
           firstText: context.l10n.boy,
           secondText: context.l10n.girl,
-          onChanged: (i) {},
+          onChanged: onSelect,
         ),
       ],
     );

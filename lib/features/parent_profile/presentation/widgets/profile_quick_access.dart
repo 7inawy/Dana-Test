@@ -49,8 +49,12 @@ class ProfileQuickAccess extends StatelessWidget {
                       final s = context.read<ParentProfileCubit>().state;
                       if (s is! ParentProfileLoaded ||
                           s.profile.children.isEmpty) {
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(context.l10n.addChildDesc)),
+                          SnackBar(
+                            content: Text(context.l10n.addChildDesc),
+                            behavior: SnackBarBehavior.floating,
+                          ),
                         );
                         return;
                       }

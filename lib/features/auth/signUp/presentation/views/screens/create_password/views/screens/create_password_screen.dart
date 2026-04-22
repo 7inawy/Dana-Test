@@ -1,18 +1,31 @@
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/utils/app_raduis.dart';
-import 'package:dana/core/utils/app_routes.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dana/features/auth/login/presentation/cubit/sign_up_cubit.dart';
 import '../widgets/create_password_body.dart';
 
-class CreatePasswordScreen extends StatelessWidget {
+class CreatePasswordScreen extends StatefulWidget {
   static const String routeName = 'CreatePasswordScreen';
   final VoidCallback? onNext;
 
+  const CreatePasswordScreen({super.key, required this.onNext});
+
+  @override
+  State<CreatePasswordScreen> createState() => _CreatePasswordScreenState();
+}
+
+class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  CreatePasswordScreen({super.key, this.onNext});
+  @override
+  void dispose() {
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +33,20 @@ class CreatePasswordScreen extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(AppRadius.radius_xl),
         child: CustomButton(
-          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
+          onTap: () async {
+            final cubit = context.read<SignUpCubit>();
+            cubit.updatePassword(passwordController.text);
+            await cubit.preSignUp();
+          },
           text: context.l10n.createAccount,
         ),
       ),
-      body: SafeArea(child: CreatePasswordBody()),
+      body: SafeArea(
+        child: CreatePasswordBody(
+          passwordController: passwordController,
+          confirmPasswordController: confirmPasswordController,
+        ),
+      ),
     );
   }
 }

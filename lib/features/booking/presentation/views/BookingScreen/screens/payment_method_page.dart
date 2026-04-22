@@ -135,36 +135,35 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               : (isDark
                     ? AppColors.text_button_disabled_dark
                     : AppColors.text_button_disabled_light),
-          onTap: isButtonEnabled
-              ? () {
-                  final base = _slotDraft!;
-                  final child = _childByName(_childName)!;
-                  final years = _yearsOld(child.birthDate);
-                  final pay = _selectedOption == 0 ? 'on-visit' : 'visa';
-                  final next = base.copyWith(
-                    childId: child.id,
-                    childName: child.childName,
-                    childYears: years,
-                    paymentMethod: pay,
-                    notes: _noteController.text.trim().isEmpty
-                        ? null
-                        : _noteController.text.trim(),
-                  );
-                  if (_selectedOption == 0) {
-                    Navigator.pushNamed(
-                      context,
-                      PaymentSuccessScreen.routeName,
-                      arguments: next,
-                    );
-                  } else {
-                    Navigator.pushNamed(
-                      context,
-                      OnlinePaymentScreen.routeName,
-                      arguments: next,
-                    );
-                  }
-                }
-              : () {},
+          onTap: () {
+            if (!isButtonEnabled) return;
+            final base = _slotDraft!;
+            final child = _childByName(_childName)!;
+            final years = _yearsOld(child.birthDate);
+            final pay = _selectedOption == 0 ? 'on-visit' : 'visa';
+            final next = base.copyWith(
+              childId: child.id,
+              childName: child.childName,
+              childYears: years,
+              paymentMethod: pay,
+              notes: _noteController.text.trim().isEmpty
+                  ? null
+                  : _noteController.text.trim(),
+            );
+            if (_selectedOption == 0) {
+              Navigator.pushNamed(
+                context,
+                PaymentSuccessScreen.routeName,
+                arguments: next,
+              );
+            } else {
+              Navigator.pushNamed(
+                context,
+                OnlinePaymentScreen.routeName,
+                arguments: next,
+              );
+            }
+          },
         ),
       ),
       backgroundColor: isDark

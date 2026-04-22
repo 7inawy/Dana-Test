@@ -66,9 +66,13 @@ class _ChangeAppointmentBottomSheetState
     if (_selectedDate == null ||
         _selectedTimeIndex < 0 ||
         _selectedTimeIndex >= AppointmentTimeData.availableTimes.length) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.selectAppointment)));
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.selectAppointment),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
       return;
     }
 
@@ -91,19 +95,28 @@ class _ChangeAppointmentBottomSheetState
       if (!context.mounted) return;
       if (err == null) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(context.l10n.bookingConfirmed)));
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.bookingConfirmed),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(err)));
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(err), behavior: SnackBarBehavior.floating),
+        );
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _submitting = false);
@@ -154,7 +167,10 @@ class _ChangeAppointmentBottomSheetState
 
             CustomButton(
               text: _submitting ? '…' : context.l10n.confirmNewAppointment,
-              onTap: _submitting ? () {} : () => _onConfirm(context),
+              onTap: () {
+                if (_submitting) return;
+                _onConfirm(context);
+              },
             ),
             SizedBox(height: 20.h),
           ],

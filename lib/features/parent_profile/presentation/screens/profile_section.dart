@@ -75,8 +75,12 @@ class _ProfileSectionState extends State<ProfileSection> {
     return BlocProvider.value(
       value: widget.cubit,
       child: BlocConsumer<ParentProfileCubit, ParentProfileState>(
+        listenWhen: (prev, next) =>
+            next is ParentProfileError &&
+            (prev is! ParentProfileError || prev.message != next.message),
         listener: (context, state) {
           if (state is ParentProfileError) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),

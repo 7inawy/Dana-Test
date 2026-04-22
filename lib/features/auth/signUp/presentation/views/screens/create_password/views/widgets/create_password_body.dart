@@ -7,7 +7,14 @@ import 'package:dana/l10n/app_localizations.dart';
 import 'create_password_form_fields.dart';
 
 class CreatePasswordBody extends StatelessWidget {
-  const CreatePasswordBody({super.key});
+  const CreatePasswordBody({
+    super.key,
+    required this.passwordController,
+    required this.confirmPasswordController,
+  });
+
+  final TextEditingController passwordController;
+  final TextEditingController confirmPasswordController;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +37,10 @@ class CreatePasswordBody extends StatelessWidget {
                     subtitle: AppLocalizations.of(context)!.choosePasswordDesc,
                   ),
                   SizedBox(height: AppSizes.h32),
-                  CreatePasswordFormFields(),
+                  CreatePasswordFormFields(
+                    passwordController: passwordController,
+                    confirmPasswordController: confirmPasswordController,
+                  ),
                   SizedBox(height: AppSizes.h48),
                 ],
               ),

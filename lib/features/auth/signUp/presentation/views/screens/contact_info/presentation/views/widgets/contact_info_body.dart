@@ -48,14 +48,21 @@ class ContactInfoBody extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: AppSizes.h8),
-                    child: SizedBox(height: 64.h, child: PhoneField()),
+                    child: SizedBox(
+                      height: 64.h,
+                      child: PhoneField(controller: phoneController),
+                    ),
                   ),
                   Text(
                     context.l10n.email,
                     style: AppTextStyle.medium12TextHeading(context),
                   ),
                   SizedBox(height: AppSizes.h8),
-                  CustomTextField(hintText: context.l10n.enterEmail),
+                  CustomTextField(
+                    hintText: context.l10n.enterEmail,
+                    controller: emailController,
+                    inputType: TextInputType.emailAddress,
+                  ),
                 ],
               ),
             ),

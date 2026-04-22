@@ -30,6 +30,7 @@ class SignInCubit extends Cubit<SignInState> {
     }
 
     final apiPhone = ParentPhoneUtils.normalizeForApi(_phone);
+    _phone = apiPhone;
 
     emit(const SignInLoading());
     final result = await preSignInUseCase(

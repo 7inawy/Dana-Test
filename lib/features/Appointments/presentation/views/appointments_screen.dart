@@ -108,7 +108,11 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
           title: context.l10n.appointments,
           isDark: isDark,
           onBack: () {
-            Navigator.pushNamed(context, AppRoutes.home);
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            } else {
+              Navigator.pushNamed(context, AppRoutes.home);
+            }
           },
         ),
         body: Padding(

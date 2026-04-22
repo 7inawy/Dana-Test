@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../Personal_Information/views/screens/personal_information.dart';
 import '../../../add_children/views/screens/child_info_screen.dart';
+import '../../../contact_info/presentation/views/screens/contant_Info_screen.dart';
 import '../../../create_password/views/screens/create_password_screen.dart';
 
 class SignUpPageView extends StatelessWidget {
@@ -25,7 +26,8 @@ class SignUpPageView extends StatelessWidget {
       children: [
         PersonalInformation(onNext: onNext),
         ChildInfoScreen(onNext: onNext),
-        CreatePasswordScreen(),
+        ContactInfoScreen(onNext: onNext),
+        CreatePasswordScreen(onNext: onNext),
       ],
     );
   }

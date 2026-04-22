@@ -81,9 +81,10 @@ class _PaymentAddScreenState extends State<PaymentAddScreen> {
                           : (isDark
                                 ? AppColors.text_button_disabled_dark
                                 : AppColors.text_button_disabled_light),
-                      onTap: isButtonEnabled
-                          ? () => showConfirmationSheet()
-                          : () {},
+                      onTap: () {
+                        if (!isButtonEnabled) return;
+                        showConfirmationSheet();
+                      },
                     ),
                   ),
                   Text(

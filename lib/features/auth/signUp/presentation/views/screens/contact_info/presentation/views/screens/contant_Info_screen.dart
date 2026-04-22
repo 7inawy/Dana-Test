@@ -2,9 +2,9 @@ import 'package:dana/core/utils/app_raduis.dart';
 import 'package:dana/core/widgets/custom_elevetedButton.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:flutter/material.dart';
-import '../../../../create_password/views/screens/create_password_screen.dart';
 import '../widgets/contact_info_body.dart';
-import 'Otp_Dialog.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dana/features/auth/login/presentation/cubit/sign_up_cubit.dart';
 
 class ContactInfoScreen extends StatefulWidget {
   static const String routeName = 'ContactInfoScreen';
@@ -30,13 +30,10 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
   }
 
   void _onNextPressed() {
-    OtpDialog.show(
-      context,
-      _phoneController.text.isEmpty ? '' : _phoneController.text,
-      onVerified: () {
-        Navigator.pushNamed(context, CreatePasswordScreen.routeName);
-      },
-    );
+    final cubit = context.read<SignUpCubit>();
+    cubit.updatePhone(_phoneController.text);
+    cubit.updateEmail(_emailController.text);
+    widget.onNext?.call();
   }
 
   @override
