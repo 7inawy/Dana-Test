@@ -75,21 +75,16 @@ The focus of the latest work is: **Child Profile** is now wired to the **selecte
   - `VaccineScreen` accepts optional `childId`
 
 ## Backend/API contract trackers
-- **Mobile wiring tracker**: `WIRING_STATUS.md` (source of truth for “what endpoints are wired”)
-- **Backend blockers list**: `BACKEND_WORK_ITEMS.md`
+- **Mobile wiring tracker**: `docs/WIRING_STATUS.md` (source of truth for “what endpoints are wired”)
+- **Backend blockers list**: `docs/BACKEND_WORK_ITEMS.md`
 
 ## Known TODOs / gaps (don’t re-break these)
 - **Multiple children selection**: currently, most entry points pick `children.first` for convenience; if UI adds selection, always pass the selected child’s id via `ChildProfileArgs`.
 - **Vaccinations**: schedule is wired; anything under “vaccinations admin” endpoints may still be out of scope for mobile.
 - **Response shape inconsistencies**: backend sometimes returns different envelopes; code has shape guards in some services (don’t remove them casually).
 
-## One uncommitted file to resolve before any PR/merge
-`Dana.postman_collection.json` is currently modified (large diff).
-
-- Likely a **Postman export metadata + ids** update (example: adds `createdAt/updatedAt/uid` and request/response `id` fields).
-- Decide one:
-  - **Keep and commit** if the repo wants the updated Postman collection.
-  - **Discard** if it’s accidental noise.
+## Notes on Postman collection
+`Dana.postman_collection.json` changes can be noisy (export metadata, request/response ids). If it churns frequently, consider keeping a stable “source of truth” export format or committing only intentional changes.
 
 ## Quick commands
 - **Analyze**: `flutter analyze`
