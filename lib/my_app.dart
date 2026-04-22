@@ -101,7 +101,8 @@ class MyApp extends StatelessWidget {
       NewPasswordScreen.routeName: (_) => const NewPasswordScreen(),
 
       /// Sign Up
-      AppRoutes.signup: (_) => const SignUpWiredScreen(),
+      AppRoutes.signup: (_) => const SignUpScreen(),
+      AppRoutes.signupWired: (_) => const SignUpWiredScreen(),
       AppRoutes.createPassword: (_) => const SignUpScreen(),
       AppRoutes.childInfo: (ctx) => ChildInfoScreen(
         onNext: () => Navigator.pushNamed(ctx, AppRoutes.contactInfo),
