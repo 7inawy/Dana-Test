@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../../../core/di/injection_container.dart';
 import '../../../../cubit/reset_password_cubit.dart';
 import '../../../../cubit/reset_password_state.dart';
-import '../../../../cubit/sign_in_cubit.dart';
+import '../../new_password/screens/new_password_screen.dart';
 
 class ForgetPasswordDialog extends StatefulWidget {
   static const String routeName = 'ForgetPasswordDialog';
@@ -104,16 +104,29 @@ class _ForgetPasswordDialogState extends State<ForgetPasswordDialog> {
     return BlocConsumer<ResetPasswordCubit, ResetPasswordState>(
       listener: (context, state) {
         if (state is ResetPasswordOtpSent) {
-          final nav = Navigator.of(context);
-          Navigator.pop(context); // اقفل الـ bottom sheet
-
+          final phone = state.phone;
+          // Do not pop this sheet first: OTP runs on top while this widget (and
+          // [ResetPasswordCubit]) stay mounted so [onVerified] can use [context].
           OtpBottomSheet.show(
-            nav.context,
-            state.phone,
+            context,
+            phone,
             onVerified: (pin) {
-              context.read<SignInCubit>().verifySignIn(otp: pin);
+              context.read<ResetPasswordCubit>().verifyOtp(
+                    phone: phone,
+                    otp: pin,
+                  );
             },
           );
+        } else if (state is ResetPasswordOtpVerified) {
+          final nav = Navigator.of(context, rootNavigator: true);
+          if (nav.canPop()) {
+            nav.pop();
+          }
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (nav.context.mounted) {
+              NewPasswordScreen.show(nav.context);
+            }
+          });
         } else if (state is ResetPasswordFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
