@@ -306,9 +306,10 @@ class _ExaminationScreenState extends State<ExaminationScreen> {
                     isEnabled: _allAnswered(),
                     label: l10n.showResult,
                     onTap: () async {
-                      final result = await context
-                          .read<SensoryTestCubit>()
-                          .submit(_answersByQuestionId);
+                      // Use [_cubit] — [State.context] is above [BlocProvider.value], so
+                      // context.read<SensoryTestCubit>() would throw ProviderNotFoundException.
+                      final result =
+                          await _cubit.submit(_answersByQuestionId);
                       if (result == null || !mounted) return;
                       _showResultForLevel(context, result.level);
                     },
