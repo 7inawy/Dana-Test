@@ -1,3 +1,5 @@
+import '../../../../core/utils/display_name_utils.dart';
+
 class ParentProfileModel {
   final String id;
   final String parentName;
@@ -24,7 +26,9 @@ class ParentProfileModel {
     final rawImg = json['profileImage']?.toString();
     return ParentProfileModel(
       id: json['_id']?.toString() ?? '',
-      parentName: json['parentName']?.toString() ?? '',
+      parentName: DisplayNameUtils.dedupeTwinRepeated(
+        json['parentName']?.toString() ?? '',
+      ),
       phone: json['phone']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
       government: json['government']?.toString() ?? '',
@@ -84,7 +88,9 @@ class ParentChildModel {
     final rawImg = json['profileImage']?.toString();
     return ParentChildModel(
       id: json['_id']?.toString() ?? '',
-      childName: json['childName']?.toString() ?? '',
+      childName: DisplayNameUtils.dedupeTwinRepeated(
+        json['childName']?.toString() ?? '',
+      ),
       gender: json['gender']?.toString() ?? '',
       birthDate: parsed,
       profileImageUrl:

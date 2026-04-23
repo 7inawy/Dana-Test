@@ -82,6 +82,53 @@ class ParentProfileRemoteDataSourceImpl
     }
   }
 
+  /// POST /addChild may return a full parent, a nested child map, or a minimal body
+  /// while the child is still persisted. When we cannot parse a child from the body,
+  /// [getMe] is used so the client matches the server (same as app refresh).
+  ParentChildModel? _childFromAddChildBody(Map<String, dynamic> data) {
+    final fromParent = ParentProfileModel.fromJson(data);
+    if (fromParent.children.isNotEmpty) {
+      return fromParent.children.last;
+    }
+    for (final key in <String>['child', 'newChild', 'createdChild']) {
+      final v = data[key];
+      if (v is Map) {
+        try {
+          return ParentChildModel.fromJson(v.cast<String, dynamic>());
+        } catch (_) {}
+      }
+    }
+    if (data['childName'] != null &&
+        data['_id'] != null &&
+        data['children'] == null) {
+      return ParentChildModel.fromJson(data);
+    }
+    return null;
+  }
+
+  ParentChildModel _pickChildFromProfile(
+    ParentProfileModel profile, {
+    required String childName,
+    required String gender,
+    required DateTime birthDate,
+  }) {
+    bool sameCalendarDay(DateTime? a, DateTime b) {
+      if (a == null) return false;
+      return a.year == b.year && a.month == b.month && a.day == b.day;
+    }
+
+    final wantName = childName.trim();
+    final wantGender = gender.toLowerCase();
+    for (final c in profile.children) {
+      if (c.childName.trim() == wantName &&
+          c.gender.toLowerCase() == wantGender &&
+          sameCalendarDay(c.birthDate, birthDate)) {
+        return c;
+      }
+    }
+    return profile.children.last;
+  }
+
   @override
   Future<ParentChildModel> addChild({
     required String childName,
@@ -100,12 +147,19 @@ class ParentProfileRemoteDataSourceImpl
       );
       final decoded = ApiResponse.decode(res.data);
       final data = ApiResponse.unwrapMap(decoded);
-      // Backend returns whole parent; fallback to re-fetch via getMe for correctness.
-      final children = ParentProfileModel.fromJson(data).children;
-      if (children.isEmpty) {
+      final fromBody = _childFromAddChildBody(data);
+      if (fromBody != null) return fromBody;
+
+      final refreshed = await getMe();
+      if (refreshed.children.isEmpty) {
         throw const ServerException(message: 'Child was not created');
       }
-      return children.last;
+      return _pickChildFromProfile(
+        refreshed,
+        childName: childName,
+        gender: gender,
+        birthDate: birthDate,
+      );
     } on DioException catch (e) {
       final msg = ApiError.messageFromDio(
         e,
