@@ -128,7 +128,6 @@ import '../../features/auth/login/data/repo/auth_repository_impl.dart';
 import '../../features/auth/login/domain/repo/auth_repository.dart';
 import '../../features/auth/login/domain/usecases/change_password_usecase.dart';
 import '../../features/auth/login/domain/usecases/create_doctor_usecase.dart';
-import '../../features/auth/login/domain/usecases/add_sign_up_password_usecase.dart';
 import '../../features/auth/login/domain/usecases/pre_sign_in_usecase.dart';
 import '../../features/auth/login/domain/usecases/pre_sign_up_usecase.dart';
 import '../../features/auth/login/domain/usecases/reset_password_usecase.dart';
@@ -425,7 +424,6 @@ Future<void> init() async {
 
   sl.registerLazySingleton(() => PreSignUpUseCase(repository: sl()));
   sl.registerLazySingleton(() => VerifySignUpUseCase(repository: sl()));
-  sl.registerLazySingleton(() => AddSignUpPasswordUseCase(repository: sl()));
   sl.registerLazySingleton(() => PreSignInUseCase(repository: sl()));
   sl.registerLazySingleton(() => VerifySignInUseCase(repository: sl()));
   sl.registerLazySingleton(() => ResetPasswordUseCase(repository: sl()));
@@ -457,7 +455,7 @@ Future<void> init() async {
     () => SignUpCubit(
       preSignUpUseCase: sl(),
       verifySignUpUseCase: sl(),
-      addSignUpPasswordUseCase: sl(),
+      changePasswordUseCase: sl(),
     ),
   );
 

@@ -3,19 +3,19 @@ import 'package:dana/features/auth/login/presentation/cubit/sign_up_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/datasources/auth_remote_data_source.dart';
-import '../../domain/usecases/add_sign_up_password_usecase.dart';
+import '../../domain/usecases/change_password_usecase.dart';
 import '../../domain/usecases/pre_sign_up_usecase.dart';
 import '../../domain/usecases/verify_sign_up_usecase.dart';
 
 class SignUpCubit extends Cubit<SignUpState> {
   final PreSignUpUseCase preSignUpUseCase;
   final VerifySignUpUseCase verifySignUpUseCase;
-  final AddSignUpPasswordUseCase addSignUpPasswordUseCase;
+  final ChangePasswordUseCase changePasswordUseCase;
 
   SignUpCubit({
     required this.preSignUpUseCase,
     required this.verifySignUpUseCase,
-    required this.addSignUpPasswordUseCase,
+    required this.changePasswordUseCase,
   }) : super(const SignUpInitial());
 
   // ── Step 1: Personal Information ──────────────────────────────────────────
@@ -45,6 +45,8 @@ class SignUpCubit extends Cubit<SignUpState> {
 
   // ── Step 4: Password ──────────────────────────────────────────────────────
   String _password = '';
+  String _preSignUpPassword = '';
+  String _verifiedToken = '';
 
   void updatePassword(String value) => _password = value;
 
@@ -144,6 +146,13 @@ class SignUpCubit extends Cubit<SignUpState> {
 
     final apiPhone = ParentPhoneUtils.normalizeForApi(_phone);
     final apiEmail = _email.trim().toLowerCase();
+    // Some backends require a password at `pre-SignUp` even if the UX wants
+    // password creation after OTP. Generate a temporary password for the
+    // registration step, then overwrite it after OTP using `change-password`.
+    if (_preSignUpPassword.isEmpty) {
+      final ms = DateTime.now().millisecondsSinceEpoch.toString();
+      _preSignUpPassword = 'Tmp@${ms.substring(ms.length - 8)}';
+    }
 
     final result = await preSignUpUseCase(
       PreSignUpParams(
@@ -152,7 +161,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         phone: apiPhone,
         government: _government.trim(),
         address: _address.trim(),
-        password: '',
+        password: _preSignUpPassword,
         children: [
           ChildData(
             childName: _childName,
@@ -185,21 +194,30 @@ class SignUpCubit extends Cubit<SignUpState> {
       (f) => emit(SignUpFailure(message: f.message)),
       (token) {
         if (isClosed) return;
+        _verifiedToken = token;
         emit(SignUpVerified(token: token));
       },
     );
   }
 
-  /// add-password (بعد حفظ التوكن من verify)
+  /// After verify-signUp, set the real password using `/change-password`.
   Future<void> addPassword() async {
     final err = validateStep4();
     if (err != null) {
       emit(SignUpFailure(message: err));
       return;
     }
+    if (_verifiedToken.trim().isEmpty) {
+      emit(const SignUpFailure(message: 'لم يتم استلام التوكن'));
+      return;
+    }
     emit(const SignUpLoading());
-    final result = await addSignUpPasswordUseCase(
-      AddSignUpPasswordParams(password: _password.trim()),
+    final result = await changePasswordUseCase(
+      ChangePasswordParams(
+        phone: ParentPhoneUtils.normalizeForApi(_phone),
+        password: _password.trim(),
+        token: _verifiedToken,
+      ),
     );
     if (isClosed) return;
     result.fold(
