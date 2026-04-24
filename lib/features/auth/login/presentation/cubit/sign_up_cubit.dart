@@ -227,9 +227,17 @@ class SignUpCubit extends Cubit<SignUpState> {
     final shouldFallback = addRes.fold(
       (f) {
         final m = f.message.toLowerCase();
-        return m.contains('internal') ||
+        // Backends that don't implement `add-password` yet often respond with:
+        // - "Cannot POST /api/v1/parent/add-password" (Express default)
+        // - 404-like messages
+        // - generic internal/server errors
+        return m.contains('cannot post') ||
+            m.contains('not found') ||
+            m.contains('404') ||
+            m.contains('internal') ||
             m.contains('server') ||
-            f.message.contains('حدث خطأ في الخادم');
+            f.message.contains('حدث خطأ في الخادم') ||
+            f.message.contains('غير موجود');
       },
       (_) => false,
     );
