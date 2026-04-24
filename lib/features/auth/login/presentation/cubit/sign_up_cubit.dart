@@ -3,6 +3,7 @@ import 'package:dana/features/auth/login/presentation/cubit/sign_up_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/datasources/auth_remote_data_source.dart';
+import '../../domain/usecases/add_sign_up_password_usecase.dart';
 import '../../domain/usecases/change_password_usecase.dart';
 import '../../domain/usecases/pre_sign_up_usecase.dart';
 import '../../domain/usecases/verify_sign_up_usecase.dart';
@@ -10,11 +11,13 @@ import '../../domain/usecases/verify_sign_up_usecase.dart';
 class SignUpCubit extends Cubit<SignUpState> {
   final PreSignUpUseCase preSignUpUseCase;
   final VerifySignUpUseCase verifySignUpUseCase;
+  final AddSignUpPasswordUseCase addSignUpPasswordUseCase;
   final ChangePasswordUseCase changePasswordUseCase;
 
   SignUpCubit({
     required this.preSignUpUseCase,
     required this.verifySignUpUseCase,
+    required this.addSignUpPasswordUseCase,
     required this.changePasswordUseCase,
   }) : super(const SignUpInitial());
 
@@ -212,7 +215,33 @@ class SignUpCubit extends Cubit<SignUpState> {
       return;
     }
     emit(const SignUpLoading());
-    final result = await changePasswordUseCase(
+
+    // Prefer the intended endpoint from notes: `/v1/parent/add-password`.
+    final addRes = await addSignUpPasswordUseCase(
+      AddSignUpPasswordParams(password: _password.trim()),
+    );
+    if (isClosed) return;
+
+    // If backend is not aligned (500 / generic server error), fall back to
+    // `/change-password` while authenticated.
+    final shouldFallback = addRes.fold(
+      (f) {
+        final m = f.message.toLowerCase();
+        return m.contains('internal') ||
+            m.contains('server') ||
+            f.message.contains('حدث خطأ في الخادم');
+      },
+      (_) => false,
+    );
+    if (!shouldFallback) {
+      addRes.fold(
+        (f) => emit(SignUpFailure(message: f.message)),
+        (_) => emit(const SignUpPasswordCreated()),
+      );
+      return;
+    }
+
+    final changeRes = await changePasswordUseCase(
       ChangePasswordParams(
         phone: ParentPhoneUtils.normalizeForApi(_phone),
         password: _password.trim(),
@@ -220,7 +249,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       ),
     );
     if (isClosed) return;
-    result.fold(
+    changeRes.fold(
       (f) => emit(SignUpFailure(message: f.message)),
       (_) => emit(const SignUpPasswordCreated()),
     );
