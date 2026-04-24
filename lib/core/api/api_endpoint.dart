@@ -57,6 +57,10 @@ class ApiEndpoint {
   static const String bookingById = '/v1/booking/'; // GET / DELETE + id
   static const String myAppointmentsByParent =
       '/v1/booking/myAppointment/'; // GET + parentId
+  static const String doctorAppointmentsByDoctor =
+      '/v1/booking/doctorAppointment/'; // GET + doctorId
+  static const String todayDoctorAppointmentsByDoctor =
+      '/v1/booking/todayDoctorAppointment/'; // GET + doctorId
   static const String bookingRate = '/v1/booking/'; // POST + bookingId + /rate
 
   static String bookingDetail(String bookingId) => '$bookingById$bookingId';
@@ -66,6 +70,12 @@ class ApiEndpoint {
 
   static String bookingCancelChildPath(String childId) =>
       '/v1/booking/cancel/child/$childId';
+
+  static String doctorAppointmentsPath(String doctorId) =>
+      '$doctorAppointmentsByDoctor$doctorId';
+
+  static String todayDoctorAppointmentsPath(String doctorId) =>
+      '$todayDoctorAppointmentsByDoctor$doctorId';
 
   // ── Paymob ───────────────────────────────────────────────────────────────────
   static const String paymobCallback = '/v1/paymob/callback'; // GET (internal)

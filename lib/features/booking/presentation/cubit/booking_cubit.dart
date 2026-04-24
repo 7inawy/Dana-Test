@@ -7,6 +7,7 @@ import '../../data/models/booking_create_result.dart';
 class BookingCubit extends Cubit<BookingState> {
   final BookingRepo repo;
   String? _lastParentId;
+  String? _lastDoctorId;
 
   BookingCubit(this.repo) : super(BookingInitial());
 
@@ -70,6 +71,28 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
+  Future<void> getDoctorAppointments({required String doctorId}) async {
+    emit(BookingLoading());
+    _lastDoctorId = doctorId;
+    try {
+      final bookings = await repo.getDoctorAppointments(doctorId: doctorId);
+      emit(BookingSuccess(bookings));
+    } catch (e) {
+      emit(BookingError(ErrorMapper.message(e)));
+    }
+  }
+
+  Future<void> getTodayDoctorAppointments({required String doctorId}) async {
+    emit(BookingLoading());
+    _lastDoctorId = doctorId;
+    try {
+      final bookings = await repo.getTodayDoctorAppointments(doctorId: doctorId);
+      emit(BookingSuccess(bookings));
+    } catch (e) {
+      emit(BookingError(ErrorMapper.message(e)));
+    }
+  }
+
   Future<void> rateBooking({
     required String bookingId,
     required double rating,
@@ -80,6 +103,10 @@ class BookingCubit extends Cubit<BookingState> {
       final pid = _lastParentId;
       if (pid != null && pid.isNotEmpty) {
         await _reloadParentBookings(pid);
+      } else if (_lastDoctorId != null && _lastDoctorId!.isNotEmpty) {
+        final did = _lastDoctorId!;
+        final list = await repo.getDoctorAppointments(doctorId: did);
+        emit(BookingSuccess(list));
       } else {
         await getBookings();
       }

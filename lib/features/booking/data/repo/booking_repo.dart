@@ -79,6 +79,19 @@ class BookingRepo {
     return _parseBookings(response.data);
   }
 
+  Future<List<Booking>> getDoctorAppointments({required String doctorId}) async {
+    final response = await service.getDoctorAppointments(doctorId: doctorId);
+    return _parseBookings(response.data);
+  }
+
+  Future<List<Booking>> getTodayDoctorAppointments({
+    required String doctorId,
+  }) async {
+    final response =
+        await service.getTodayDoctorAppointments(doctorId: doctorId);
+    return _parseBookings(response.data);
+  }
+
   Future<void> rateBooking({
     required String bookingId,
     required int rating,

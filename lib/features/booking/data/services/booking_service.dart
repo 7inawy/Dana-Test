@@ -43,6 +43,14 @@ class BookingService {
     return dio.get('${ApiEndpoint.myAppointmentsByParent}$parentId');
   }
 
+  Future<Response> getDoctorAppointments({required String doctorId}) {
+    return dio.get(ApiEndpoint.doctorAppointmentsPath(doctorId));
+  }
+
+  Future<Response> getTodayDoctorAppointments({required String doctorId}) {
+    return dio.get(ApiEndpoint.todayDoctorAppointmentsPath(doctorId));
+  }
+
   Future<Response> rateBooking({
     required String bookingId,
     required int rating,
