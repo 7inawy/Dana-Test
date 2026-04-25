@@ -59,7 +59,7 @@ class BookDetails extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              '${book.chapters.length} ${l10n.page}',
+              '${book.pageCount} ${l10n.page}',
               textAlign: isRtl ? TextAlign.right : TextAlign.left,
               style: AppTextStyle.regular12TextBody(context),
             ),

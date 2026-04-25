@@ -90,7 +90,9 @@ class _BooksScreenState extends State<BooksScreen> {
                         value: _textBooksCubit,
                         child: SearchScreen(searchType: SearchType.books),
                       ),
-                    );
+                    ).whenComplete(() {
+                      _textBooksCubit.load();
+                    });
                   },
                 ),
                 Text(

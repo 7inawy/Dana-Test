@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/utils/app_colors.dart';
+import '../../../../../core/di/injection_container.dart';
 import '../../../../../providers/app_theme_provider.dart';
 import '../../../../books/data/model/book_Model.dart';
 import '../../../../books/presentation/views/screens/read_Book_Screen.dart';
@@ -130,6 +131,31 @@ class BooksSearchResults extends StatelessWidget {
 
   const BooksSearchResults({super.key, required this.results});
 
+  Future<void> _openBook(BuildContext context, BookModel book) async {
+    final navigator = Navigator.of(context, rootNavigator: true);
+    BookModel target = book;
+
+    if (book.id.isNotEmpty && book.chapters.isEmpty) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const Center(child: CircularProgressIndicator()),
+      );
+      try {
+        final cubit = sl<TextBooksCubit>();
+        target = await cubit.repo.getById(book.id);
+      } catch (_) {
+        // Keep the original book if fetch fails.
+      } finally {
+        if (navigator.canPop()) navigator.pop();
+      }
+    }
+
+    await navigator.push(
+      MaterialPageRoute(builder: (_) => ReadBookScreen(book: target)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (results.isEmpty) return const NoResultsWidget();
@@ -139,12 +165,7 @@ class BooksSearchResults extends StatelessWidget {
       itemBuilder: (context, index) => GestureDetector(
         onTap: () {
           Navigator.pop(context);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => ReadBookScreen(book: results[index]),
-            ),
-          );
+          _openBook(context, results[index]);
         },
         child: BookCardVertical(book: results[index]),
       ),

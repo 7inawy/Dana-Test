@@ -13,6 +13,7 @@ class BookModel {
   final String imageUrl;
   final String? description;
   final List<BookChapter> chapters;
+  final int? pagesCount;
   final String? publishYear;
   final String? link;
 
@@ -23,11 +24,56 @@ class BookModel {
     required this.imageUrl,
     this.description,
     this.chapters = const [],
+    this.pagesCount,
     this.publishYear,
     this.link,
   });
 
+  int get pageCount =>
+      chapters.isNotEmpty ? chapters.length : (pagesCount ?? 0);
+
   factory BookModel.fromJson(Map<String, dynamic> json) {
+    final chaptersJson = json['chapters'];
+    final parsedChapters = chaptersJson is List
+        ? chaptersJson
+              .whereType<Map>()
+              .map((e) => e.cast<String, dynamic>())
+              .map(
+                (e) => BookChapter(
+                  title: e['title']?.toString() ?? '',
+                  body: (e['body'] ?? e['content'] ?? e['text'] ?? '')
+                      .toString(),
+                ),
+              )
+              .toList()
+        : const <BookChapter>[];
+
+    int? parsedPagesCount;
+    for (final key in const <String>[
+      'pagesCount',
+      'pageCount',
+      'pages',
+      'numberOfPages',
+      'page_count',
+    ]) {
+      final v = json[key];
+      if (v is num) {
+        parsedPagesCount = v.toInt();
+        break;
+      }
+      if (v is String) {
+        final n = int.tryParse(v.trim());
+        if (n != null) {
+          parsedPagesCount = n;
+          break;
+        }
+      }
+      if (v is List) {
+        parsedPagesCount = v.length;
+        break;
+      }
+    }
+
     return BookModel(
       id: json['_id']?.toString() ?? '',
       title: json['title']?.toString() ?? '',
@@ -35,7 +81,8 @@ class BookModel {
       imageUrl: (json['cover'] ?? '').toString(),
       description: json['description']?.toString(),
       link: json['link']?.toString(),
-      chapters: const [],
+      chapters: parsedChapters,
+      pagesCount: parsedPagesCount,
       publishYear: null,
     );
   }

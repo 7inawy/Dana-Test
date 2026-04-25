@@ -62,7 +62,9 @@ class AllBooksScreen extends StatelessWidget {
                         value: context.read<TextBooksCubit>(),
                         child: SearchScreen(searchType: SearchType.books),
                       ),
-                    );
+                    ).whenComplete(() {
+                      context.read<TextBooksCubit>().load();
+                    });
                   },
                 ),
                 Text(
