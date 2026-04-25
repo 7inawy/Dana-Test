@@ -82,6 +82,29 @@ class ParentProfileRemoteDataSourceImpl
     }
   }
 
+  @override
+  Future<void> addParentProfileImage({
+    required String parentId,
+    required File file,
+  }) async {
+    try {
+      final fd = FormData.fromMap({
+        'file': await MultipartFile.fromFile(
+          file.path,
+          filename: file.path.split(RegExp(r'[\\/]')).last,
+        ),
+      });
+      await dio.post(ApiEndpoint.parentAddProfileImagePath(parentId), data: fd);
+    } on DioException catch (e) {
+      final msg = ApiError.messageFromDio(
+        e,
+        fallback: 'Failed to upload profile image',
+        decode: ApiResponse.decode,
+      );
+      throw ServerException(message: msg);
+    }
+  }
+
   /// POST /addChild may return a full parent, a nested child map, or a minimal body
   /// while the child is still persisted. When we cannot parse a child from the body,
   /// [getMe] is used so the client matches the server (same as app refresh).

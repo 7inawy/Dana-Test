@@ -12,6 +12,12 @@ abstract class ParentProfileRemoteDataSource {
     File? file,
   });
 
+  /// note 2: profile image upload is a dedicated endpoint.
+  Future<void> addParentProfileImage({
+    required String parentId,
+    required File file,
+  });
+
   Future<ParentChildModel> addChild({
     required String childName,
     required String gender,
