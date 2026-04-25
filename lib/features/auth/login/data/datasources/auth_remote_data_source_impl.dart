@@ -274,9 +274,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'كود التحقق غير صحيح');
       final accessToken = (data is Map ? data['accessToken'] : null);
-      final token =
-          (accessToken is Map ? accessToken['access_token'] : null) as String?;
-      return token?.trim() ?? '';
+
+      // Backends are inconsistent here:
+      // - Some return: { accessToken: { access_token: "..." } }
+      // - Others return: { accessToken: "..." }
+      final token = switch (accessToken) {
+        String s => s,
+        Map m => m['access_token']?.toString() ?? '',
+        _ => '',
+      };
+
+      final trimmed = token.trim();
+      if (trimmed.isEmpty) {
+        throw const ServerException(message: 'لم يتم استلام التوكن');
+      }
+      return trimmed;
     } on DioException catch (e) {
       final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
