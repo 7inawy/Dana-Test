@@ -71,61 +71,47 @@ class _AppointmentsListState extends State<AppointmentsList> {
         .where((e) => e.status == widget.status)
         .toList();
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // If we're given unbounded height (e.g. ListView inside Column without Expanded),
-        // ListView will throw a layout assertion unless shrinkWrap is enabled.
-        // In normal bounded screen layouts, keep default ListView behavior.
-        final isBoundedHeight = constraints.hasBoundedHeight;
-        final shrinkWrap = !isBoundedHeight;
+    if (filtered.isEmpty) {
+      String title;
+      switch (widget.status) {
+        case Status.upcoming:
+          title = 'لا توجد حجوزات قادمة';
+          break;
+        case Status.completed:
+          title = 'لا توجد حجوزات مكتملة';
+          break;
+        case Status.cancelled:
+          title = 'لا توجد حجوزات ملغاة';
+          break;
+      }
 
-        if (filtered.isEmpty) {
-          String title;
-          switch (widget.status) {
-            case Status.upcoming:
-              title = 'لا توجد حجوزات قادمة';
-              break;
-            case Status.completed:
-              title = 'لا توجد حجوزات مكتملة';
-              break;
-            case Status.cancelled:
-              title = 'لا توجد حجوزات ملغاة';
-              break;
-          }
+      final empty = EmptyStateWidget(title: title);
+      final onRefresh = widget.onRefresh;
+      if (onRefresh == null) return empty;
 
-          final empty = EmptyStateWidget(title: title);
-          final onRefresh = widget.onRefresh;
-          if (onRefresh == null) return empty;
-
-          // Ensure pull-to-refresh works even when empty.
-          return RefreshIndicator(
-            onRefresh: onRefresh,
-            child: ListView(
-              primary: isBoundedHeight,
-              shrinkWrap: shrinkWrap,
-              physics: const AlwaysScrollableScrollPhysics(),
-              children: [SizedBox(height: 120), empty],
-            ),
-          );
-        }
-
-        final list = ListView.builder(
-          primary: isBoundedHeight,
-          shrinkWrap: shrinkWrap,
+      // Ensure pull-to-refresh works even when empty.
+      return RefreshIndicator(
+        onRefresh: onRefresh,
+        child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: filtered.length,
-          itemBuilder: (context, index) {
-            return AppointmentCard(
-              appointment: filtered[index],
-              onCancel: () => _confirmAndCancel(context, filtered[index]),
-            );
-          },
-        );
+          children: [SizedBox(height: 120), empty],
+        ),
+      );
+    }
 
-        final onRefresh = widget.onRefresh;
-        if (onRefresh == null) return list;
-        return RefreshIndicator(onRefresh: onRefresh, child: list);
+    final list = ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: filtered.length,
+      itemBuilder: (context, index) {
+        return AppointmentCard(
+          appointment: filtered[index],
+          onCancel: () => _confirmAndCancel(context, filtered[index]),
+        );
       },
     );
+
+    final onRefresh = widget.onRefresh;
+    if (onRefresh == null) return list;
+    return RefreshIndicator(onRefresh: onRefresh, child: list);
   }
 }

@@ -27,11 +27,18 @@ class Doctor {
       return Doctor(id: json, name: '', price: 0);
     }
     if (json is Map<String, dynamic>) {
+      final name =
+          json['doctorName']?.toString() ??
+          json['name']?.toString() ??
+          json['fullName']?.toString() ??
+          '';
+      final rawImg = json['profileImage']?.toString();
       return Doctor(
         id: json['_id']?.toString() ?? '',
-        name: json['doctorName']?.toString() ?? '',
+        name: name,
         price: int.tryParse(json['detectionPrice']?.toString() ?? '') ?? 0,
-        profileImage: json['profileImage']?.toString(),
+        profileImage:
+            (rawImg != null && rawImg.trim().isNotEmpty) ? rawImg : null,
         specialty: json['specialty']?.toString() ?? '',
         city: json['city']?.toString() ?? '',
         address: json['address']?.toString() ?? '',
