@@ -170,6 +170,8 @@ class _VaccineItemWidgetState extends State<VaccineItemWidget> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
+                                  final scheduleCubit =
+                                      context.read<VaccinationScheduleCubit>();
                                   _selectedTakenDate = null;
                                   _takenDateController.clear();
                                   showModalBottomSheet(
@@ -184,7 +186,7 @@ class _VaccineItemWidgetState extends State<VaccineItemWidget> {
                                       ),
                                     ),
                                     builder: (_) => StatefulBuilder(
-                                      builder: (context, setModalState) =>
+                                      builder: (sheetContext, setModalState) =>
                                           ConfirmVaccineBottomSheet(
                                             firstText: context
                                                 .l10n
@@ -228,7 +230,7 @@ class _VaccineItemWidgetState extends State<VaccineItemWidget> {
                                                   onTap: () async {
                                                     final picked =
                                                         await showDatePicker(
-                                                          context: context,
+                                                          context: sheetContext,
                                                           initialDate:
                                                               DateTime.now(),
                                                           firstDate: DateTime(
@@ -271,16 +273,14 @@ class _VaccineItemWidgetState extends State<VaccineItemWidget> {
                                                   takenDate == null) {
                                                 return;
                                               }
-                                              await context
-                                                  .read<
-                                                    VaccinationScheduleCubit
-                                                  >()
-                                                  .markTaken(
-                                                    childId: childId,
-                                                    vaccinationId:
-                                                        vaccinationId,
-                                                    takenDate: takenDate,
-                                                  );
+                                              await scheduleCubit.markTaken(
+                                                childId: childId,
+                                                vaccinationId: vaccinationId,
+                                                takenDate: takenDate,
+                                              );
+                                              if (!mounted) return;
+                                              // Close the confirm sheet after a successful call.
+                                              Navigator.of(sheetContext).pop();
                                             },
                                           ),
                                     ),

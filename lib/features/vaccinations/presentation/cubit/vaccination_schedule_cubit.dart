@@ -92,7 +92,31 @@ class VaccinationScheduleCubit extends Cubit<VaccinationScheduleState> {
     required String vaccinationId,
     required DateTime takenDate,
   }) async {
-    emit(const VaccinationScheduleLoading());
+    final prev = state;
+    // Optimistic UI update (so status becomes "taken" immediately).
+    if (prev is VaccinationScheduleLoaded) {
+      final nextItems = prev.items.map((it) {
+        if (it.id != vaccinationId && it.vaccine.id != vaccinationId) {
+          return it;
+        }
+        return ChildVaccinationScheduleItem(
+          id: it.id,
+          vaccine: it.vaccine,
+          dueDate: it.dueDate,
+          takenDate: takenDate,
+          status: 'taken',
+        );
+      }).toList(growable: false);
+      emit(
+        VaccinationScheduleLoaded(
+          childId: prev.childId,
+          items: nextItems,
+          catalog: prev.catalog,
+        ),
+      );
+    } else {
+      emit(const VaccinationScheduleLoading());
+    }
     try {
       await vaccinationRepo.markTaken(
         childId: childId,
@@ -108,6 +132,10 @@ class VaccinationScheduleCubit extends Cubit<VaccinationScheduleState> {
         ),
       );
     } catch (e) {
+      // Revert to previous state if optimistic update was applied.
+      if (prev is VaccinationScheduleLoaded) {
+        emit(prev);
+      }
       emit(VaccinationScheduleError(e.toString()));
     }
   }
