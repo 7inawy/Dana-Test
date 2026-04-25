@@ -52,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _ensureGrowthLoadedForChild(String? childId) {
     if (childId == null || childId.isEmpty) return;
+    if (_growthChildId == childId) return;
     _growthChildId = childId;
     _growthCubit.load(childId: childId);
   }

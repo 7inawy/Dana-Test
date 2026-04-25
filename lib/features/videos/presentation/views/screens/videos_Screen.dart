@@ -95,7 +95,7 @@ class _VideosScreenState extends State<VideosScreen> {
                       }
                       final videos = state is VideosLoaded
                           ? state.videos
-                          : <VideoModel>[];
+                          : context.read<VideosCubit>().cachedVideos;
                       final sections = [
                         VideoSection(
                           title: context.l10n.videos,

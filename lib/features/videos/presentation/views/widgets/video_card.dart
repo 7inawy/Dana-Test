@@ -22,6 +22,30 @@ class VideoCard extends StatelessWidget {
     this.imageWidth,
   });
 
+  Widget _thumbnailPlaceholder(BuildContext context, {required double width}) {
+    final themeProvider = context.watch<AppThemeProvider>();
+    final isDark =
+        themeProvider.appTheme == ThemeMode.dark ||
+        (themeProvider.appTheme == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
+
+    return Container(
+      width: width,
+      height: 180.h,
+      color: isDark
+          ? AppColors.bg_card_default_dark
+          : AppColors.bg_card_default_light,
+      alignment: Alignment.center,
+      child: Icon(
+        Icons.play_circle_outline,
+        size: 28.w,
+        color: isDark
+            ? AppColors.icon_onLight_dark
+            : AppColors.icon_onLight_light,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<AppThemeProvider>();
@@ -31,6 +55,10 @@ class VideoCard extends StatelessWidget {
             MediaQuery.of(context).platformBrightness == Brightness.dark);
     final isRtl = Localizations.localeOf(context).languageCode == 'ar';
     final width = imageWidth ?? 142.w;
+    final cover = video.imageUrl.trim();
+    final isNetworkCover =
+        cover.startsWith('http://') || cover.startsWith('https://');
+    final hasCover = cover.isNotEmpty;
 
     return GestureDetector(
       onTap: () {
@@ -64,25 +92,25 @@ class VideoCard extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.radius_md),
-                child:
-                    (video.imageUrl.startsWith('http://') ||
-                        video.imageUrl.startsWith('https://'))
-                    ? Image.network(
-                        video.imageUrl,
-                        width: width,
-                        height: 180.h,
-                        fit: BoxFit.fill,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const SizedBox.shrink(),
-                      )
-                    : Image.asset(
-                        video.imageUrl,
-                        width: width,
-                        height: 180.h,
-                        fit: BoxFit.fill,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const SizedBox.shrink(),
-                      ),
+                child: hasCover
+                    ? (isNetworkCover
+                        ? Image.network(
+                            cover,
+                            width: width,
+                            height: 180.h,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                _thumbnailPlaceholder(context, width: width),
+                          )
+                        : Image.asset(
+                            cover,
+                            width: width,
+                            height: 180.h,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                _thumbnailPlaceholder(context, width: width),
+                          ))
+                    : _thumbnailPlaceholder(context, width: width),
               ),
             ),
             SizedBox(height: 8.h),
