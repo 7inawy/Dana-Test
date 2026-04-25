@@ -33,58 +33,38 @@ String _questionDisplayText(SensoryQuestion q, String languageCode) {
 }
 
 int _apiValueForUiOption(SensoryQuestion q, ResponseOption opt) {
-  final labels = q.options.map((e) => e.label.toLowerCase()).toList();
-  int indexMatching(List<String> keys) {
-    for (var i = 0; i < labels.length; i++) {
-      for (final k in keys) {
-        if (labels[i].contains(k)) return i;
-      }
-    }
-    return -1;
+  if (q.options.isEmpty) return 1;
+
+  // Robust mapping: prefer option values (1,2,3) ordering over labels.
+  // Some deployments/localizations change option labels or ordering, which can
+  // otherwise make all selections map to the same API value.
+  final sorted = List<SensoryQuestionOption>.from(q.options)
+    ..sort((a, b) => a.value.compareTo(b.value));
+
+  SensoryQuestionOption pick(int index) {
+    final i = index.clamp(0, sorted.length - 1);
+    return sorted[i];
   }
+
   switch (opt) {
-    case ResponseOption.always:
-      final i = indexMatching(['always', 'دائما']);
-      if (i >= 0) return q.options[i].value;
-    case ResponseOption.sometimes:
-      final j = indexMatching(['sometimes', 'أحيانا']);
-      if (j >= 0) return q.options[j].value;
     case ResponseOption.rarely:
-      final k = indexMatching(['never', 'rarely', 'أبدا', 'نادر']);
-      if (k >= 0) return q.options[k].value;
+      return pick(0).value;
+    case ResponseOption.sometimes:
+      return pick(sorted.length ~/ 2).value;
+    case ResponseOption.always:
+      return pick(sorted.length - 1).value;
   }
-  final idx = ResponseOption.values.indexOf(opt);
-  if (idx >= 0 && idx < q.options.length) return q.options[idx].value;
-  return q.options.isNotEmpty ? q.options.first.value : 1;
 }
 
 ResponseOption? _uiOptionFromApiValue(SensoryQuestion q, int v) {
-  for (final o in q.options) {
-    if (o.value != v) continue;
-    final l = o.label.toLowerCase();
-    if (l.contains('always') || l.contains('دائما')) {
-      return ResponseOption.always;
-    }
-    if (l.contains('sometimes') || l.contains('أحيانا')) {
-      return ResponseOption.sometimes;
-    }
-    if (l.contains('never') ||
-        l.contains('rarely') ||
-        l.contains('أبدا') ||
-        l.contains('نادر')) {
-      return ResponseOption.rarely;
-    }
-  }
-  switch (v) {
-    case 1:
-      return ResponseOption.rarely;
-    case 2:
-      return ResponseOption.sometimes;
-    case 3:
-      return ResponseOption.always;
-    default:
-      return null;
-  }
+  if (q.options.isEmpty) return null;
+  final sorted = List<SensoryQuestionOption>.from(q.options)
+    ..sort((a, b) => a.value.compareTo(b.value));
+
+  // Map to nearest of {low/mid/high} based on value ordering.
+  if (v == sorted.first.value) return ResponseOption.rarely;
+  if (v == sorted.last.value) return ResponseOption.always;
+  return ResponseOption.sometimes;
 }
 
 class ExaminationScreen extends StatefulWidget {
