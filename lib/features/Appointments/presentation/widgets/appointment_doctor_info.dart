@@ -43,45 +43,51 @@ class AppointmentDoctorInfo extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
         ),
-        Padding(
-          padding: EdgeInsetsDirectional.only(start: 12.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                appointment.doctorName,
-                style: AppTextStyle.semibold16TextHeading(context),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                appointment.specialty.isNotEmpty
-                    ? appointment.specialty
-                    : context.l10n.physiotherapist,
-                style: AppTextStyle.medium12TextBody(context),
-              ),
-              SizedBox(height: 8.h),
-              Row(
-                children: [
-                  Icon(
-                    Icons.location_on_rounded,
-                    size: 16.r,
-                    color: isDark
-                        ? AppColors.icon_onLight_dark
-                        : AppColors.icon_onLight_light,
-                  ),
-                  SizedBox(width: 6.w),
-                  Flexible(
-                    child: Text(
-                      appointment.address,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.regular12TextBody(context),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsetsDirectional.only(start: 12.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  appointment.doctorName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyle.semibold16TextHeading(context),
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  appointment.specialty.isNotEmpty
+                      ? appointment.specialty
+                      : context.l10n.physiotherapist,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyle.medium12TextBody(context),
+                ),
+                SizedBox(height: 8.h),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_rounded,
+                      size: 16.r,
+                      color: isDark
+                          ? AppColors.icon_onLight_dark
+                          : AppColors.icon_onLight_light,
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    SizedBox(width: 6.w),
+                    Flexible(
+                      child: Text(
+                        appointment.address,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyle.regular12TextBody(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ],
