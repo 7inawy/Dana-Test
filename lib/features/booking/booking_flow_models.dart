@@ -52,6 +52,8 @@ class BookingDoctorArgs {
 
 /// Carries booking context through payment screens until [BookingRepo.createBooking].
 class BookingDraft {
+  static const Object _noChange = Object();
+
   const BookingDraft({
     required this.doctor,
     required this.dateIso,
@@ -87,7 +89,7 @@ class BookingDraft {
     String? childName,
     int? childYears,
     String? paymentMethod,
-    String? notes,
+    Object? notes = _noChange,
   }) {
     return BookingDraft(
       doctor: doctor,
@@ -97,7 +99,7 @@ class BookingDraft {
       childName: childName ?? this.childName,
       childYears: childYears ?? this.childYears,
       paymentMethod: paymentMethod ?? this.paymentMethod,
-      notes: notes ?? this.notes,
+      notes: identical(notes, _noChange) ? this.notes : notes as String?,
       visitStatus: visitStatus,
     );
   }
