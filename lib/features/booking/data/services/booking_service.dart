@@ -18,6 +18,7 @@ class BookingService {
     required int detectionPrice,
     String? notes,
   }) {
+    final safeNotes = (notes ?? '').trim();
     return dio.post(
       ApiEndpoint.createBooking,
       data: {
@@ -29,7 +30,8 @@ class BookingService {
         'paymentMethod': paymentMethod,
         'visitStatus': visitStatus,
         'detectionPrice': detectionPrice,
-        if (notes != null && notes.isNotEmpty) 'notes': notes,
+        // Backend validation expects notes to be a string; send empty string when omitted.
+        'notes': safeNotes,
       },
       options: Options(headers: {'Content-Type': 'application/json'}),
     );
