@@ -2,6 +2,10 @@ import 'package:dana/features/Appointments/logic/appointment_calendar_logic.dart
 import 'package:dana/features/Appointments/presentation/widgets/appointment_time_data.dart';
 import 'package:dana/features/booking/booking_flow_models.dart';
 import 'package:flutter/material.dart';
+import 'package:dana/core/di/injection_container.dart';
+import 'package:dio/dio.dart';
+
+import '../../../core/api/api_endpoint.dart';
 
 class AppointmentController extends ChangeNotifier {
   AppointmentController();
@@ -14,6 +18,8 @@ class AppointmentController extends ChangeNotifier {
   double detectionPrice = 0;
   int ratingQuantity = 0;
   double ratingAverage = 0;
+  int experienceYears = 0;
+  int? totalPatients;
   List<String> availableDateStrs = const [];
   List<TimeOfDay> timeSlots = AppointmentTimeData.availableTimes;
 
@@ -30,12 +36,42 @@ class AppointmentController extends ChangeNotifier {
     detectionPrice = args.detectionPrice;
     ratingAverage = args.ratingAverage;
     ratingQuantity = args.ratingQuantity;
+    experienceYears = args.experienceYears;
+    totalPatients = null;
     availableDateStrs = List<String>.from(args.availableDates);
     final parsed = BookingDraft.parseTimeStrings(args.availableTimes);
     timeSlots = parsed.isNotEmpty ? parsed : AppointmentTimeData.availableTimes;
     selectedDate = null;
     selectedTimeIndex = -1;
     notifyListeners();
+
+    // Best-effort: public doctor list doesn't include patients count.
+    // We'll try to fetch it from backend if the endpoint is accessible.
+    _loadPatientsCount();
+  }
+
+  Future<void> _loadPatientsCount() async {
+    final id = doctorId;
+    if (id == null || id.isEmpty) return;
+    try {
+      final dio = sl<Dio>();
+      final res = await dio.post(ApiEndpoint.doctorPatientsGeneratePath(id));
+      final data = res.data;
+      int? count;
+      if (data is Map) {
+        final root = data['data'];
+        if (root is Map) {
+          final v = root['totalPatients'];
+          if (v is num) count = v.toInt();
+        }
+      }
+      if (count != null) {
+        totalPatients = count;
+        notifyListeners();
+      }
+    } catch (_) {
+      // Silent: endpoint may be protected or unavailable for parent users.
+    }
   }
 
   List<DateTime> get dateList {

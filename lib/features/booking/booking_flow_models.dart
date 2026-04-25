@@ -15,6 +15,7 @@ class BookingDoctorArgs {
     this.availableTimes = const [],
     this.ratingAverage = 0,
     this.ratingQuantity = 0,
+    this.experienceYears = 0,
   });
 
   final String doctorId;
@@ -27,6 +28,7 @@ class BookingDoctorArgs {
   final List<String> availableTimes;
   final double ratingAverage;
   final int ratingQuantity;
+  final int experienceYears;
 
   static String dateKey(DateTime d) =>
       '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
@@ -43,6 +45,7 @@ class BookingDoctorArgs {
       availableTimes: d.availableTimes,
       ratingAverage: d.ratingAverage,
       ratingQuantity: d.ratingQuantity,
+      experienceYears: d.experienceYears,
     );
   }
 }

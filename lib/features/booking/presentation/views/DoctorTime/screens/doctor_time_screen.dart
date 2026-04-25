@@ -3,7 +3,6 @@ import 'package:dana/core/widgets/custom_app_bar_button.dart';
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_routes.dart';
-import 'package:dana/core/utils/currency_helper.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/Appointments/logic/appointment_controller.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointment_date_row.dart';
@@ -38,16 +37,16 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
             MediaQuery.of(context).platformBrightness == Brightness.dark);
     bool isRTL = Directionality.of(context) == TextDirection.rtl;
 
-    final rating = controller.ratingAverage > 0
-        ? controller.ratingAverage.toStringAsFixed(1)
-        : '—';
-    final patients = controller.ratingQuantity > 0
+    final ratingsCount = controller.ratingQuantity > 0
         ? controller.ratingQuantity.toString()
         : '—';
-    final fee = controller.detectionPrice > 0
-        ? CurrencyHelper.format(context, controller.detectionPrice)
-        : CurrencyHelper.format(context, 250);
-
+    final patientsCount = (controller.totalPatients != null &&
+            controller.totalPatients! > 0)
+        ? controller.totalPatients.toString()
+        : '—';
+    final experience = controller.experienceYears > 0
+        ? controller.experienceYears.toString()
+        : '—';
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(24.r),
@@ -128,20 +127,20 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
                             Row(
                               children: [
                                 ExperienceCard(
-                                  textOne: rating,
+                                  textOne: ratingsCount,
                                   textTwo: 'التقييم',
                                   svgPicture: 'assets/Icons/medal_star.svg',
                                 ),
                                 SizedBox(width: 8.w),
                                 ExperienceCard(
-                                  textOne: patients,
-                                  textTwo: 'مراجع',
+                                  textOne: patientsCount,
+                                  textTwo: context.l10n.patients,
                                   svgPicture: 'assets/Icons/people.svg',
                                 ),
                                 SizedBox(width: 8.w),
                                 ExperienceCard(
-                                  textOne: fee,
-                                  textTwo: 'سعر الكشف',
+                                  textOne: experience,
+                                  textTwo: context.l10n.yearsExperience,
                                   svgPicture: 'assets/Icons/ranking.svg',
                                 ),
                               ],

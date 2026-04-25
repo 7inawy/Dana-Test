@@ -5,8 +5,6 @@ import 'package:dana/features/booking/booking_flow_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../App_style/app_assets.dart';
-
 class DoctorDetailsWidget extends StatelessWidget {
   const DoctorDetailsWidget({super.key, this.doctor});
 
@@ -21,7 +19,8 @@ class DoctorDetailsWidget extends StatelessWidget {
     final loc = (doctor?.locationLine.isNotEmpty ?? false)
         ? doctor!.locationLine
         : 'القاهرة – مصر الجديدة';
-    final img = doctor?.imageUrl ?? AppAssets.image_bottomSheet;
+    const fallback = 'assets/Images/home/doctor1.png';
+    final img = doctor?.imageUrl ?? fallback;
 
     Widget avatar() {
       if (img.startsWith('http')) {
@@ -33,7 +32,7 @@ class DoctorDetailsWidget extends StatelessWidget {
             width: 70.w,
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => Image.asset(
-              AppAssets.image_bottomSheet,
+              fallback,
               height: 70.h,
               width: 70.w,
               fit: BoxFit.cover,

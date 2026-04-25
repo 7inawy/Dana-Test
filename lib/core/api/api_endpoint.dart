@@ -53,6 +53,9 @@ class ApiEndpoint {
   static const String getAllDoctors = '/v1/doctor'; // GET
   static const String doctorById = '/v1/doctor/'; // GET / PATCH / DELETE + id
 
+  static String doctorPatientsGeneratePath(String doctorId) =>
+      '/v1/doctor/$doctorId/patients/generate'; // POST
+
   // ── Videos ───────────────────────────────────────────────────────────────────
   static const String videos = '/v1/videos'; // GET all
   static const String videoById = '/v1/videos/'; // GET by id

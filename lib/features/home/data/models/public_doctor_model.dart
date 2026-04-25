@@ -12,6 +12,7 @@ class PublicDoctorModel {
     this.ratingAverage = 0,
     this.ratingQuantity = 0,
     this.detectionPrice = 0,
+    this.experienceYears = 0,
     this.availableDates = const [],
     this.availableTimes = const [],
   });
@@ -25,6 +26,7 @@ class PublicDoctorModel {
   final double ratingAverage;
   final int ratingQuantity;
   final double detectionPrice;
+  final int experienceYears;
   final List<String> availableDates;
   final List<String> availableTimes;
 
@@ -54,6 +56,11 @@ class PublicDoctorModel {
       ratingAverage: (json['ratingAverage'] as num?)?.toDouble() ?? 0,
       ratingQuantity: (json['ratingQuantity'] as num?)?.toInt() ?? 0,
       detectionPrice: (json['detectionPrice'] as num?)?.toDouble() ?? 0,
+      experienceYears:
+          (json['expirtes'] as num?)?.toInt() ??
+          (json['experienceYears'] as num?)?.toInt() ??
+          (json['yearsOfExperience'] as num?)?.toInt() ??
+          0,
       availableDates: dates,
       availableTimes: times,
     );

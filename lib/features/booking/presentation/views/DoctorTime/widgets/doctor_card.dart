@@ -15,6 +15,32 @@ class DoctorCard extends StatelessWidget {
   final String? image;
   const DoctorCard({super.key, this.image});
 
+  Widget _buildAvatar(BuildContext context, String src) {
+    final s = src.trim();
+    const fallback = 'assets/Images/home/doctor1.png';
+    Widget core(Widget child) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12.r),
+        child: SizedBox(width: 70.w, height: 70.h, child: child),
+      );
+    }
+
+    if (s.startsWith('http')) {
+      return core(
+        Image.network(
+          s,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) =>
+              Image.asset(fallback, fit: BoxFit.cover),
+        ),
+      );
+    }
+    if (s.isNotEmpty && s.startsWith('assets/')) {
+      return core(Image.asset(s, fit: BoxFit.cover));
+    }
+    return core(Image.asset(fallback, fit: BoxFit.cover));
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<AppThemeProvider>();
@@ -36,6 +62,9 @@ class DoctorCard extends StatelessWidget {
     final price = controller.detectionPrice > 0
         ? controller.detectionPrice
         : 250;
+    final img = (image != null && image!.trim().isNotEmpty)
+        ? image!.trim()
+        : controller.imageUrl;
 
     return Container(
       height: 112.h,
@@ -56,6 +85,8 @@ class DoctorCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildAvatar(context, img),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
