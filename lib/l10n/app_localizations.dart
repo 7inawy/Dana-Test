@@ -620,6 +620,12 @@ abstract class AppLocalizations {
   /// **'Confirm Booking'**
   String get confirmBooking;
 
+  /// No description provided for @confirming.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirming...'**
+  String get confirming;
+
   /// No description provided for @visitTypeExam.
   ///
   /// In en, this message translates to:
@@ -2447,14 +2453,14 @@ abstract class AppLocalizations {
   /// No description provided for @bookVisit.
   ///
   /// In en, this message translates to:
-  /// **'Book Your Visit'**
+  /// **'Book your visit'**
   String get bookVisit;
 
-  /// No description provided for @lastStep.
+  /// No description provided for @lastStepTitle.
   ///
   /// In en, this message translates to:
   /// **'Last Step... To Make Sure Your Child is Safe'**
-  String get lastStep;
+  String get lastStepTitle;
 
   /// No description provided for @lastStepSubtitle.
   ///
@@ -2462,29 +2468,59 @@ abstract class AppLocalizations {
   /// **'Choose the patient and payment method... and confirm the booking.'**
   String get lastStepSubtitle;
 
-  /// No description provided for @choosePaymentMethod.
+  /// No description provided for @patient.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient'**
+  String get patient;
+
+  /// No description provided for @selectYorChildName.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your child name'**
+  String get selectYorChildName;
+
+  /// No description provided for @visitType.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit type'**
+  String get visitType;
+
+  /// No description provided for @doctorNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note to doctor'**
+  String get doctorNote;
+
+  /// No description provided for @writeNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write any simple comment… (optional)'**
+  String get writeNoteHint;
+
+  /// No description provided for @selectPaymentMethod.
   ///
   /// In en, this message translates to:
   /// **'Choose Payment Method'**
-  String get choosePaymentMethod;
+  String get selectPaymentMethod;
 
-  /// No description provided for @payByVisa.
+  /// No description provided for @payOnVisit.
   ///
   /// In en, this message translates to:
-  /// **'Pay by Visa'**
-  String get payByVisa;
+  /// **'Pay on visit'**
+  String get payOnVisit;
 
-  /// No description provided for @checkup.
+  /// No description provided for @bookingSuccessMessageOnVisit.
   ///
   /// In en, this message translates to:
-  /// **'Checkup'**
-  String get checkup;
+  /// **'Your booking was successful. Payment will be made at the clinic during your visit.'**
+  String get bookingSuccessMessageOnVisit;
 
-  /// No description provided for @revisit.
+  /// No description provided for @payWithCard.
   ///
   /// In en, this message translates to:
-  /// **'Revisit'**
-  String get revisit;
+  /// **'Pay with card'**
+  String get payWithCard;
 
   /// No description provided for @priceValue.
   ///

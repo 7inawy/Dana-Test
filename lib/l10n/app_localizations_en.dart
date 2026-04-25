@@ -287,6 +287,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmBooking => 'Confirm Booking';
 
   @override
+  String get confirming => 'Confirming...';
+
+  @override
   String get visitTypeExam => 'Consultation';
 
   @override
@@ -1283,26 +1286,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentAtVisit => 'Pay at Visit';
 
   @override
-  String get bookVisit => 'Book Your Visit';
+  String get bookVisit => 'Book your visit';
 
   @override
-  String get lastStep => 'Last Step... To Make Sure Your Child is Safe';
+  String get lastStepTitle => 'Last Step... To Make Sure Your Child is Safe';
 
   @override
   String get lastStepSubtitle =>
       'Choose the patient and payment method... and confirm the booking.';
 
   @override
-  String get choosePaymentMethod => 'Choose Payment Method';
+  String get patient => 'Patient';
 
   @override
-  String get payByVisa => 'Pay by Visa';
+  String get selectYorChildName => 'Select your child name';
 
   @override
-  String get checkup => 'Checkup';
+  String get visitType => 'Visit type';
 
   @override
-  String get revisit => 'Revisit';
+  String get doctorNote => 'Note to doctor';
+
+  @override
+  String get writeNoteHint => 'Write any simple comment… (optional)';
+
+  @override
+  String get selectPaymentMethod => 'Choose Payment Method';
+
+  @override
+  String get payOnVisit => 'Pay on visit';
+
+  @override
+  String get bookingSuccessMessageOnVisit =>
+      'Your booking was successful. Payment will be made at the clinic during your visit.';
+
+  @override
+  String get payWithCard => 'Pay with card';
 
   @override
   String get priceValue => '250';

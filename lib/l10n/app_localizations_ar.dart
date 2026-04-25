@@ -284,6 +284,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get confirmBooking => 'تأكيد الحجز';
 
   @override
+  String get confirming => 'جاري التأكيد…';
+
+  @override
   String get visitTypeExam => 'كشف';
 
   @override
@@ -1271,26 +1274,42 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paymentAtVisit => 'الدفع عند الزيارة';
 
   @override
-  String get bookVisit => 'أحجز زيارتك';
+  String get bookVisit => 'احجز زيارتك';
 
   @override
-  String get lastStep => 'خطوة أخيرة... علشان نطمن على ابنك';
+  String get lastStepTitle => 'خطوة أخيرة... علشان نطمن على ابنك';
 
   @override
   String get lastStepSubtitle =>
       'اختار المريض وطريقة الدفع... وخلاص تكفل الحجز.';
 
   @override
-  String get choosePaymentMethod => 'اختر طريقة الدفع';
+  String get patient => 'المريض';
 
   @override
-  String get payByVisa => 'الدفع عن طريق الفيزا';
+  String get selectYorChildName => 'اختر اسم طفلك';
 
   @override
-  String get checkup => 'كشف';
+  String get visitType => 'نوع الزيارة';
 
   @override
-  String get revisit => 'إعاده';
+  String get doctorNote => 'ملاحظة للطبيب';
+
+  @override
+  String get writeNoteHint => 'اكتب أي تعليق بسيط… (اختياري)';
+
+  @override
+  String get selectPaymentMethod => 'اختر طريقة الدفع';
+
+  @override
+  String get payOnVisit => 'الدفع عند الزيارة';
+
+  @override
+  String get bookingSuccessMessageOnVisit =>
+      'حجزك اتسجّل بنجاح. الدفع هيكون في العيادة وقت الزيارة.';
+
+  @override
+  String get payWithCard => 'الدفع عن طريق الفيزا';
 
   @override
   String get priceValue => '250';

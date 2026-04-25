@@ -3,6 +3,7 @@ import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class AnimatedDropdown extends StatefulWidget {
@@ -144,7 +145,7 @@ class _AnimatedDropdownState extends State<AnimatedDropdown>
       child: GestureDetector(
         onTap: _toggleDropdown,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           decoration: BoxDecoration(
             color: isDark
                 ? AppColors.bg_card_default_dark
@@ -171,12 +172,13 @@ class _AnimatedDropdownState extends State<AnimatedDropdown>
               AnimatedRotation(
                 turns: isOpen ? 0.5 : 0,
                 duration: const Duration(milliseconds: 200),
-                child: Icon(
-                  Icons.keyboard_arrow_down,
+                child: SvgPicture.asset(
+                  'assets/Icons/arrow_drop_icon.svg',
+                  width: 24.w,
+                  height: 24.h,
                   color: isDark
                       ? AppColors.icon_onLight_dark
                       : AppColors.icon_onLight_light,
-                  size: 24.r,
                 ),
               ),
             ],

@@ -7,8 +7,6 @@ import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/child_profile/child_profile_args.dart';
 import 'package:dana/features/child_profile/data/models/growth_record_model.dart';
 import 'package:dana/features/child_profile/data/models/skill_api_models.dart';
-import 'package:dana/features/child_profile/presentation/bottom_sheets/update_data_bottom_sheet.dart'
-    show showUpdateMeasurementsBottomSheet;
 import 'package:dana/features/child_profile/presentation/cubit/growth_cubit.dart';
 import 'package:dana/features/child_profile/presentation/cubit/growth_state.dart';
 import 'package:dana/features/child_profile/presentation/cubit/skills_cubit.dart';
@@ -125,11 +123,7 @@ Widget _childProfileAvatar({
 }
 
 class ChildInfoCard extends StatefulWidget {
-  const ChildInfoCard({
-    super.key,
-    this.headerSnapshot,
-    this.onSelectChild,
-  });
+  const ChildInfoCard({super.key, this.headerSnapshot, this.onSelectChild});
 
   /// Shown while growth is loading; usually route [ChildProfileArgs].
   final ChildProfileArgs? headerSnapshot;
@@ -161,10 +155,9 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
         final name = loaded?.childName ?? snap?.childName ?? '';
         final displayName = DisplayNameUtils.dedupeRepeatedPhrase(name);
         final birth = loaded?.birthDate ?? snap?.birthDate;
-        final genderRaw = (loaded != null
-                ? loaded.gender
-                : (snap?.gender ?? ''))
-            .toLowerCase();
+        final genderRaw =
+            (loaded != null ? loaded.gender : (snap?.gender ?? ''))
+                .toLowerCase();
         final isGirl = genderRaw == 'female';
         final profileUrl = loaded?.profileImageUrl ?? snap?.profileImageUrl;
 
@@ -176,14 +169,8 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
         final latestMonth = monthlyPair.$1;
         final prevMonth = monthlyPair.$2;
 
-        final heightVal = _statValue(
-          latestMonth?.height ?? 0,
-          context.l10n.cm,
-        );
-        final weightVal = _statValue(
-          latestMonth?.weight ?? 0,
-          context.l10n.kg,
-        );
+        final heightVal = _statValue(latestMonth?.height ?? 0, context.l10n.cm);
+        final weightVal = _statValue(latestMonth?.weight ?? 0, context.l10n.kg);
         final headVal = _statValue(
           latestMonth?.headCircumference ?? 0,
           context.l10n.cm,
@@ -221,19 +208,16 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
           }
         }
 
-        final showChildPicker = loaded != null &&
+        final showChildPicker =
+            loaded != null &&
             loaded.children.length > 1 &&
             widget.onSelectChild != null;
 
         final otherChildren = loaded == null
             ? const <ParentChildModel>[]
             : loaded.children
-                .where((c) => c.id != loaded.childId)
-                .toList(growable: false);
-
-        final headerInk = loaded != null
-            ? () => showUpdateMeasurementsBottomSheet(context)
-            : null;
+                  .where((c) => c.id != loaded.childId)
+                  .toList(growable: false);
 
         return CustomFrame(
           child: Column(
@@ -247,9 +231,9 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                     children: [
                       Expanded(
                         child: InkWell(
-                          borderRadius:
-                              BorderRadius.circular(AppRadius.radius_sm),
-                          onTap: headerInk,
+                          borderRadius: BorderRadius.circular(
+                            AppRadius.radius_sm,
+                          ),
                           child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 2.h),
                             child: Row(
@@ -269,12 +253,81 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          displayName.isEmpty ? '…' : displayName,
-                                          style:
-                                              AppTextStyle.semibold16TextHeading(
-                                                context,
-                                              ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              displayName.isEmpty
+                                                  ? '…'
+                                                  : displayName,
+                                              style:
+                                                  AppTextStyle.semibold16TextHeading(
+                                                    context,
+                                                  ),
+                                            ),
+                                            if (showChildPicker)
+                                              Container(
+                                                width: 20.w,
+                                                height: 20.h,
+                                                margin:
+                                                    EdgeInsetsDirectional.only(
+                                                      end: 4.w,
+                                                    ),
+                                                child: Center(
+                                                  child: IconButton(
+                                                    onPressed: () => setState(
+                                                      () => _pickerExpanded =
+                                                          !_pickerExpanded,
+                                                    ),
+                                                    visualDensity:
+                                                        VisualDensity.compact,
+                                                    padding:
+                                                        EdgeInsetsDirectional.only(
+                                                          start: 4.w,
+                                                        ),
+                                                    constraints: BoxConstraints(
+                                                      minWidth: 20.w,
+                                                      minHeight: 20.h,
+                                                    ),
+                                                    icon: Container(
+                                                      width: 20.w,
+                                                      height: 20.h,
+                                                      margin:
+                                                          EdgeInsetsDirectional.only(
+                                                            end: 4.w,
+                                                          ),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          _pickerExpanded
+                                                              ? Icons
+                                                                    .expand_less
+                                                              : Icons
+                                                                    .expand_more,
+                                                          color: isDark
+                                                              ? AppColors
+                                                                    .icon_onLight_dark
+                                                              : AppColors
+                                                                    .icon_onLight_light,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            else if (loaded == null)
+                                              Icon(
+                                                Icons.info_outline,
+                                                size: 20.w,
+                                                color: isDark
+                                                    ? AppColors
+                                                          .icon_onLight_dark
+                                                    : AppColors
+                                                          .icon_onLight_light,
+                                              )
+                                            else
+                                              SizedBox(width: 4.w),
+                                          ],
                                         ),
                                         SizedBox(height: 4.h),
                                         Text(
@@ -293,23 +346,51 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                                                   horizontal: 16.w,
                                                 ),
                                                 decoration: BoxDecoration(
-                                                  color: isDark
-                                                      ? AppColors
-                                                          .primary_50_dark
-                                                      : AppColors
-                                                          .primary_50_light,
+                                                  color: isGirl
+                                                      ? (isDark
+                                                            ? const Color.fromARGB(
+                                                                255,
+                                                                68,
+                                                                26,
+                                                                60,
+                                                              )
+                                                            : const Color.fromARGB(
+                                                                255,
+                                                                249,
+                                                                230,
+                                                                244,
+                                                              ))
+                                                      : (isDark
+                                                            ? AppColors
+                                                                  .primary_50_dark
+                                                            : AppColors
+                                                                  .primary_50_light),
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                    AppRadius.radius_full,
-                                                  ),
+                                                        AppRadius.radius_full,
+                                                      ),
                                                   border: Border.all(
                                                     width:
                                                         AppRadius.stroke_thin,
-                                                    color: isDark
-                                                        ? AppColors
-                                                              .primary_200_dark
-                                                        : AppColors
-                                                              .primary_200_light,
+                                                    color: isGirl
+                                                        ? (isDark
+                                                              ? const Color.fromARGB(
+                                                                  255,
+                                                                  128,
+                                                                  33,
+                                                                  117,
+                                                                )
+                                                              : const Color.fromARGB(
+                                                                  255,
+                                                                  226,
+                                                                  138,
+                                                                  226,
+                                                                ))
+                                                        : (isDark
+                                                              ? AppColors
+                                                                    .primary_200_dark
+                                                              : AppColors
+                                                                    .primary_200_light),
                                                   ),
                                                 ),
                                                 child: Center(
@@ -317,18 +398,21 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                                                     isGirl
                                                         ? context.l10n.girl
                                                         : context.l10n.boy,
-                                                    style: AppTextStyle
-                                                        .medium12Primary(
-                                                      context,
-                                                    ),
+                                                    style: isGirl
+                                                        ? AppTextStyle.medium12Pink(
+                                                            context,
+                                                          )
+                                                        : AppTextStyle.medium12Primary(
+                                                            context,
+                                                          ),
                                                   ),
                                                 ),
                                               ),
                                               Container(
                                                 margin:
                                                     EdgeInsetsDirectional.only(
-                                                  start: 8.w,
-                                                ),
+                                                      start: 8.w,
+                                                    ),
                                                 padding: EdgeInsets.symmetric(
                                                   vertical: 4.h,
                                                   horizontal: 16.w,
@@ -336,13 +420,13 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                                                 decoration: BoxDecoration(
                                                   color: isDark
                                                       ? AppColors
-                                                          .bg_success_subtle_dark
+                                                            .bg_success_subtle_dark
                                                       : AppColors
-                                                          .bg_success_subtle_light,
+                                                            .bg_success_subtle_light,
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                    AppRadius.radius_full,
-                                                  ),
+                                                        AppRadius.radius_full,
+                                                      ),
                                                   border: Border.all(
                                                     width:
                                                         AppRadius.stroke_thin,
@@ -355,12 +439,13 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                                                 ),
                                                 child: Center(
                                                   child: Text(
-                                                    context.l10n
+                                                    context
+                                                        .l10n
                                                         .growthStatusHealthy,
-                                                    style: AppTextStyle
-                                                        .medium12Succes(
-                                                      context,
-                                                    ),
+                                                    style:
+                                                        AppTextStyle.medium12Succes(
+                                                          context,
+                                                        ),
                                                   ),
                                                 ),
                                               ),
@@ -376,41 +461,13 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                           ),
                         ),
                       ),
-                      if (showChildPicker)
-                        IconButton(
-                          onPressed: () => setState(
-                            () => _pickerExpanded = !_pickerExpanded,
-                          ),
-                          visualDensity: VisualDensity.compact,
-                          padding: EdgeInsetsDirectional.only(start: 4.w),
-                          constraints: BoxConstraints(
-                            minWidth: 40.w,
-                            minHeight: 40.h,
-                          ),
-                          icon: Icon(
-                            _pickerExpanded
-                                ? Icons.expand_less
-                                : Icons.expand_more,
-                            color: isDark
-                                ? AppColors.text_heading_dark
-                                : AppColors.text_heading_light,
-                          ),
-                        )
-                      else if (loaded == null)
-                        Icon(
-                          Icons.info_outline,
-                          size: 20.w,
-                          color: isDark
-                              ? AppColors.text_heading_dark
-                              : AppColors.text_heading_light,
-                        )
-                      else
-                        SizedBox(width: 4.w),
                     ],
                   ),
                 ),
               ),
-              if (showChildPicker && _pickerExpanded && otherChildren.isNotEmpty)
+              if (showChildPicker &&
+                  _pickerExpanded &&
+                  otherChildren.isNotEmpty)
                 Padding(
                   padding: EdgeInsets.only(bottom: 8.h),
                   child: DecoratedBox(
@@ -418,8 +475,7 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                       color: isDark
                           ? AppColors.bg_surface_subtle_dark
                           : AppColors.bg_surface_subtle_light,
-                      borderRadius:
-                          BorderRadius.circular(AppRadius.radius_md),
+                      borderRadius: BorderRadius.circular(AppRadius.radius_md),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -444,12 +500,12 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                                     top: Radius.circular(AppRadius.radius_md),
                                   )
                                 : i == otherChildren.length - 1
-                                    ? BorderRadius.vertical(
-                                        bottom: Radius.circular(
-                                          AppRadius.radius_md,
-                                        ),
-                                      )
-                                    : null,
+                                ? BorderRadius.vertical(
+                                    bottom: Radius.circular(
+                                      AppRadius.radius_md,
+                                    ),
+                                  )
+                                : null,
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 12.w,
@@ -459,9 +515,8 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   _childProfileAvatar(
-                                    isGirl: otherChildren[i]
-                                            .gender
-                                            .toLowerCase() ==
+                                    isGirl:
+                                        otherChildren[i].gender.toLowerCase() ==
                                         'female',
                                     profileUrl:
                                         otherChildren[i].profileImageUrl,
@@ -474,16 +529,15 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          DisplayNameUtils
-                                              .dedupeRepeatedPhrase(
+                                          DisplayNameUtils.dedupeRepeatedPhrase(
                                             otherChildren[i].childName,
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: AppTextStyle
-                                              .semibold16TextHeading(
-                                            context,
-                                          ),
+                                          style:
+                                              AppTextStyle.semibold16TextHeading(
+                                                context,
+                                              ),
                                         ),
                                         SizedBox(height: 4.h),
                                         Text(

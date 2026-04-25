@@ -405,6 +405,14 @@ class AppTextStyle {
     );
   }
 
+  static TextStyle medium12Pink(BuildContext context) {
+    return GoogleFonts.ibmPlexSansArabic(
+      fontSize: AppStyles.SM_Arabic,
+      fontWeight: FontWeight.w500,
+      color: const Color.fromARGB(255, 192, 0, 173),
+    );
+  }
+
   static TextStyle medium8TextBody(BuildContext context) {
     final themeProvider = context.watch<AppThemeProvider>();
     final isDark =

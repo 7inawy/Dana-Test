@@ -1,5 +1,5 @@
-import 'package:dana/features/home/widgets/custom_line_chart.dart';
-import 'package:dana/features/home/widgets/line_chart_details.dart';
+import 'package:dana/features/home/presentation/widgets/custom_line_chart.dart';
+import 'package:dana/features/home/presentation/widgets/line_chart_details.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

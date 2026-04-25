@@ -1,12 +1,15 @@
 import 'package:dana/core/di/injection_container.dart';
+import 'package:dana/core/widgets/custom_app_bar_button.dart';
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/widgets/animated_dropdown.dart';
+import 'package:dana/core/widgets/custom_screen_header.dart';
 import 'package:dana/core/widgets/custom_toggle_selector.dart';
 import 'package:dana/core/widgets/selectable_option.dart';
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_raduis.dart';
 import 'package:dana/core/utils/app_sizes.dart';
 import 'package:dana/core/utils/app_text_style.dart';
+import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/booking/booking_flow_models.dart';
 import 'package:dana/features/booking/presentation/views/OnlinePayment/screens/Online_Payment_Screen.dart';
 import 'package:dana/features/booking/presentation/views/BookingScreen/screens/Payment_Confirm_Screen.dart';
@@ -127,7 +130,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
               : (isDark
                     ? AppColors.bg_button_primary_disabled_dark
                     : AppColors.bg_button_primary_disabled_light),
-          text: 'احجز زيارتك',
+          text: context.l10n.bookVisit,
           textColor: isButtonEnabled
               ? (isDark
                     ? AppColors.text_button_dark
@@ -181,17 +184,32 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   style: AppTextStyle.medium20TextDisplay(context),
                 )
               else ...[
-                Text(
-                  'خطوة أخيرة… علشان نطمن على ابنك',
-                  style: AppTextStyle.medium20TextDisplay(context),
-                ),
-                SizedBox(height: AppSizes.h8),
-                Text(
-                  'اختار المريض وطريقة الدفع… وخلاص نكمّل الحجز.',
-                  style: AppTextStyle.regular16TextBody(context),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: CustomScreenHeader(
+                        title: context.l10n.lastStepTitle,
+                        subtitle: context.l10n.lastStepSubtitle,
+                      ),
+                    ),
+                    CustomAppBarButton(
+                      width: 36.w,
+                      height: 36.h,
+                      color: isDark
+                          ? AppColors.bg_card_default_dark
+                          : AppColors.bg_card_default_light,
+                      borderRadius: AppRadius.radius_full,
+                      onTap: () => Navigator.of(context).pop(),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 24.h),
-                Text('المريض', style: AppTextStyle.bold12TextHeading(context)),
+                Text(
+                  context.l10n.patient,
+                  style: AppTextStyle.bold12TextHeading(context),
+                ),
                 SizedBox(height: AppSizes.h8),
                 if (_loadingChildren)
                   Padding(
@@ -211,75 +229,69 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 else
                   SizedBox(
                     height: 48.h,
-                    child: Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: AnimatedDropdown(
-                        hintText: 'أختر اسم طفلك',
-                        items: names,
-                        value: _childName,
-                        onChanged: (val) {
-                          setState(() {
-                            _childName = val;
-                          });
-                        },
-                      ),
+                    child: AnimatedDropdown(
+                      hintText: context.l10n.selectYorChildName,
+                      items: names,
+                      value: _childName,
+                      onChanged: (val) {
+                        setState(() {
+                          _childName = val;
+                        });
+                      },
                     ),
                   ),
                 SizedBox(height: 16.h),
                 Text(
-                  'نوع الزيارة',
+                  context.l10n.visitType,
                   style: AppTextStyle.bold12TextHeading(context),
                 ),
                 SizedBox(height: AppSizes.h8),
                 CustomToggleSelector(
-                  firstText: 'كشف',
-                  secondText: 'إعاده',
+                  firstText: context.l10n.visitTypeExam,
+                  secondText: context.l10n.visitTypeFollowUp,
                   onChanged: (i) {},
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  'ملاحظة للطبيب',
+                  context.l10n.doctorNote,
                   style: AppTextStyle.bold12TextHeading(context),
                 ),
                 SizedBox(height: AppSizes.h8),
                 SizedBox(
                   height: 85.h,
-                  child: Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: TextField(
-                      controller: _noteController,
-                      focusNode: _noteFocusNode,
-                      style: AppTextStyle.bold12TextBody(context),
-                      minLines: 5,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        hintText: 'اكتب أي تعليق بسيط… (اختياري)',
-                        hintStyle: AppTextStyle.bold12TextBody(context),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 16.h,
+                  child: TextField(
+                    controller: _noteController,
+                    focusNode: _noteFocusNode,
+                    style: AppTextStyle.bold12TextBody(context),
+                    minLines: 5,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      hintText: context.l10n.writeNoteHint,
+                      hintStyle: AppTextStyle.bold12TextBody(context),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 16.h,
+                      ),
+                      filled: true,
+                      fillColor: isDark
+                          ? AppColors.bg_card_default_dark
+                          : AppColors.bg_card_default_light,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                        borderSide: BorderSide(
+                          color: isDark
+                              ? AppColors.border_card_default_dark
+                              : AppColors.border_card_default_light,
+                          width: AppRadius.stroke_regular,
                         ),
-                        filled: true,
-                        fillColor: isDark
-                            ? AppColors.bg_card_default_dark
-                            : AppColors.bg_card_default_light,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                          borderSide: BorderSide(
-                            color: isDark
-                                ? AppColors.border_card_default_dark
-                                : AppColors.border_card_default_light,
-                            width: AppRadius.stroke_regular,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                          borderSide: BorderSide(
-                            color: isDark
-                                ? AppColors.border_card_default_dark
-                                : AppColors.border_card_default_light,
-                            width: AppRadius.stroke_regular,
-                          ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                        borderSide: BorderSide(
+                          color: isDark
+                              ? AppColors.border_card_default_dark
+                              : AppColors.border_card_default_light,
+                          width: AppRadius.stroke_regular,
                         ),
                       ),
                     ),
@@ -287,36 +299,33 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 ),
                 SizedBox(height: 24.h),
                 Text(
-                  'اختر طريقة الدفع',
+                  context.l10n.selectPaymentMethod,
                   style: AppTextStyle.bold16TextDisplay(context),
                 ),
                 SizedBox(height: AppSizes.h12),
                 SizedBox(
-                  child: Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: Column(
-                      children: [
-                        SelectableOption(
-                          text: 'الدفع عند الزيارة',
-                          value: 0,
-                          imagePath: "assets/Images/money.png",
-                          selectedValue: _selectedOption,
-                          onChanged: (val) {
-                            setState(() => _selectedOption = val);
-                          },
-                        ),
-                        SizedBox(height: 12.h),
-                        SelectableOption(
-                          text: 'الدفع عن طريق الفيزا',
-                          imagePath: "assets/Images/credit card.png",
-                          value: 1,
-                          selectedValue: _selectedOption,
-                          onChanged: (val) {
-                            setState(() => _selectedOption = val);
-                          },
-                        ),
-                      ],
-                    ),
+                  child: Column(
+                    children: [
+                      SelectableOption(
+                        text: context.l10n.payOnVisit,
+                        value: 0,
+                        imagePath: "assets/Images/money.png",
+                        selectedValue: _selectedOption,
+                        onChanged: (val) {
+                          setState(() => _selectedOption = val);
+                        },
+                      ),
+                      SizedBox(height: 12.h),
+                      SelectableOption(
+                        text: context.l10n.payWithCard,
+                        imagePath: "assets/Images/credit card.png",
+                        value: 1,
+                        selectedValue: _selectedOption,
+                        onChanged: (val) {
+                          setState(() => _selectedOption = val);
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],

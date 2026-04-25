@@ -4,7 +4,7 @@ import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_raduis.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/extensions/localization_extension.dart';
-import 'package:dana/features/home/widgets/statistics_chart.dart';
+import 'package:dana/features/home/presentation/widgets/statistics_chart.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:dana/features/child_profile/presentation/bottom_sheets/update_data_bottom_sheet.dart'
     show showUpdateMeasurementsBottomSheet;

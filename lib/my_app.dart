@@ -8,8 +8,8 @@ import 'package:dana/features/auth/login/presentation/views/screens/forget_passw
 import 'package:dana/features/auth/login/presentation/views/screens/login/screens/login_screen.dart';
 import 'package:dana/features/auth/login/presentation/views/screens/new_password/screens/new_password_screen.dart';
 import 'package:dana/features/auth/signUp/presentation/views/screens/sign_up/views/screens/signUp_screen.dart';
-import 'package:dana/features/home/presentation/views/screens/doctors_page.dart';
-import 'package:dana/features/home/presentation/views/screens/home_screen.dart';
+import 'package:dana/features/home/presentation/screens/doctors_page.dart';
+import 'package:dana/features/home/presentation/screens/home_screen.dart';
 import 'package:dana/features/onboarding/presentation/views/screens/onboard_screen.dart';
 import 'package:dana/features/splash/views/screens/splash_screen.dart';
 import 'package:dana/l10n/app_localizations.dart';

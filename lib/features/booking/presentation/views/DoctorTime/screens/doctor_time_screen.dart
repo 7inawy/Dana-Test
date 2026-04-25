@@ -1,3 +1,5 @@
+import 'package:dana/core/utils/app_raduis.dart';
+import 'package:dana/core/widgets/custom_app_bar_button.dart';
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_routes.dart';
@@ -34,6 +36,7 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
         themeProvider.appTheme == ThemeMode.dark ||
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
+    bool isRTL = Directionality.of(context) == TextDirection.rtl;
 
     final rating = controller.ratingAverage > 0
         ? controller.ratingAverage.toStringAsFixed(1)
@@ -77,6 +80,17 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
       body: Stack(
         children: [
           Image.asset(AppAssets.doctorTime, fit: BoxFit.fill),
+          Positioned.directional(
+            textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
+            top: 30.h,
+            end: 24.w,
+            child: CustomAppBarButton(
+              width: 36.w,
+              height: 36.h,
+              borderRadius: AppRadius.radius_full,
+              onTap: () => Navigator.of(context).pop(),
+            ),
+          ),
           DraggableScrollableSheet(
             initialChildSize: 0.65,
             minChildSize: 0.65,

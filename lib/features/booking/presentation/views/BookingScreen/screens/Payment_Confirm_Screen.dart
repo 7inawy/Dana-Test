@@ -6,6 +6,7 @@ import 'package:dana/core/widgets/text_frame.dart';
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/core/widgets/custom_screen_header.dart';
+import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/booking/booking_flow_models.dart';
 import 'package:dana/features/booking/data/repo/booking_repo.dart';
 import 'package:dana/features/booking/presentation/views/BookingScreen/widgets/booking_summary_card.dart';
@@ -144,12 +145,11 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(24.r),
-        child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: CustomButton(
-            onTap: _submitting ? () {} : _submitBooking,
-            text: _submitting ? 'جاري التأكيد…' : 'تأكيد الحجز',
-          ),
+        child: CustomButton(
+          onTap: _submitting ? () {} : _submitBooking,
+          text: _submitting
+              ? context.l10n.confirming
+              : context.l10n.confirmBooking,
         ),
       ),
       body: Padding(
@@ -158,8 +158,8 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomScreenHeader(
-              title: 'مراجعة الحجز',
-              subtitle: 'اتأكد من التفاصيل قبل إكمال الحجز.',
+              title: context.l10n.reviewBookingTitle,
+              subtitle: context.l10n.reviewBookingSubtitle,
             ),
             SizedBox(height: 24.h),
             Expanded(
@@ -181,7 +181,9 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                       ),
                     SizedBox(height: 24.h),
                     Text(
-                      isOnVisit ? 'الدفع عند الزيارة' : 'الدفع الإلكتروني',
+                      isOnVisit
+                          ? context.l10n.payOnVisit
+                          : context.l10n.electronicPayment,
                       style: AppTextStyle.bold16TextDisplay(context),
                     ),
                     SizedBox(height: 12.h),
@@ -192,7 +194,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'تكلفة الخدمة',
+                                context.l10n.serviceCost,
                                 style: AppTextStyle.bold12TextHeading(context),
                               ),
                               Text(
@@ -206,7 +208,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'ضريبة',
+                                context.l10n.tax,
                                 style: AppTextStyle.semibold12TextBody(context),
                               ),
                               Text(
@@ -230,7 +232,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'إجمالي التكلفة',
+                            context.l10n.totalCost,
                             style: AppTextStyle.bold12TextDisplay(context),
                           ),
                           Text(
@@ -295,17 +297,17 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                   'assets/Images/result page success motion design 1.png',
                 ),
                 Text(
-                  'تم تأكيد الحجز',
+                  context.l10n.bookingConfirmed,
                   style: AppTextStyle.bold20TextDisplay(context),
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  'حجزك اتسجّل بنجاح. الدفع هيكون في العيادة وقت الزيارة.',
+                  context.l10n.bookingSuccessMessageOnVisit,
                   style: AppTextStyle.bold16TextBody(context),
                 ),
                 SizedBox(height: 32.h),
                 CustomButton(
-                  text: 'تم',
+                  text: context.l10n.done,
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.pushReplacementNamed(

@@ -90,21 +90,7 @@ class DoctorCard extends StatelessWidget {
                             style: AppTextStyle.medium12TextHeading(context),
                           ),
                         ),
-                        if (onOpenChat != null) ...[
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            visualDensity: VisualDensity.compact,
-                            constraints: const BoxConstraints(
-                              minWidth: 28,
-                              minHeight: 28,
-                            ),
-                            onPressed: onOpenChat,
-                            icon: const Icon(
-                              Icons.chat_bubble_outline,
-                              size: 16,
-                            ),
-                          ),
-                        ],
+
                         Text(
                           '⭐$rate',
                           style: AppTextStyle.regular8TextBody(context),

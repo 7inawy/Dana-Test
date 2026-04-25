@@ -7,7 +7,7 @@ import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/home/presentation/cubit/doctors_list_cubit.dart';
 import 'package:dana/features/home/presentation/cubit/doctors_list_state.dart';
-import 'package:dana/features/home/widgets/doctor_card.dart';
+import 'package:dana/features/home/presentation/widgets/doctor_card.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
