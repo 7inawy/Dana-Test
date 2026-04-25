@@ -1,5 +1,6 @@
 import 'package:dana/my_app.dart';
 import 'package:dana/core/config/app_config.dart';
+import 'package:dana/core/log/debug_audit_log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,7 +16,24 @@ void main() async {
 
   AppConfig.validate();
 
+  await DebugAuditLog.init();
+
+  DebugAuditLog.log(
+    runId: 'pre-fix',
+    hypothesisId: 'H2',
+    location: 'lib/main.dart:main',
+    message: 'Startup: before DI init()',
+    data: {'apiBaseUrl': AppConfig.apiBaseUrl},
+  );
+
   await init();
+
+  DebugAuditLog.log(
+    runId: 'pre-fix',
+    hypothesisId: 'H2',
+    location: 'lib/main.dart:main',
+    message: 'Startup: after DI init()',
+  );
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
@@ -26,6 +44,17 @@ void main() async {
 
   final languageProvider = AppLanguageProvider();
   await languageProvider.loadLanguage();
+
+  DebugAuditLog.log(
+    runId: 'pre-fix',
+    hypothesisId: 'H1',
+    location: 'lib/main.dart:main',
+    message: 'Startup: loaded theme/lang providers',
+    data: {
+      'themeMode': themeProvider.appTheme.toString(),
+      'language': languageProvider.appLanguage,
+    },
+  );
 
   final app = MultiProvider(
     providers: [

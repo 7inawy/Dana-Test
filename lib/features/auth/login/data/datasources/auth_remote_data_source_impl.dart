@@ -44,8 +44,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     File? profileImage,
   }) async {
     try {
-      // Contract matches Postman `pre-SignUp`: multipart field `data` is JSON
-      // with nested `parent` + `children` (not flat parent fields at root).
+      // Updated contract (note 2): pre-sign-up body is raw JSON (not multipart).
+      // Shape stays the same: `{ parent: {...}, children: [...] }`.
       final parentMap = <String, dynamic>{
         'parentName': parentName,
         'email': email,
@@ -60,21 +60,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'parent': parentMap,
         'children': children.map((c) => c.toJson()).toList(),
       };
-
-      final formData = FormData.fromMap({
-        'data': jsonEncode(payload),
-        if (profileImage != null)
-          'file': await MultipartFile.fromFile(
-            profileImage.path,
-            filename: profileImage.path.split('/').last,
-          ),
-      });
+      if (profileImage != null) {
+        // New image upload routes require a known parentId; pre-sign-up doesn't have it.
+        throw const ServerException(message: 'Use add-profile-image after signup');
+      }
 
       final response = await dio.post(
         ApiEndpoint.preSignUp,
 
         // ApiConstant.preSignUp, // POST /v1/parent/pre-SignUp
-        data: formData,
+        data: payload,
+        options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
       final data = ApiResponse.decode(response.data);

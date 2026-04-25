@@ -184,19 +184,10 @@ class ParentProfileRemoteDataSourceImpl
         'gender': gender,
         'birthDate': birthDate.toIso8601String(),
       };
-
-      final formData = FormData.fromMap({
-        'data': jsonEncode(payload),
-        if (profileImage != null)
-          'file': await MultipartFile.fromFile(
-            profileImage.path,
-            filename: profileImage.path.split('/').last,
-          ),
-      });
-
       final res = await dio.patch(
         '${ApiEndpoint.parentUpdateChild}$childId',
-        data: formData,
+        data: payload,
+        options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
       final decoded = ApiResponse.decode(res.data);
@@ -206,7 +197,20 @@ class ParentProfileRemoteDataSourceImpl
       if (updated.isEmpty) {
         throw const ServerException(message: 'Child was not updated');
       }
-      return updated.first;
+      final child = updated.first;
+
+      // note 2: profile image update is now a separate endpoint.
+      if (profileImage != null) {
+        final fd = FormData.fromMap({
+          'file': await MultipartFile.fromFile(
+            profileImage.path,
+            filename: profileImage.path.split(RegExp(r'[\\/]')).last,
+          ),
+        });
+        await dio.post(ApiEndpoint.childAddProfileImagePath(childId), data: fd);
+      }
+
+      return child;
     } on DioException catch (e) {
       final msg = ApiError.messageFromDio(
         e,

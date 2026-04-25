@@ -16,6 +16,7 @@ import 'package:dana/l10n/app_localizations.dart';
 import 'package:dana/core/navigation/app_navigator.dart';
 import 'package:dana/providers/app_language_provider.dart';
 import 'package:dana/providers/app_theme_provider.dart';
+import 'package:dana/core/log/debug_audit_log.dart';
 import 'package:dana/features/child_profile/child_profile_args.dart';
 import 'package:dana/features/child_profile/presentation/screens/child_profile_page.dart';
 import 'package:dana/features/booking/booking_flow_models.dart';
@@ -143,12 +144,27 @@ class MyApp extends StatelessWidget {
       /// Child Profile
       AppRoutes.childProfile: (context) {
         final raw = ModalRoute.of(context)?.settings.arguments;
+        DebugAuditLog.log(
+          runId: 'pre-fix',
+          hypothesisId: 'H5',
+          location: 'lib/my_app.dart:_buildRoutes:childProfile',
+          message: 'Navigated to childProfile route',
+          data: {'argsType': raw?.runtimeType.toString()},
+        );
         return ChildProfileScreen(args: raw is ChildProfileArgs ? raw : null);
       },
 
       /// Vaccine
       AppRoutes.vaccine: (context) {
-        final id = ModalRoute.of(context)?.settings.arguments as String?;
+        final raw = ModalRoute.of(context)?.settings.arguments;
+        DebugAuditLog.log(
+          runId: 'pre-fix',
+          hypothesisId: 'H5',
+          location: 'lib/my_app.dart:_buildRoutes:vaccine',
+          message: 'Navigated to vaccine route',
+          data: {'argsType': raw?.runtimeType.toString()},
+        );
+        final id = raw as String?;
         return VaccineScreen(childId: id);
       },
 

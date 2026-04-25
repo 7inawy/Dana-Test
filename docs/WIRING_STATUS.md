@@ -14,7 +14,7 @@ This document uses `Dana.postman_collection.json` as the current API contract.
 ### Auth + session (mobile)
 - **POST** `/v1/parent/pre-signIn`
 - **POST** `/v1/parent/verify-signIn` → extracts token from `accessToken.access_token`
-- **POST** `/v1/parent/pre-SignUp` (multipart `data` + optional `file`)
+- **POST** `/v1/parent/pre-SignUp` (**raw JSON**, note 2)
 - **POST** `/v1/parent/verify-signUp`
 - **POST** `/v1/parent/reset-password`
 - **POST** `/v1/parent/verify-password-otp`

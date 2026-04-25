@@ -122,6 +122,7 @@ import '../auth/dio_auth_interceptor.dart';
 import '../auth/dio_error_interceptor.dart';
 import '../auth/dio_unauthorized_interceptor.dart';
 import '../auth/token_storage.dart';
+import '../log/debug_audit_log.dart';
 import '../../features/auth/login/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/login/data/datasources/auth_remote_data_source_impl.dart';
 import '../../features/auth/login/data/repo/auth_repository_impl.dart';
@@ -293,6 +294,18 @@ import '../network/network_info_impl.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  DebugAuditLog.log(
+    runId: 'pre-fix',
+    hypothesisId: 'H2',
+    location: 'lib/core/di/injection_container.dart:init',
+    message: 'DI init starting',
+    data: {
+      'dioRegistered': sl.isRegistered<Dio>(),
+      'authSessionRegistered': sl.isRegistered<AuthSession>(),
+      'tokenStorageRegistered': sl.isRegistered<TokenStorage>(),
+    },
+  );
+
   // ═══════════════════════════════════════
   // Core
   // ═══════════════════════════════════════

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/log/debug_audit_log.dart';
+
 class AppThemeProvider extends ChangeNotifier {
   ThemeMode appTheme = ThemeMode.system;
 
@@ -8,6 +10,17 @@ class AppThemeProvider extends ChangeNotifier {
   Future<void> loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
     int? savedTheme = prefs.getInt('theme');
+
+    DebugAuditLog.log(
+      runId: 'pre-fix',
+      hypothesisId: 'H1',
+      location: 'lib/providers/app_theme_provider.dart:loadTheme',
+      message: 'Loaded theme preference',
+      data: {
+        'savedTheme': savedTheme,
+        'themeModeValuesLen': ThemeMode.values.length,
+      },
+    );
 
     if (savedTheme != null) {
       appTheme = ThemeMode.values[savedTheme];

@@ -39,7 +39,14 @@ class ApiEndpoint {
   static const String parentMe = '/v1/parentMe'; // GET / PATCH / DELETE
   static const String parentAddChild = '/v1/parentMe/addChild'; // POST
   static const String parentUpdateChild =
-      '/v1/parentMe/updateChild/'; // PATCH + childId (multipart)
+      '/v1/parentMe/updateChild/'; // PATCH + childId (JSON)
+
+  // ── Profile images (note 2) ──────────────────────────────────────────────────
+  static String parentAddProfileImagePath(String parentId) =>
+      '/v1/parent/$parentId/add-profile-image'; // POST multipart file
+
+  static String childAddProfileImagePath(String childId) =>
+      '/v1/child/$childId/add-profile-image'; // POST multipart file
 
   // ── Doctor ───────────────────────────────────────────────────────────────────
   static const String createDoctor = '/v1/doctor'; // POST
