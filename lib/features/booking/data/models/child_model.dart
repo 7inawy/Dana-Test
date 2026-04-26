@@ -9,11 +9,13 @@ class Child {
     if (json is String) {
       return Child(id: json, name: '', birthDate: '');
     }
-    if (json is Map<String, dynamic>) {
+    // API decoding commonly produces `Map<dynamic, dynamic>` for nested objects.
+    if (json is Map) {
+      final map = json.cast<String, dynamic>();
       return Child(
-        id: json['_id']?.toString() ?? '',
-        name: json['childName']?.toString() ?? '',
-        birthDate: json['birthDate']?.toString() ?? '',
+        id: map['_id']?.toString() ?? '',
+        name: map['childName']?.toString() ?? '',
+        birthDate: map['birthDate']?.toString() ?? '',
       );
     }
     return Child(id: '', name: '', birthDate: '');

@@ -26,22 +26,24 @@ class Doctor {
     if (json is String) {
       return Doctor(id: json, name: '', price: 0);
     }
-    if (json is Map<String, dynamic>) {
+    // API decoding commonly produces `Map<dynamic, dynamic>` for nested objects.
+    if (json is Map) {
+      final map = json.cast<String, dynamic>();
       final name =
-          json['doctorName']?.toString() ??
-          json['name']?.toString() ??
-          json['fullName']?.toString() ??
+          map['doctorName']?.toString() ??
+          map['name']?.toString() ??
+          map['fullName']?.toString() ??
           '';
-      final rawImg = json['profileImage']?.toString();
+      final rawImg = map['profileImage']?.toString();
       return Doctor(
-        id: json['_id']?.toString() ?? '',
+        id: map['_id']?.toString() ?? '',
         name: name,
-        price: int.tryParse(json['detectionPrice']?.toString() ?? '') ?? 0,
+        price: int.tryParse(map['detectionPrice']?.toString() ?? '') ?? 0,
         profileImage:
             (rawImg != null && rawImg.trim().isNotEmpty) ? rawImg : null,
-        specialty: json['specialty']?.toString() ?? '',
-        city: json['city']?.toString() ?? '',
-        address: json['address']?.toString() ?? '',
+        specialty: map['specialty']?.toString() ?? '',
+        city: map['city']?.toString() ?? '',
+        address: map['address']?.toString() ?? '',
       );
     }
     return Doctor(id: '', name: '', price: 0);
