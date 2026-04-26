@@ -215,12 +215,23 @@ class ParentProfileRemoteDataSourceImpl
 
       final decoded = ApiResponse.decode(res.data);
       final data = ApiResponse.unwrapMap(decoded);
-      final children = ParentProfileModel.fromJson(data).children;
-      final updated = children.where((c) => c.id == childId).toList();
-      if (updated.isEmpty) {
-        throw const ServerException(message: 'Child was not updated');
+      // Backend may return either:
+      // - a full parent profile (with `children: [...]`)
+      // - or the updated child object directly (common): `{ _id, childName, ... }`
+      ParentChildModel child;
+      if (data['children'] is List) {
+        final children = ParentProfileModel.fromJson(data).children;
+        final updated = children.where((c) => c.id == childId).toList();
+        if (updated.isEmpty) {
+          throw const ServerException(message: 'Child was not updated');
+        }
+        child = updated.first;
+      } else {
+        child = ParentChildModel.fromJson(data);
+        if (child.id.isEmpty) {
+          throw const ServerException(message: 'Child was not updated');
+        }
       }
-      final child = updated.first;
 
       // note 2: profile image update is now a separate endpoint.
       if (profileImage != null) {
