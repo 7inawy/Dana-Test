@@ -102,7 +102,11 @@ class _ChildInfoCardState extends State<ChildInfoCard> {
                 .toLowerCase();
         final isGirl = genderRaw == 'female';
         final gender = isGirl ? 'female' : 'male';
-        final profileUrl = loaded?.profileImageUrl ?? snap?.profileImageUrl;
+        // Important: once we have a loaded child, do NOT fall back to the route snapshot
+        // image, otherwise switching children can temporarily (or permanently) show the
+        // previous child's photo when the backend returns children as IDs without images.
+        final profileUrl =
+            loaded != null ? loaded.profileImageUrl : snap?.profileImageUrl;
 
         final age = ageFromBirth(birth);
         final ageText = context.formatAge(age.$1, age.$2);
