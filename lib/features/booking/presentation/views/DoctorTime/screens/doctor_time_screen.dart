@@ -33,7 +33,12 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
     // Fetch latest availability (including booked slots) once.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      context.read<AppointmentController>().refreshDoctorAvailability();
+      final c = context.read<AppointmentController>();
+      c.refreshDoctorAvailability();
+      final sel = c.selectedDate;
+      if (sel != null) {
+        c.refreshAvailableSlotsForDate(sel);
+      }
     });
   }
 

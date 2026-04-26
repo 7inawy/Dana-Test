@@ -56,6 +56,10 @@ class ApiEndpoint {
   static const String getAllDoctors = '/v1/doctor'; // GET
   static const String doctorById = '/v1/doctor/'; // GET / PATCH / DELETE + id
 
+  /// GET /v1/doctor/:id/available-slots?date=YYYY-MM-DD
+  static String doctorAvailableSlotsPath(String doctorId, {required String date}) =>
+      '/v1/doctor/$doctorId/available-slots?date=$date';
+
   static String doctorPatientsGeneratePath(String doctorId) =>
       '/v1/doctor/$doctorId/patients/generate'; // POST
 

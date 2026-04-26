@@ -24,6 +24,7 @@ class AppointmentController extends ChangeNotifier {
   List<TimeOfDay> timeSlots = const [];
   Map<String, List<String>> timesByDate = const {};
   Map<String, Set<String>> bookedTimesByDate = const {};
+  Map<String, List<String>> availableTimesByDate = const {};
   Set<String> _selectedDateBookedTimes = const {};
 
   int selectedTimeIndex = -1;
@@ -73,7 +74,8 @@ class AppointmentController extends ChangeNotifier {
       if (av is! List) return;
 
       final nextTimesByDate = <String, List<String>>{};
-      final nextBookedByDate = <String, Set<String>>{};
+      // Note: booked slots come from `/available-slots?date=...` (real-time),
+      // not from the doctor object itself.
 
       for (final row in av) {
         if (row is! Map) continue;
@@ -81,42 +83,74 @@ class AppointmentController extends ChangeNotifier {
         if (date.isEmpty) continue;
 
         final timesRaw = row['times'];
-        final bookedRaw = row['bookedTimes'];
-
         List<String> asStringList(dynamic v) {
           if (v is! List) return const [];
           return v.map((e) => e.toString()).toList();
         }
 
         final times = asStringList(timesRaw);
-        final booked = asStringList(bookedRaw).toSet();
         nextTimesByDate[date] = times;
-        nextBookedByDate[date] = booked;
       }
 
       if (nextTimesByDate.isEmpty) return;
 
       timesByDate = nextTimesByDate;
-      bookedTimesByDate = nextBookedByDate;
       availableDateStrs = timesByDate.keys.toList();
 
-      // Recompute selected date/time slots if already selected.
+      // Refresh selected date slots if already selected.
       final sel = selectedDate;
       if (sel != null) {
-        final key = BookingDoctorArgs.dateKey(sel);
-        final times = timesByDate[key] ?? const <String>[];
-        timeSlots = BookingDraft.parseTimeStrings(times);
-        _selectedDateBookedTimes = bookedTimesByDate[key] ?? const {};
-        if (selectedTimeIndex >= timeSlots.length) {
-          selectedTimeIndex = -1;
-        } else if (selectedTimeIndex >= 0 && isTimeBooked(timeSlots[selectedTimeIndex])) {
-          selectedTimeIndex = -1;
-        }
+        await refreshAvailableSlotsForDate(sel);
       }
 
       notifyListeners();
     } catch (_) {
       // Silent: booking UI should still function with cached availability.
+    }
+  }
+
+  Future<void> refreshAvailableSlotsForDate(DateTime date) async {
+    final id = doctorId;
+    if (id == null || id.isEmpty) return;
+    final key = BookingDoctorArgs.dateKey(date);
+    try {
+      final dio = sl<Dio>();
+      final res = await dio.get(
+        ApiEndpoint.doctorAvailableSlotsPath(id, date: key),
+      );
+      final decoded = ApiResponse.decode(res.data);
+      final data = ApiResponse.unwrapMap(decoded);
+
+      List<String> asStringList(dynamic v) {
+        if (v is! List) return const [];
+        return v.map((e) => e.toString()).toList();
+      }
+
+      final availableTimes = asStringList(data['availableTimes']);
+      final bookedTimes = asStringList(data['bookedTimes']).toSet();
+
+      availableTimesByDate = {
+        ...availableTimesByDate,
+        key: availableTimes,
+      };
+      bookedTimesByDate = {
+        ...bookedTimesByDate,
+        key: bookedTimes,
+      };
+
+      // Show ALL offered times, but disable booked ones.
+      final offered = timesByDate[key] ?? const <String>[];
+      timeSlots = BookingDraft.parseTimeStrings(offered);
+      _selectedDateBookedTimes = bookedTimes;
+      selectedTimeIndex = -1;
+      notifyListeners();
+    } catch (_) {
+      // Fallback: show offered times if we have them; no bookedTimes info.
+      final offered = timesByDate[key] ?? const <String>[];
+      timeSlots = BookingDraft.parseTimeStrings(offered);
+      _selectedDateBookedTimes = bookedTimesByDate[key] ?? const {};
+      selectedTimeIndex = -1;
+      notifyListeners();
     }
   }
 
@@ -175,11 +209,12 @@ class AppointmentController extends ChangeNotifier {
     selectedDate = date;
     final key = BookingDoctorArgs.dateKey(date);
     if (timesByDate.isNotEmpty && timesByDate.containsKey(key)) {
-      timeSlots = BookingDraft.parseTimeStrings(timesByDate[key] ?? const []);
-      _selectedDateBookedTimes = bookedTimesByDate[key] ?? const {};
       selectedTimeIndex = -1;
     }
     notifyListeners();
+
+    // Fetch real-time booked/available times for this date.
+    refreshAvailableSlotsForDate(date);
   }
 
   void selectTime(int index) {
@@ -201,10 +236,10 @@ class AppointmentController extends ChangeNotifier {
 
   bool isDateFullyBooked(DateTime d) {
     final key = BookingDoctorArgs.dateKey(d);
-    final times = timesByDate[key];
-    if (times == null || times.isEmpty) return false;
+    final offered = timesByDate[key];
+    if (offered == null || offered.isEmpty) return false;
     final booked = bookedTimesByDate[key] ?? const {};
-    return booked.length >= times.length;
+    return booked.length >= offered.length;
   }
 
   bool isTimeBooked(TimeOfDay t) {
