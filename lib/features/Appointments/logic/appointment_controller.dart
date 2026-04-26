@@ -183,14 +183,13 @@ class AppointmentController extends ChangeNotifier {
       currentMonth,
       DateTime.now(),
     );
-    if (availableDateStrs.isEmpty) {
-      return base;
-    }
+    // Show only backend-provided available dates. No fallback to full month.
+    if (availableDateStrs.isEmpty) return const <DateTime>[];
     final allowed = availableDateStrs.toSet();
     final filtered = base
         .where((d) => allowed.contains(BookingDoctorArgs.dateKey(d)))
         .toList();
-    return filtered.isNotEmpty ? filtered : base;
+    return filtered;
   }
 
   void goToPreviousMonth() {
