@@ -24,15 +24,33 @@ String _bookingErrorMessage(Object e) {
     final d = e.response?.data;
     if (d is Map) {
       final m = d['message']?.toString();
-      if (m != null && m.isNotEmpty) return m;
+      if (m != null && m.isNotEmpty) {
+        final lower = m.toLowerCase();
+        if (lower.contains('already booked') || lower.contains('date already booked')) {
+          return 'هذا الموعد تم حجزه بالفعل. اختر وقتًا آخر.';
+        }
+        return m;
+      }
       final resp = d['response'];
       if (resp is Map) {
         final m2 = resp['message']?.toString();
-        if (m2 != null && m2.isNotEmpty) return m2;
+        if (m2 != null && m2.isNotEmpty) {
+          final lower = m2.toLowerCase();
+          if (lower.contains('already booked') || lower.contains('date already booked')) {
+            return 'هذا الموعد تم حجزه بالفعل. اختر وقتًا آخر.';
+          }
+          return m2;
+        }
         final data = resp['data'];
         if (data is Map) {
           final m3 = data['message']?.toString();
-          if (m3 != null && m3.isNotEmpty) return m3;
+          if (m3 != null && m3.isNotEmpty) {
+            final lower = m3.toLowerCase();
+            if (lower.contains('already booked') || lower.contains('date already booked')) {
+              return 'هذا الموعد تم حجزه بالفعل. اختر وقتًا آخر.';
+            }
+            return m3;
+          }
         }
       }
     }

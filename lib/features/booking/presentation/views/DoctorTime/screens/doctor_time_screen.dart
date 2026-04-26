@@ -66,7 +66,7 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(24.r),
         child: CustomButton(
-          onTap: () {
+          onTap: () async {
             if (!controller.hasDoctor) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -83,9 +83,17 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
             }
             final draft = controller.buildDraftForPayment();
             if (draft != null) {
-              Navigator.of(
+              await Navigator.of(
                 context,
               ).pushNamed(AppRoutes.paymentMethod, arguments: draft);
+              if (!mounted) return;
+              // After returning from booking/payment flow, refresh slots to reflect
+              // any changes made by other parents while we were away.
+              await controller.refreshDoctorAvailability();
+              final sel = controller.selectedDate;
+              if (sel != null) {
+                await controller.refreshAvailableSlotsForDate(sel);
+              }
             }
           },
           text: context.l10n.nextButton,
