@@ -22,6 +22,28 @@ class Booking {
     required this.parentId,
   });
 
+  Booking copyWith({
+    String? id,
+    String? date,
+    String? time,
+    String? status,
+    String? paymentStatus,
+    Child? child,
+    Doctor? doctor,
+    String? parentId,
+  }) {
+    return Booking(
+      id: id ?? this.id,
+      date: date ?? this.date,
+      time: time ?? this.time,
+      status: status ?? this.status,
+      paymentStatus: paymentStatus ?? this.paymentStatus,
+      child: child ?? this.child,
+      doctor: doctor ?? this.doctor,
+      parentId: parentId ?? this.parentId,
+    );
+  }
+
   factory Booking.fromJson(Map<String, dynamic> json) {
     final parentRaw = json['parentId'];
     return Booking(

@@ -17,6 +17,26 @@ class Doctor {
     this.address = '',
   });
 
+  Doctor copyWith({
+    String? id,
+    String? name,
+    int? price,
+    String? profileImage,
+    String? specialty,
+    String? city,
+    String? address,
+  }) {
+    return Doctor(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      price: price ?? this.price,
+      profileImage: profileImage ?? this.profileImage,
+      specialty: specialty ?? this.specialty,
+      city: city ?? this.city,
+      address: address ?? this.address,
+    );
+  }
+
   String get locationLine {
     final parts = <String>[city, address].where((e) => e.trim().isNotEmpty).toList();
     return parts.join(', ');

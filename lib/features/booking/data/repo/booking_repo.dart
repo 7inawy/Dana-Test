@@ -2,6 +2,8 @@ import '../services/booking_service.dart';
 import '../models/booking_model.dart';
 import '../models/booking_create_result.dart';
 import '../../../../core/api/response_unwrap.dart';
+import '../../../../core/api/api_response.dart';
+import '../models/doctor_model.dart';
 
 class BookingRepo {
   final BookingService service;
@@ -76,7 +78,34 @@ class BookingRepo {
     final response = await service.getMyAppointmentsByParent(
       parentId: parentId,
     );
-    return _parseBookings(response.data);
+    final bookings = _parseBookings(response.data);
+    // Backend may return `doctorId` as a string, so we enrich bookings with
+    // doctor details to avoid showing mock placeholders in the UI.
+    final needs = bookings.where((b) => b.doctor.name.trim().isEmpty && b.doctor.id.trim().isNotEmpty).toList();
+    if (needs.isEmpty) return bookings;
+
+    final byId = <String, Doctor>{};
+    for (final b in needs) {
+      final did = b.doctor.id.trim();
+      if (byId.containsKey(did)) continue;
+      try {
+        final res = await service.getDoctorById(doctorId: did);
+        final decoded = ApiResponse.decode(res.data);
+        final map = ApiResponse.unwrapMap(decoded);
+        byId[did] = Doctor.fromJson(map);
+      } catch (_) {
+        // Keep original booking doctor stub on failure.
+      }
+    }
+
+    if (byId.isEmpty) return bookings;
+    return bookings
+        .map((b) {
+          final did = b.doctor.id.trim();
+          final d = byId[did];
+          return d == null ? b : b.copyWith(doctor: d);
+        })
+        .toList();
   }
 
   Future<List<Booking>> getDoctorAppointments({required String doctorId}) async {
