@@ -12,20 +12,30 @@ class ParentProfileRepository {
 
   Future<ParentProfileModel> getMe() => remote.getMe();
 
+  Future<void> sendPhoneChangeOtp({required String phone}) =>
+      remote.sendPhoneChangeOtp(phone: ParentPhoneUtils.normalizeForApi(phone));
+
   Future<ParentProfileModel> updateProfile({
     required String parentName,
     required String email,
     required String phone,
     required String government,
     required String address,
+    String? phoneOtp,
   }) async {
-    await remote.patchMe({
+    final normalized = ParentPhoneUtils.normalizeForApi(phone);
+    final body = <String, dynamic>{
       'parentName': parentName.trim(),
       'email': email.trim(),
-      'phone': ParentPhoneUtils.normalizeForApi(phone),
+      'phone': normalized,
       'government': government.trim(),
       'address': address.trim(),
-    });
+    };
+    final otp = phoneOtp?.trim();
+    if (otp != null && otp.isNotEmpty) {
+      body['otp'] = int.tryParse(otp) ?? otp;
+    }
+    await remote.patchMe(body);
     return remote.getMe();
   }
 

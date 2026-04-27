@@ -4,6 +4,7 @@ import 'package:dana/core/widgets/animated_dropdown.dart';
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/widgets/custom_text_field.dart';
 import 'package:dana/core/widgets/custom_Phone%20Field.dart';
+import 'package:dana/core/widgets/otp_bottom_sheet.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/core/widgets/home_indicator.dart';
 import 'package:dana/extensions/localization_extension.dart';
@@ -63,17 +64,68 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
     super.dispose();
   }
 
+  String get _effectivePhone => _phoneForApi.isNotEmpty
+      ? _phoneForApi
+      : ParentPhoneUtils.normalizeForApi(_phoneCtrl.text);
+
+  String get _initialPhoneNormalized =>
+      ParentPhoneUtils.normalizeForApi(widget.initial.phone);
+
+  bool get _needsPhoneOtp =>
+      _effectivePhone.isNotEmpty &&
+      _effectivePhone != _initialPhoneNormalized;
+
   Future<void> _save(BuildContext context) async {
     final gov = _governorate ?? _govItems.first;
+    final cubit = context.read<ParentProfileCubit>();
+
+    if (_needsPhoneOtp) {
+      setState(() => _saving = true);
+      final sendErr = await cubit.requestPhoneChangeOtp(phone: _effectivePhone);
+      if (!mounted) return;
+      setState(() => _saving = false);
+      if (sendErr != null) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(sendErr)));
+        return;
+      }
+
+      OtpBottomSheet.show(
+        context,
+        _effectivePhone,
+        onResendOtp: () async {
+          final err = await cubit.requestPhoneChangeOtp(phone: _effectivePhone);
+          if (!context.mounted || err == null) return;
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(err)));
+        },
+        onVerified: (pin) => _persistProfile(
+          context,
+          gov: gov,
+          phoneOtp: pin,
+        ),
+      );
+      return;
+    }
+
+    await _persistProfile(context, gov: gov, phoneOtp: null);
+  }
+
+  Future<void> _persistProfile(
+    BuildContext context, {
+    required String gov,
+    String? phoneOtp,
+  }) async {
     setState(() => _saving = true);
     final err = await context.read<ParentProfileCubit>().updateProfile(
       parentName: _nameCtrl.text,
       email: _emailCtrl.text,
-      phone: _phoneForApi.isNotEmpty
-          ? _phoneForApi
-          : ParentPhoneUtils.normalizeForApi(_phoneCtrl.text),
+      phone: _effectivePhone,
       government: gov,
       address: _addressCtrl.text,
+      phoneOtp: phoneOtp,
     );
     if (!mounted) return;
     setState(() => _saving = false);

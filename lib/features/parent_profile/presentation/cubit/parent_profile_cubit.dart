@@ -31,13 +31,25 @@ class ParentProfileCubit extends Cubit<ParentProfileState> {
     }
   }
 
+  /// Sends an SMS OTP to [phone] for changing the account phone (authenticated).
+  Future<String?> requestPhoneChangeOtp({required String phone}) async {
+    try {
+      await repo.sendPhoneChangeOtp(phone: phone);
+      return null;
+    } catch (e) {
+      return _errMsg(e);
+    }
+  }
+
   /// Updates parent fields via `PATCH /v1/parentMe` then refetches profile. Returns `null` on success.
+  /// When changing phone, pass [phoneOtp] after the user verifies the code sent to the new number.
   Future<String?> updateProfile({
     required String parentName,
     required String email,
     required String phone,
     required String government,
     required String address,
+    String? phoneOtp,
   }) async {
     try {
       final profile = await repo.updateProfile(
@@ -46,6 +58,7 @@ class ParentProfileCubit extends Cubit<ParentProfileState> {
         phone: phone,
         government: government,
         address: address,
+        phoneOtp: phoneOtp,
       );
       _lastGoodProfile = profile;
       emit(ParentProfileLoaded(profile));

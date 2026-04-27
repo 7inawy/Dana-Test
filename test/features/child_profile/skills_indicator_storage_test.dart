@@ -66,6 +66,9 @@ class _FakeParentRemote implements ParentProfileRemoteDataSource {
   Future<ParentProfileModel> getMe() async => profile;
 
   @override
+  Future<void> sendPhoneChangeOtp({required String phone}) async {}
+
+  @override
   Future<ParentProfileModel> patchMe(Map<String, dynamic> body) async =>
       profile;
 

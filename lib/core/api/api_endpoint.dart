@@ -41,6 +41,8 @@ class ApiEndpoint {
 
   // ── Parent Profile ───────────────────────────────────────────────────────────
   static const String parentMe = '/v1/parentMe'; // GET / PATCH / DELETE
+  /// POST (Bearer). Sends SMS OTP to the new number before PATCH `parentMe` with `phone` + `otp`.
+  static const String parentMeSendPhoneOtp = '/v1/parentMe/send-phone-otp';
   static const String parentAddChild = '/v1/parentMe/addChild'; // POST
   static const String parentUpdateChild =
       '/v1/parentMe/updateChild/'; // PATCH + childId (JSON)

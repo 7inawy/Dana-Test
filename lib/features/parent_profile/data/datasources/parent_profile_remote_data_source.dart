@@ -5,6 +5,9 @@ import '../models/parent_profile_model.dart';
 abstract class ParentProfileRemoteDataSource {
   Future<ParentProfileModel> getMe();
 
+  /// Requests an OTP SMS to [phone] (normalized) for a pending phone update.
+  Future<void> sendPhoneChangeOtp({required String phone});
+
   Future<ParentProfileModel> patchMe(Map<String, dynamic> body);
 
   Future<ParentProfileModel> patchMeWithOptionalFile({

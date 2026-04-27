@@ -17,6 +17,25 @@ class ParentProfileRemoteDataSourceImpl
   ParentProfileRemoteDataSourceImpl({required this.dio});
 
   @override
+  Future<void> sendPhoneChangeOtp({required String phone}) async {
+    try {
+      final res = await dio.post(
+        ApiEndpoint.parentMeSendPhoneOtp,
+        data: {'phone': phone},
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+      ApiResponse.decode(res.data);
+    } on DioException catch (e) {
+      final msg = ApiError.messageFromDio(
+        e,
+        fallback: 'Failed to send verification code',
+        decode: ApiResponse.decode,
+      );
+      throw ServerException(message: msg);
+    }
+  }
+
+  @override
   Future<ParentProfileModel> patchMe(Map<String, dynamic> body) async {
     try {
       final res = await dio.patch(

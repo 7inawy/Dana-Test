@@ -15,12 +15,21 @@ class OtpBottomSheet extends StatefulWidget {
   final String phoneNumber;
   final ValueChanged<String>? onVerified;
 
-  const OtpBottomSheet({super.key, required this.phoneNumber, this.onVerified});
+  /// When set, called on "Resend" before the cooldown timer restarts (e.g. re-hit SMS API).
+  final Future<void> Function()? onResendOtp;
+
+  const OtpBottomSheet({
+    super.key,
+    required this.phoneNumber,
+    this.onVerified,
+    this.onResendOtp,
+  });
 
   static void show(
     BuildContext context,
     String phoneNumber, {
     ValueChanged<String>? onVerified,
+    Future<void> Function()? onResendOtp,
   }) {
     showModalBottomSheet(
       context: context,
@@ -28,8 +37,11 @@ class OtpBottomSheet extends StatefulWidget {
       backgroundColor: Colors.transparent,
       isDismissible: true,
       enableDrag: true,
-      builder: (context) =>
-          OtpBottomSheet(phoneNumber: phoneNumber, onVerified: onVerified),
+      builder: (context) => OtpBottomSheet(
+        phoneNumber: phoneNumber,
+        onVerified: onVerified,
+        onResendOtp: onResendOtp,
+      ),
     );
   }
 
@@ -165,7 +177,12 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
           OtpResendSection(
             remainingSeconds: _remainingSeconds,
             canResend: _canResend,
-            onResend: _startTimer,
+            onResend: () async {
+              if (widget.onResendOtp != null) {
+                await widget.onResendOtp!();
+              }
+              if (mounted) _startTimer();
+            },
           ),
           SizedBox(height: AppSizes.h24),
         ],
