@@ -55,8 +55,8 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
     final ratingsCount = controller.ratingQuantity > 0
         ? controller.ratingQuantity.toString()
         : '—';
-    final patientsCount = (controller.totalPatients != null &&
-            controller.totalPatients! > 0)
+    final patientsCount =
+        (controller.totalPatients != null && controller.totalPatients! > 0)
         ? controller.totalPatients.toString()
         : '—';
     final experience = controller.experienceYears > 0
@@ -151,7 +151,7 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
                               children: [
                                 ExperienceCard(
                                   textOne: ratingsCount,
-                                  textTwo: 'التقييم',
+                                  textTwo: context.l10n.rate,
                                   svgPicture: 'assets/Icons/medal_star.svg',
                                 ),
                                 SizedBox(width: 8.w),
@@ -162,7 +162,7 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
                                 ),
                                 SizedBox(width: 8.w),
                                 ExperienceCard(
-                                  textOne: experience,
+                                  textOne: '$experience ${context.l10n.years}',
                                   textTwo: context.l10n.yearsExperience,
                                   svgPicture: 'assets/Icons/ranking.svg',
                                 ),

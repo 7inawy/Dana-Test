@@ -65,15 +65,26 @@ class ExperienceCard extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 12.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    textOne,
-                    style: AppTextStyle.semibold16TextHeading(context),
-                  ),
-                  Text(textTwo, style: AppTextStyle.bold12TextBody(context)),
-                ],
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      textOne,
+                      style: AppTextStyle.semibold16TextHeading(context),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      softWrap: true,
+                    ),
+                    Text(
+                      textTwo,
+                      style: AppTextStyle.bold12TextBody(context),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      softWrap: true,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

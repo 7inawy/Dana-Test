@@ -170,8 +170,8 @@ class _VaccineItemWidgetState extends State<VaccineItemWidget> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  final scheduleCubit =
-                                      context.read<VaccinationScheduleCubit>();
+                                  final scheduleCubit = context
+                                      .read<VaccinationScheduleCubit>();
                                   _selectedTakenDate = null;
                                   _takenDateController.clear();
                                   showModalBottomSheet(
@@ -280,7 +280,6 @@ class _VaccineItemWidgetState extends State<VaccineItemWidget> {
                                               );
                                               if (!mounted) return;
                                               // Close the confirm sheet after a successful call.
-                                              Navigator.of(sheetContext).pop();
                                             },
                                           ),
                                     ),
