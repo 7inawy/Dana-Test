@@ -15,6 +15,7 @@ import 'package:dana/features/auth/login/presentation/views/screens/login/widget
 import 'package:dana/core/widgets/otp_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginBody extends StatelessWidget {
   const LoginBody({super.key});
@@ -53,19 +54,22 @@ class LoginBody extends StatelessWidget {
         BlocListener<GoogleAuthCubit, GoogleAuthState>(
           listener: (context, state) async {
             if (state is GoogleAuthLaunchUrl) {
-              final requestId = await Navigator.pushNamed(
-                context,
-                AppRoutes.googleAuthWebView,
-                arguments: state.url,
+              final ok = await launchUrl(
+                Uri.parse(state.url),
+                mode: LaunchMode.externalApplication,
               );
               if (!context.mounted) return;
-              if (requestId is String && requestId.trim().isNotEmpty) {
-                Navigator.pushNamed(
-                  context,
-                  AppRoutes.googleComplete,
-                  arguments: requestId.trim(),
+              if (!ok) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Could not open browser'),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: Colors.red,
+                  ),
                 );
+                return;
               }
+              Navigator.pushNamed(context, AppRoutes.googleRequestId);
             } else if (state is GoogleAuthFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

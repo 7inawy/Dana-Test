@@ -40,6 +40,7 @@ class AppRoutes {
   /// Google Auth
   static const String googleAuthWebView = 'GoogleAuthWebView';
   static const String googleComplete = 'GoogleComplete';
+  static const String googleRequestId = 'GoogleRequestId';
 
   /// Home
   static const String home = HomeScreen.routeName;

@@ -6,9 +6,12 @@ import 'package:dana/core/widgets/otp_bottom_sheet.dart';
 import 'package:dana/core/auth/auth_session.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_up_cubit.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_up_state.dart';
+import 'package:dana/features/auth/login/presentation/cubit/google_auth_cubit.dart';
+import 'package:dana/features/auth/login/presentation/cubit/google_auth_state.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../../../../providers/app_theme_provider.dart';
 import '../widgets/sign_up_page_view.dart';
@@ -26,17 +29,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final PageController _controller = PageController();
   int _currentIndex = 0;
   late final SignUpCubit _cubit;
+  late final GoogleAuthCubit _googleCubit;
 
   @override
   void initState() {
     super.initState();
     _cubit = sl<SignUpCubit>();
+    _googleCubit = sl<GoogleAuthCubit>();
   }
 
   @override
   void dispose() {
     _controller.dispose();
     _cubit.close();
+    _googleCubit.close();
     super.dispose();
   }
 
@@ -67,10 +73,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         themeProvider.appTheme == ThemeMode.dark ||
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
-    return BlocProvider.value(
-      value: _cubit,
-      child: BlocListener<SignUpCubit, SignUpState>(
-        listener: (context, state) async {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _cubit),
+        BlocProvider.value(value: _googleCubit),
+      ],
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<SignUpCubit, SignUpState>(
+            listener: (context, state) async {
           if (state is SignUpOtpSent) {
             OtpBottomSheet.show(
               context,
@@ -139,6 +150,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
             );
           }
         },
+          ),
+          BlocListener<GoogleAuthCubit, GoogleAuthState>(
+            listener: (context, state) async {
+              if (state is GoogleAuthLaunchUrl) {
+                final ok = await launchUrl(
+                  Uri.parse(state.url),
+                  mode: LaunchMode.externalApplication,
+                );
+                if (!context.mounted) return;
+                if (!ok) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Could not open browser'),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+                Navigator.pushNamed(context, AppRoutes.googleRequestId);
+              } else if (state is GoogleAuthFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
+          ),
+        ],
         child: Scaffold(
           backgroundColor: isDark
               ? AppColors.bg_surface_default_dark

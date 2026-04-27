@@ -9,6 +9,7 @@ import 'package:dana/features/auth/login/presentation/views/screens/login/screen
 import 'package:dana/features/auth/login/presentation/views/screens/new_password/screens/new_password_screen.dart';
 import 'package:dana/features/auth/login/presentation/views/screens/google/google_auth_webview_screen.dart';
 import 'package:dana/features/auth/login/presentation/views/screens/google/google_complete_screen.dart';
+import 'package:dana/features/auth/login/presentation/views/screens/google/google_request_id_screen.dart';
 import 'package:dana/features/auth/signUp/presentation/views/screens/sign_up/views/screens/signUp_screen.dart';
 import 'package:dana/features/home/presentation/screens/doctors_page.dart';
 import 'package:dana/features/home/presentation/screens/home_screen.dart';
@@ -125,6 +126,7 @@ class MyApp extends StatelessWidget {
         final url = raw is String ? raw : '';
         return GoogleAuthWebViewScreen(url: url);
       },
+      AppRoutes.googleRequestId: (_) => const GoogleRequestIdScreen(),
       AppRoutes.googleComplete: (ctx) {
         final raw = ModalRoute.of(ctx)?.settings.arguments;
         final id = raw is String ? raw : '';
