@@ -88,6 +88,8 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
       bookingId: b.id,
       childId: b.child.id,
       doctorId: b.doctor.id,
+      parentId: b.parentId.isNotEmpty ? b.parentId : null,
+      userRating: b.rating,
       doctorName: '${context.l10n.dr} $plainName',
       doctorNamePlain: plainName,
       specialty: specialty.isNotEmpty ? specialty : context.l10n.physiotherapist,

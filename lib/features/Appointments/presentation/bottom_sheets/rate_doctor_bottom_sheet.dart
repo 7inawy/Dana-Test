@@ -113,6 +113,7 @@ class _RateDoctorBottomSheetState extends State<RateDoctorBottomSheet> {
                 await context.read<BookingCubit>().rateBooking(
                   bookingId: bookingId,
                   rating: rating,
+                  parentId: widget.appointment.parentId,
                 );
                 if (!mounted) return;
                 final st = context.read<BookingCubit>().state;

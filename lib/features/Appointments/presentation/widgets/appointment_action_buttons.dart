@@ -89,6 +89,7 @@ class AppointmentActionButtons extends StatelessWidget {
         );
 
       case Status.completed:
+        final rated = appointment.userRating;
         return Row(
           children: [
             Expanded(
@@ -99,23 +100,46 @@ class AppointmentActionButtons extends StatelessWidget {
                 onTap: () => _openRebookFlow(context, appointment),
               ),
             ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: CustomButton(
-                color: Colors.transparent,
-                borderRadius: AppRadius.radius_md,
-                borderColor: isDark
-                    ? AppColors.border_button_outlined_dark
-                    : AppColors.border_button_outlined_light,
-                height: 36.h,
-                text: context.l10n.rateDoctor,
-                textStyle: AppTextStyle.semibold16TextButtonOutlined(context),
-                onTap: () => _showSheet(
-                  context,
-                  RateDoctorBottomSheet(appointment: appointment),
+            if (rated != null) ...[
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.star_rounded, size: 22.r, color: Colors.amber.shade700),
+                      SizedBox(width: 4.w),
+                      Text(
+                        rated == rated.roundToDouble()
+                            ? '${rated.toInt()}/5'
+                            : '${rated.toStringAsFixed(1)}/5',
+                        style: AppTextStyle.semibold16TextButtonOutlined(context),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+            ] else ...[
+              SizedBox(width: 10.w),
+              Expanded(
+                child: CustomButton(
+                  color: Colors.transparent,
+                  borderRadius: AppRadius.radius_md,
+                  borderColor: isDark
+                      ? AppColors.border_button_outlined_dark
+                      : AppColors.border_button_outlined_light,
+                  height: 36.h,
+                  text: context.l10n.rateDoctor,
+                  textStyle: AppTextStyle.semibold16TextButtonOutlined(context),
+                  onTap: () => _showSheet(
+                    context,
+                    RateDoctorBottomSheet(appointment: appointment),
+                  ),
+                ),
+              ),
+            ],
           ],
         );
 

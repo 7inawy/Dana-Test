@@ -87,16 +87,21 @@ class BookingRepo {
     if (needs.isEmpty) return bookings;
 
     final byId = <String, Doctor>{};
+    final failedIds = <String>{};
     for (final b in needs) {
       final did = b.doctor.id.trim();
-      if (byId.containsKey(did)) continue;
+      if (byId.containsKey(did) || failedIds.contains(did)) continue;
       try {
-        final res = await service.getDoctorById(doctorId: did);
+        final res = await service.getDoctorProfileForEnrichment(did);
+        if (res.statusCode != 200) {
+          failedIds.add(did);
+          continue;
+        }
         final decoded = ApiResponse.decode(res.data);
         final map = ApiResponse.unwrapMap(decoded);
         byId[did] = Doctor.fromJson(map);
       } catch (_) {
-        // Keep original booking doctor stub on failure.
+        failedIds.add(did);
       }
     }
 

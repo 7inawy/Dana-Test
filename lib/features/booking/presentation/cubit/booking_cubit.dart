@@ -19,6 +19,25 @@ class BookingCubit extends Cubit<BookingState> {
     emit(BookingSuccess(list));
   }
 
+  /// Refreshes parent appointments after a rating; fills [Booking.rating] from the
+  /// API when present, otherwise keeps the [submittedRating] for this [bookingId].
+  Future<void> _reloadParentBookingsAfterRate({
+    required String parentId,
+    required String bookingId,
+    required double submittedRating,
+  }) async {
+    _lastParentId = parentId;
+    var list = await repo.getMyAppointmentsByParent(parentId: parentId);
+    list = list
+        .map((b) {
+          if (b.id != bookingId) return b;
+          if (b.rating != null) return b;
+          return b.copyWith(rating: submittedRating);
+        })
+        .toList();
+    emit(BookingSuccess(list));
+  }
+
   Future<BookingCreateResult?> createBooking({
     required String doctorId,
     required String parentId,
@@ -96,13 +115,20 @@ class BookingCubit extends Cubit<BookingState> {
   Future<void> rateBooking({
     required String bookingId,
     required double rating,
+    String? parentId,
   }) async {
     emit(BookingLoading());
     try {
       await repo.rateBooking(bookingId: bookingId, rating: rating);
-      final pid = _lastParentId;
+      final pid = (parentId != null && parentId.trim().isNotEmpty)
+          ? parentId.trim()
+          : _lastParentId;
       if (pid != null && pid.isNotEmpty) {
-        await _reloadParentBookings(pid);
+        await _reloadParentBookingsAfterRate(
+          parentId: pid,
+          bookingId: bookingId,
+          submittedRating: rating,
+        );
       } else if (_lastDoctorId != null && _lastDoctorId!.isNotEmpty) {
         final did = _lastDoctorId!;
         final list = await repo.getDoctorAppointments(doctorId: did);

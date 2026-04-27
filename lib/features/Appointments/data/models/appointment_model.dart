@@ -7,6 +7,12 @@ class Appointment {
   final String? childId;
   final String? doctorId;
 
+  /// Parent id for this booking row (reload list after rate/cancel).
+  final String? parentId;
+
+  /// User rating already stored for this booking, if any.
+  final double? userRating;
+
   /// Display name (may include localized "Dr" prefix).
   final String doctorName;
 
@@ -25,6 +31,8 @@ class Appointment {
     this.bookingId,
     this.childId,
     this.doctorId,
+    this.parentId,
+    this.userRating,
     required this.doctorName,
     this.doctorNamePlain = '',
     this.specialty = '',

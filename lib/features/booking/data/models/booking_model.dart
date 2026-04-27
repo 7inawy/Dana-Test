@@ -20,6 +20,9 @@ class Booking {
   /// e.g. `examination`, `consultation`
   final String visitStatus;
 
+  /// Parent-submitted rating for this booking, when returned by the API.
+  final double? rating;
+
   Booking({
     required this.id,
     required this.date,
@@ -32,6 +35,7 @@ class Booking {
     this.detectionPrice = 0,
     this.isCompletedConsultation = false,
     this.visitStatus = '',
+    this.rating,
   });
 
   Booking copyWith({
@@ -46,6 +50,7 @@ class Booking {
     int? detectionPrice,
     bool? isCompletedConsultation,
     String? visitStatus,
+    double? rating,
   }) {
     return Booking(
       id: id ?? this.id,
@@ -60,6 +65,7 @@ class Booking {
       isCompletedConsultation:
           isCompletedConsultation ?? this.isCompletedConsultation,
       visitStatus: visitStatus ?? this.visitStatus,
+      rating: rating ?? this.rating,
     );
   }
 
@@ -72,6 +78,10 @@ class Booking {
     final completedRaw = json['isCompletedConsultation'];
     final completed = completedRaw == true ||
         completedRaw?.toString().toLowerCase() == 'true';
+    final rawRating = json['rating'];
+    final double? parsedRating = rawRating == null
+        ? null
+        : (rawRating is num ? rawRating.toDouble() : double.tryParse(rawRating.toString()));
     return Booking(
       id: json['_id']?.toString() ?? '',
       date: json['date']?.toString() ?? '',
@@ -86,6 +96,7 @@ class Booking {
       detectionPrice: price,
       isCompletedConsultation: completed,
       visitStatus: json['visitStatus']?.toString() ?? '',
+      rating: parsedRating,
     );
   }
 }

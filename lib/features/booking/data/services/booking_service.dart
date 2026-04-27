@@ -57,13 +57,25 @@ class BookingService {
     return dio.get('${ApiEndpoint.doctorById}$doctorId');
   }
 
+  /// Same as [getDoctorById] but does not throw on 4xx/5xx (inactive doctor, etc.).
+  /// Used when enriching booking rows so one bad profile does not spam errors or break the list.
+  Future<Response> getDoctorProfileForEnrichment(String doctorId) {
+    return dio.get(
+      '${ApiEndpoint.doctorById}$doctorId',
+      options: Options(
+        validateStatus: (code) => code != null && code < 600,
+      ),
+    );
+  }
+
   Future<Response> rateBooking({
     required String bookingId,
     required num rating,
   }) {
+    final intRating = rating.round();
     return dio.post(
       ApiEndpoint.bookingRatePath(bookingId),
-      data: {"rating": rating},
+      data: {'rating': intRating},
       options: Options(headers: {"Content-Type": "application/json"}),
     );
   }
