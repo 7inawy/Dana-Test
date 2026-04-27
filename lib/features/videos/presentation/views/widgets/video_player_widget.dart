@@ -31,6 +31,22 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   String get _url => (widget.video.videoUrl ?? '').trim();
 
+  static final RegExp _youtubeIdPattern = RegExp(r'^[a-zA-Z0-9_-]{11}$');
+
+  String? _sanitizeYouTubeId(String? raw) {
+    final v = (raw ?? '').trim();
+    if (v.isEmpty) return null;
+
+    // Sometimes backend sends malformed embed like:
+    // ".../embed/RQuqTaq9ooEsi=Aaut_..." (missing '?'), so strip any extra suffix.
+    final stripped = v.split('?').first.split('&').first;
+    if (_youtubeIdPattern.hasMatch(stripped)) return stripped;
+
+    // As a fallback, extract the first 11-char token-like substring.
+    final match = RegExp(r'[a-zA-Z0-9_-]{11}').firstMatch(stripped);
+    return match?.group(0);
+  }
+
   String? _extractYouTubeId(String url) {
     final u = url.trim();
     if (u.isEmpty) return null;
@@ -40,30 +56,31 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     final host = uri.host.toLowerCase();
 
     // Standard patterns.
-    final fromPkg = YoutubePlayer.convertUrlToId(u);
+    final fromPkg = _sanitizeYouTubeId(YoutubePlayer.convertUrlToId(u));
     if (fromPkg != null && fromPkg.isNotEmpty) return fromPkg;
 
     // https://youtu.be/<id>
     if (host == 'youtu.be' && uri.pathSegments.isNotEmpty) {
-      return uri.pathSegments.first;
+      return _sanitizeYouTubeId(uri.pathSegments.first);
     }
 
     // https://www.youtube-nocookie.com/embed/<id>
     final segments = uri.pathSegments;
     final embedIndex = segments.indexOf('embed');
     if (embedIndex != -1 && embedIndex + 1 < segments.length) {
-      return segments[embedIndex + 1];
+      return _sanitizeYouTubeId(segments[embedIndex + 1]);
     }
 
     // https://www.youtube.com/shorts/<id>
     final shortsIndex = segments.indexOf('shorts');
     if (shortsIndex != -1 && shortsIndex + 1 < segments.length) {
-      return segments[shortsIndex + 1];
+      return _sanitizeYouTubeId(segments[shortsIndex + 1]);
     }
 
     // As a last resort, accept a `v` query param.
     final v = uri.queryParameters['v'];
-    if (v != null && v.isNotEmpty) return v;
+    final sanitizedV = _sanitizeYouTubeId(v);
+    if (sanitizedV != null && sanitizedV.isNotEmpty) return sanitizedV;
 
     return null;
   }
