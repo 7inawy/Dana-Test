@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../../core/utils/app_colors.dart';
@@ -220,12 +219,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     _webViewController = null;
   }
 
-  Future<void> _openExternally() async {
-    final uri = Uri.tryParse(_url);
-    if (uri == null) return;
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
-  }
-
   @override
   void dispose() {
     _disposePlayers();
@@ -247,14 +240,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                     style: AppTextStyle.medium12TextBody(context),
                   ),
                   SizedBox(height: 12.h),
-                  if (_isYouTube || _useWebView)
-                    SizedBox(
-                      height: 40.h,
-                      child: ElevatedButton(
-                        onPressed: _openExternally,
-                        child: Text(_isYouTube ? 'Open in YouTube' : 'Open in browser'),
-                      ),
-                    ),
                 ],
               ),
             ),
@@ -287,16 +272,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             child: player,
           ),
         ),
-        if (_isYouTube || _useWebView) ...[
-          SizedBox(height: 8.h),
-          SizedBox(
-            height: 40.h,
-            child: OutlinedButton(
-              onPressed: _openExternally,
-              child: Text(_isYouTube ? 'Open in YouTube' : 'Open in browser'),
-            ),
-          ),
-        ],
       ],
     );
   }
