@@ -32,9 +32,48 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   String get _url => (widget.video.videoUrl ?? '').trim();
 
+  String? _extractYouTubeId(String url) {
+    final u = url.trim();
+    if (u.isEmpty) return null;
+    final uri = Uri.tryParse(u);
+    if (uri == null) return null;
+
+    final host = uri.host.toLowerCase();
+
+    // Standard patterns.
+    final fromPkg = YoutubePlayerController.convertUrlToId(u);
+    if (fromPkg != null && fromPkg.isNotEmpty) return fromPkg;
+
+    // https://youtu.be/<id>
+    if (host == 'youtu.be' && uri.pathSegments.isNotEmpty) {
+      return uri.pathSegments.first;
+    }
+
+    // https://www.youtube-nocookie.com/embed/<id>
+    final segments = uri.pathSegments;
+    final embedIndex = segments.indexOf('embed');
+    if (embedIndex != -1 && embedIndex + 1 < segments.length) {
+      return segments[embedIndex + 1];
+    }
+
+    // https://www.youtube.com/shorts/<id>
+    final shortsIndex = segments.indexOf('shorts');
+    if (shortsIndex != -1 && shortsIndex + 1 < segments.length) {
+      return segments[shortsIndex + 1];
+    }
+
+    // As a last resort, accept a `v` query param.
+    final v = uri.queryParameters['v'];
+    if (v != null && v.isNotEmpty) return v;
+
+    return null;
+  }
+
   bool get _isYouTube {
     final u = _url.toLowerCase();
-    return u.contains('youtube.com') || u.contains('youtu.be');
+    return u.contains('youtube.com') ||
+        u.contains('youtu.be') ||
+        u.contains('youtube-nocookie.com');
   }
 
   bool _looksLikeDirectVideoUrl(Uri uri) {
@@ -77,7 +116,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
     try {
       if (_isYouTube) {
-        final videoId = YoutubePlayerController.convertUrlToId(url);
+        final videoId = _extractYouTubeId(url);
         if (videoId == null || videoId.isEmpty) {
           setState(() => _initError = 'Invalid YouTube link');
           return;
