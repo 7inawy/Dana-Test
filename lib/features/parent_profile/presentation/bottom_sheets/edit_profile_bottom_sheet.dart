@@ -148,11 +148,6 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
                   hintText: context.l10n.addressHint,
                 ),
                 SizedBox(height: 16.h),
-                Text(
-                  context.l10n.phoneNumberLabel,
-                  style: AppTextStyle.medium12TextBody(context),
-                ),
-                SizedBox(height: 8.h),
                 SizedBox(
                   height: 64.h,
                   child: CustomPhoneField(

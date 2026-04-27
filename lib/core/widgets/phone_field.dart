@@ -131,6 +131,7 @@ class _PhoneFieldState extends State<PhoneField> {
             width: 0.8.w,
           ),
         ),
+        helperText: ' ',
         contentPadding: EdgeInsetsDirectional.only(top: 33.5.h, start: 108.w),
       ),
       style: AppTextStyle.medium16TextBody(context),

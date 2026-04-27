@@ -154,145 +154,122 @@ class _VaccineScreenState extends State<VaccineScreen> {
                 //التطعيمات
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 12.h),
-                  child:
-                      BlocBuilder<
-                        VaccinationScheduleCubit,
-                        VaccinationScheduleState
-                      >(
-                        builder: (context, state) {
-                          if (state is VaccinationScheduleLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          if (state is VaccinationScheduleError) {
-                            return Column(
+                  child: BlocBuilder<VaccinationScheduleCubit, VaccinationScheduleState>(
+                    builder: (context, state) {
+                      if (state is VaccinationScheduleLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state is VaccinationScheduleError) {
+                        return Column(
+                          children: [
+                            Center(child: Text(state.message)),
+                            SizedBox(height: 12.h),
+                            Wrap(
+                              spacing: 12.w,
+                              runSpacing: 8.h,
+                              alignment: WrapAlignment.center,
                               children: [
-                                Center(child: Text(state.message)),
-                                SizedBox(height: 12.h),
-                                Wrap(
-                                  spacing: 12.w,
-                                  runSpacing: 8.h,
-                                  alignment: WrapAlignment.center,
+                                ElevatedButton(
+                                  onPressed: () => context
+                                      .read<VaccinationScheduleCubit>()
+                                      .load(childId: widget.childId),
+                                  child: const Text('إعادة المحاولة'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => context
+                                      .read<VaccinationScheduleCubit>()
+                                      .generateAndLoad(childId: widget.childId),
+                                  child: const Text('إنشاء جدول التطعيمات'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      }
+                      if (state is VaccinationScheduleInitial) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state is VaccinationScheduleLoaded) {
+                        final catalogHeader = state.catalog.isNotEmpty
+                            ? Padding(
+                                padding: EdgeInsets.only(bottom: 12.h),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    ElevatedButton(
-                                      onPressed: () => context
-                                          .read<VaccinationScheduleCubit>()
-                                          .load(childId: widget.childId),
-                                      child: const Text('إعادة المحاولة'),
+                                    Text(
+                                      'مرجع التطعيمات',
+                                      style: AppTextStyle.semibold16TextHeading(
+                                        context,
+                                      ),
                                     ),
-                                    ElevatedButton(
-                                      onPressed: () => context
-                                          .read<VaccinationScheduleCubit>()
-                                          .generateAndLoad(
-                                            childId: widget.childId,
-                                          ),
-                                      child: const Text('إنشاء جدول التطعيمات'),
+                                    SizedBox(height: 8.h),
+                                    ...state.catalog.map(
+                                      (v) => Padding(
+                                        padding: EdgeInsets.only(bottom: 8.h),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              v.name,
+                                              style:
+                                                  AppTextStyle.medium12TextButtonOutlined(
+                                                    context,
+                                                  ),
+                                            ),
+                                            if (v.description.isNotEmpty) ...[
+                                              SizedBox(height: 2.h),
+                                              Text(
+                                                v.description,
+                                                style:
+                                                    AppTextStyle.medium12TextButtonOutlined(
+                                                      context,
+                                                    ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ],
-                            );
-                          }
-                          if (state is VaccinationScheduleInitial) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          if (state is VaccinationScheduleLoaded) {
-                            final catalogHeader = state.catalog.isNotEmpty
-                                ? Padding(
-                                    padding: EdgeInsets.only(bottom: 12.h),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'مرجع التطعيمات',
-                                          style:
-                                              AppTextStyle.semibold16TextHeading(
-                                            context,
-                                          ),
-                                        ),
-                                        SizedBox(height: 8.h),
-                                        ...state.catalog.map(
-                                          (v) => Padding(
-                                            padding: EdgeInsets.only(
-                                              bottom: 8.h,
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  v.name,
-                                                  style: AppTextStyle
-                                                      .medium12TextButtonOutlined(
-                                                    context,
-                                                  ),
-                                                ),
-                                                if (v.description
-                                                    .isNotEmpty) ...[
-                                                  SizedBox(height: 2.h),
-                                                  Text(
-                                                    v.description,
-                                                    style: AppTextStyle
-                                                        .medium12TextButtonOutlined(
-                                                      context,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : const SizedBox.shrink();
+                              )
+                            : const SizedBox.shrink();
 
-                            final items = state.items
-                                .map(
-                                  (e) => _mapScheduleToUi(
-                                    context: context,
-                                    childId: state.childId,
-                                    item: e,
-                                  ),
-                                )
-                                .toList();
-                            if (items.isEmpty) {
-                              return Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.stretch,
-                                children: [
-                                  catalogHeader,
-                                  ElevatedButton(
-                                    onPressed: () => context
-                                        .read<VaccinationScheduleCubit>()
-                                        .generateAndLoad(
-                                          childId: widget.childId,
-                                        ),
-                                    child: const Text('إنشاء جدول التطعيمات'),
-                                  ),
-                                ],
-                              );
-                            }
-                            return Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.stretch,
-                              children: [
-                                catalogHeader,
-                                ...items.map(
-                                  (v) => VaccineItemWidget(item: v),
-                                ),
-                              ],
-                            );
-                          }
-                          return const Center(
-                            child: CircularProgressIndicator(),
+                        final items = state.items
+                            .map(
+                              (e) => _mapScheduleToUi(
+                                context: context,
+                                childId: state.childId,
+                                item: e,
+                              ),
+                            )
+                            .toList();
+                        if (items.isEmpty) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              catalogHeader,
+                              ElevatedButton(
+                                onPressed: () => context
+                                    .read<VaccinationScheduleCubit>()
+                                    .generateAndLoad(childId: widget.childId),
+                                child: const Text('إنشاء جدول التطعيمات'),
+                              ),
+                            ],
                           );
-                        },
-                      ),
+                        }
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            catalogHeader,
+                            ...items.map((v) => VaccineItemWidget(item: v)),
+                          ],
+                        );
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  ),
                 ),
               ],
             ),
