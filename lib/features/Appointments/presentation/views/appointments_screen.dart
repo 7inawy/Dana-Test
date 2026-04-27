@@ -54,9 +54,11 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   }
 
   Status _mapStatus(Booking b) {
-    if (b.isCompletedConsultation) return Status.completed;
     final s = b.status.toLowerCase();
+    // Cancelled (or similar) must win over `isCompletedConsultation`, otherwise the
+    // UI shows "completed" + Rate and the backend rejects `/rate` for non-confirmed rows.
     if (s.contains('cancel')) return Status.cancelled;
+    if (b.isCompletedConsultation) return Status.completed;
     if (s.contains('complete')) return Status.completed;
     // "confirmed" / "pending" stay upcoming until visit is done.
     return Status.upcoming;
