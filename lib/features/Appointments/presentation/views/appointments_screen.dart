@@ -53,8 +53,9 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
     super.dispose();
   }
 
-  Status _mapStatus(String raw) {
-    final s = raw.toLowerCase();
+  Status _mapStatus(Booking b) {
+    if (b.isCompletedConsultation) return Status.completed;
+    final s = b.status.toLowerCase();
     if (s.contains('cancel')) return Status.cancelled;
     if (s.contains('complete')) return Status.completed;
     // "confirmed" / "pending" stay upcoming until visit is done.
@@ -79,6 +80,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
     final specialty = b.doctor.specialty.trim();
     final loc = b.doctor.locationLine.trim();
 
+    final fee = b.detectionPrice > 0
+        ? b.detectionPrice.toDouble()
+        : b.doctor.price.toDouble();
+
     return Appointment(
       bookingId: b.id,
       childId: b.child.id,
@@ -86,13 +91,13 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
       doctorName: '${context.l10n.dr} $plainName',
       doctorNamePlain: plainName,
       specialty: specialty.isNotEmpty ? specialty : context.l10n.physiotherapist,
-      detectionPrice: b.doctor.price.toDouble(),
+      detectionPrice: fee,
       image: image,
       date: date,
       startTime: start,
       endTime: end,
       address: loc.isNotEmpty ? loc : '—',
-      status: _mapStatus(b.status),
+      status: _mapStatus(b),
     );
   }
 
