@@ -277,7 +277,7 @@ class _MessageBubbleState extends State<MessageBubble> {
               softWrap: true,
               style: isUser
                   ? AppTextStyle.regular12TextButton(context)
-                  : AppTextStyle.regular12TextButton(context),
+                  : AppTextStyle.regular12TextHeading(context),
             ),
           ),
           Positioned(

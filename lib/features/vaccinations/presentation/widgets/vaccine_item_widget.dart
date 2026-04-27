@@ -105,6 +105,9 @@ class _VaccineItemWidgetState extends State<VaccineItemWidget> {
                           Text(
                             widget.item.title,
                             style: AppTextStyle.semibold16TextHeading(context),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: true,
                           ),
                           SizedBox(width: 8.w),
                           if (widget.item.status == VaccineStatus.delayed) ...[
@@ -170,8 +173,8 @@ class _VaccineItemWidgetState extends State<VaccineItemWidget> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  final scheduleCubit =
-                                      context.read<VaccinationScheduleCubit>();
+                                  final scheduleCubit = context
+                                      .read<VaccinationScheduleCubit>();
                                   _selectedTakenDate = null;
                                   _takenDateController.clear();
                                   showModalBottomSheet(
@@ -280,7 +283,6 @@ class _VaccineItemWidgetState extends State<VaccineItemWidget> {
                                               );
                                               if (!mounted) return;
                                               // Close the confirm sheet after a successful call.
-                                              Navigator.of(sheetContext).pop();
                                             },
                                           ),
                                     ),

@@ -68,7 +68,7 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
                 ),
                 CustomAppBarButton(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, AppRoutes.home);
                   },
                 ),
               ],

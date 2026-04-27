@@ -1,4 +1,5 @@
 import 'package:dana/core/utils/app_colors.dart';
+import 'package:dana/core/utils/app_raduis.dart';
 import 'package:dana/core/utils/parent_phone_utils.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/extensions/localization_extension.dart';
@@ -100,21 +101,21 @@ class _PhoneFieldState extends State<PhoneField> {
             ? AppColors.bg_card_default_dark
             : AppColors.bg_card_default_light,
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(AppRadius.radius_sm),
           borderSide: BorderSide(
             color: isDark
                 ? AppColors.border_card_default_dark
                 : AppColors.border_card_default_light,
-            width: 0.8.w,
+            width: 1.5.w,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(AppRadius.radius_sm),
           borderSide: BorderSide(
             color: isDark
-                ? AppColors.border_card_default_dark
-                : AppColors.border_card_default_light,
-            width: 0.8.w,
+                ? AppColors.primary_default_dark
+                : AppColors.primary_default_light,
+            width: 1,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(

@@ -12,7 +12,8 @@ class AppConfig {
   /// Base URL including `/api` but excluding `/v1`.
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://3.64.255.173:3000/api',
+    // defaultValue: 'http://3.64.255.173:3000/api',
+    defaultValue: 'https://rhostdev.qzz.io/api',
   );
 
   /// Sentry DSN for crash reporting (leave empty to disable).
