@@ -321,8 +321,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rateDoctorTitle => 'How was your consultation?';
 
   @override
-  String get rateDoctorDesc =>
-      'We’d love your feedback on your experience with Dr. Islam Ghoneim. Your rating helps us improve care.';
+  String rateDoctorDesc(String doctorName) {
+    return 'We\'d love your feedback on your experience with $doctorName. Your rating helps us improve care.';
+  }
 
   @override
   String get ratingNotAllowedTitle => 'Rating not available yet';

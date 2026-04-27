@@ -158,7 +158,15 @@
 
   "rateDoctor": "تقييم الطبيب",
   "rateDoctorTitle": "طمنا.. أخبار استشارتكم إيه؟",
-  "rateDoctorDesc": "نريد رأيك في تجربتك مع دكتور إسلام غنيم. تقييمك يساعدنا في تحسين الرعاية.",
+  "rateDoctorDesc": "نريد رأيك في تجربتك مع {doctorName}. تقييمك يساعدنا في تحسين الرعاية.",
+  "@rateDoctorDesc": {
+    "placeholders": {
+      "doctorName": {
+        "type": "String",
+        "example": "د. حور محمد"
+      }
+    }
+  },
   "ratingNotAllowedTitle": "التقييم غير متاح حالياً",
   "ratingNotAllowedDesc": "تقدر تقيّم الطبيب بعد انتهاء الموعد.",
   "ratingSubmitFailed": "مش قادرين نبعت تقييمك دلوقتي. جرّب تاني بعد شوية.",

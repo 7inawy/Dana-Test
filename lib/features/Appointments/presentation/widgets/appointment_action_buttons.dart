@@ -112,7 +112,7 @@ class AppointmentActionButtons extends StatelessWidget {
                 textStyle: AppTextStyle.semibold16TextButtonOutlined(context),
                 onTap: () => _showSheet(
                   context,
-                  RateDoctorBottomSheet(bookingId: appointment.bookingId),
+                  RateDoctorBottomSheet(appointment: appointment),
                 ),
               ),
             ),

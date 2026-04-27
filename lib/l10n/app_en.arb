@@ -162,7 +162,15 @@
 
   "rateDoctor": "Rate doctor",
   "rateDoctorTitle": "How was your consultation?",
-  "rateDoctorDesc": "We’d love your feedback on your experience with Dr. Islam Ghoneim. Your rating helps us improve care.",
+  "rateDoctorDesc": "We'd love your feedback on your experience with {doctorName}. Your rating helps us improve care.",
+  "@rateDoctorDesc": {
+    "placeholders": {
+      "doctorName": {
+        "type": "String",
+        "example": "Dr. Hager Mohamed"
+      }
+    }
+  },
   "ratingNotAllowedTitle": "Rating not available yet",
   "ratingNotAllowedDesc": "You can rate the doctor only after the appointment is completed.",
   "ratingSubmitFailed": "We couldn’t submit your rating right now. Please try again later.",

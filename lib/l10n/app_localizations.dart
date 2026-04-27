@@ -689,8 +689,8 @@ abstract class AppLocalizations {
   /// No description provided for @rateDoctorDesc.
   ///
   /// In en, this message translates to:
-  /// **'We’d love your feedback on your experience with Dr. Islam Ghoneim. Your rating helps us improve care.'**
-  String get rateDoctorDesc;
+  /// **'We\'d love your feedback on your experience with {doctorName}. Your rating helps us improve care.'**
+  String rateDoctorDesc(String doctorName);
 
   /// No description provided for @ratingNotAllowedTitle.
   ///

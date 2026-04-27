@@ -318,8 +318,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rateDoctorTitle => 'طمنا.. أخبار استشارتكم إيه؟';
 
   @override
-  String get rateDoctorDesc =>
-      'نريد رأيك في تجربتك مع دكتور إسلام غنيم. تقييمك يساعدنا في تحسين الرعاية.';
+  String rateDoctorDesc(String doctorName) {
+    return 'نريد رأيك في تجربتك مع $doctorName. تقييمك يساعدنا في تحسين الرعاية.';
+  }
 
   @override
   String get ratingNotAllowedTitle => 'التقييم غير متاح حالياً';

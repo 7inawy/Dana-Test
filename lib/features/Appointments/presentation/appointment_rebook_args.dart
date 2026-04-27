@@ -18,3 +18,22 @@ BookingDoctorArgs? bookingDoctorArgsFromAppointment(Appointment a) {
     availableTimes: const [],
   );
 }
+
+/// Doctor row for rating sheet — same as rebook when possible, else fields from [Appointment].
+BookingDoctorArgs ratingDoctorArgsFromAppointment(Appointment a) {
+  final from = bookingDoctorArgsFromAppointment(a);
+  if (from != null) return from;
+  final name = a.doctorNamePlain.trim().isNotEmpty
+      ? a.doctorNamePlain.trim()
+      : a.doctorName.trim();
+  return BookingDoctorArgs(
+    doctorId: a.doctorId ?? '',
+    doctorName: name,
+    specialty: a.specialty,
+    locationLine: a.address,
+    imageUrl: a.image,
+    detectionPrice: a.detectionPrice,
+    availableDates: const [],
+    availableTimes: const [],
+  );
+}

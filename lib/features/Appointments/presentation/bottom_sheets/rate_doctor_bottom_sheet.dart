@@ -4,6 +4,8 @@ import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/widgets/custom_screen_header.dart';
 import 'package:dana/extensions/localization_extension.dart';
+import 'package:dana/features/Appointments/data/models/appointment_model.dart';
+import 'package:dana/features/Appointments/presentation/appointment_rebook_args.dart';
 import 'package:dana/features/Appointments/presentation/widgets/rating_card.dart';
 import 'package:dana/features/booking/presentation/views/BookingScreen/widgets/doctor_details_widget.dart';
 import 'package:dana/features/booking/presentation/cubit/booking_cubit.dart';
@@ -15,9 +17,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class RateDoctorBottomSheet extends StatefulWidget {
-  final String? bookingId;
+  final Appointment appointment;
 
-  const RateDoctorBottomSheet({super.key, required this.bookingId});
+  const RateDoctorBottomSheet({super.key, required this.appointment});
 
   @override
   State<RateDoctorBottomSheet> createState() => _RateDoctorBottomSheetState();
@@ -29,6 +31,11 @@ class _RateDoctorBottomSheetState extends State<RateDoctorBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final isButtonEnabled = rating > 0;
+    final a = widget.appointment;
+    final doctorForSheet = ratingDoctorArgsFromAppointment(a);
+    final subtitleName = doctorForSheet.doctorName.trim().isNotEmpty
+        ? '${context.l10n.dr} ${doctorForSheet.doctorName.trim()}'
+        : a.doctorName.trim();
 
     final themeProvider = context.watch<AppThemeProvider>();
     final isDark =
@@ -51,10 +58,13 @@ class _RateDoctorBottomSheetState extends State<RateDoctorBottomSheet> {
             SizedBox(height: 20.h),
             CustomScreenHeader(
               title: context.l10n.rateDoctorTitle,
-              subtitle: context.l10n.rateDoctorDesc,
+              subtitle: context.l10n.rateDoctorDesc(subtitleName),
             ),
             SizedBox(height: 24.h),
-            CustomFrame(vPadding: 12.h, child: DoctorDetailsWidget()),
+            CustomFrame(
+              vPadding: 12.h,
+              child: DoctorDetailsWidget(doctor: doctorForSheet),
+            ),
             SizedBox(height: 12.h),
             RateCard(
               onRatingChanged: (value) {
@@ -89,7 +99,7 @@ class _RateDoctorBottomSheetState extends State<RateDoctorBottomSheet> {
                         : AppColors.bg_button_primary_disabled_light),
               onTap: () async {
                 if (!isButtonEnabled) return;
-                final bookingId = widget.bookingId;
+                final bookingId = widget.appointment.bookingId;
                 if (bookingId == null || bookingId.isEmpty) {
                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   ScaffoldMessenger.of(context).showSnackBar(
