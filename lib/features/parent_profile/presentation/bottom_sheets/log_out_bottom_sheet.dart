@@ -6,8 +6,6 @@ import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/core/widgets/home_indicator.dart';
 import 'package:dana/extensions/localization_extension.dart';
-import 'package:dana/features/Chat_bot/data/storage/ai_chat_storage.dart';
-import 'package:dana/features/auth/login/data/model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -72,13 +70,6 @@ class _LogOutBottomSheetState extends State<LogOutBottomSheet> {
                     text: context.l10n.confirmLogoutButton,
                     textColor: AppColors.error_default_light,
                     onTap: () async {
-                      final token = await sl<AuthSession>().token();
-                      if (token != null && token.trim().isNotEmpty) {
-                        final user = UserModel.fromToken(token: token);
-                        if (user.id.trim().isNotEmpty) {
-                          await AIChatStorage.clearAllForUser(userId: user.id);
-                        }
-                      }
                       await sl<AuthSession>().clear();
                       Navigator.pushNamedAndRemoveUntil(
                         context,
