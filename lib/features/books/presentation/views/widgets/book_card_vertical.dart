@@ -8,6 +8,7 @@ import '../../../../../core/utils/app_text_style.dart';
 import '../../../../../providers/app_theme_provider.dart';
 import '../../../data/model/book_Model.dart';
 import '../screens/read_Book_Screen.dart';
+import 'book_cover_image.dart';
 
 class BookCardVertical extends StatelessWidget {
   final BookModel book;
@@ -31,13 +32,11 @@ class BookCardVertical extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.radius_md),
-            child: Image.asset(
-              book.imageUrl,
+            child: BookCoverImage(
+              imageUrl: book.imageUrl,
               width: 92.w,
               height: 100.h,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  const SizedBox.shrink(),
+              clipInWidget: false,
             ),
           ),
           SizedBox(width: 12.w),

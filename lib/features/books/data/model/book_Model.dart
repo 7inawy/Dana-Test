@@ -3,6 +3,7 @@
 // ============================================================
 import 'package:flutter/cupertino.dart';
 
+import '../../../../core/config/app_config.dart';
 import '../../../../core/utils/app_assets.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -33,6 +34,21 @@ class BookModel {
     final p = pagesCount;
     if (p != null && p > 0) return p;
     return chapters.length;
+  }
+
+  /// Turns API `cover` values into a loadable URL (absolute) or leaves asset paths as-is.
+  static String resolvedCoverUrl(dynamic raw) {
+    final s = raw?.toString().trim() ?? '';
+    if (s.isEmpty) return '';
+    if (s.startsWith('http://') || s.startsWith('https://')) return s;
+    final base = AppConfig.apiBaseUrl.endsWith('/')
+        ? AppConfig.apiBaseUrl
+        : '${AppConfig.apiBaseUrl}/';
+    try {
+      return Uri.parse(base).resolve(s).toString();
+    } catch (_) {
+      return s;
+    }
   }
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
@@ -81,7 +97,7 @@ class BookModel {
       id: json['_id']?.toString() ?? '',
       title: json['title']?.toString() ?? '',
       author: json['author']?.toString() ?? '',
-      imageUrl: (json['cover'] ?? '').toString(),
+      imageUrl: resolvedCoverUrl(json['cover'] ?? json['imageUrl']),
       description: json['description']?.toString(),
       link: json['link']?.toString(),
       chapters: parsedChapters,

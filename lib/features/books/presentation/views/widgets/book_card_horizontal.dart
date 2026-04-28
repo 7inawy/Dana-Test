@@ -7,6 +7,7 @@ import '../../../../../core/utils/app_raduis.dart';
 import '../../../../../core/utils/app_text_style.dart';
 import '../../../../../providers/app_theme_provider.dart';
 import '../../../data/model/book_Model.dart';
+import 'book_cover_image.dart';
 
 class BookCardHorizontal extends StatelessWidget {
   final BookModel book;
@@ -45,11 +46,11 @@ class BookCardHorizontal extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.radius_md),
-              child: Image.asset(
-                book.imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                    const SizedBox.shrink(),
+              child: BookCoverImage(
+                imageUrl: book.imageUrl,
+                width: 142.w,
+                height: 180.h,
+                clipInWidget: false,
               ),
             ),
           ),

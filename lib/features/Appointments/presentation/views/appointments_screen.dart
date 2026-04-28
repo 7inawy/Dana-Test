@@ -167,7 +167,19 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                         bookings
                             .map((b) => _mapBookingToAppointment(context, b))
                             .toList()
-                          ..sort((a, b) => a.date.compareTo(b.date));
+                          ..sort((a, b) {
+                            final byDate = a.date.compareTo(b.date);
+                            if (byDate != 0) return byDate;
+                            final aMin =
+                                a.startTime.hour * 60 + a.startTime.minute;
+                            final bMin =
+                                b.startTime.hour * 60 + b.startTime.minute;
+                            final byTime = aMin.compareTo(bMin);
+                            if (byTime != 0) return byTime;
+                            return (a.bookingId ?? '').compareTo(
+                              b.bookingId ?? '',
+                            );
+                          });
                     return buildBody(appts);
                   },
                 ),

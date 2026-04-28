@@ -110,7 +110,9 @@ class BookingRepo {
         .map((b) {
           final did = b.doctor.id.trim();
           final d = byId[did];
-          return d == null ? b : b.copyWith(doctor: d);
+          // One shared [Doctor] instance across many bookings confused debugging and
+          // could interact badly with future equality/cache work; clone per row.
+          return d == null ? b : b.copyWith(doctor: d.copyWith());
         })
         .toList();
   }

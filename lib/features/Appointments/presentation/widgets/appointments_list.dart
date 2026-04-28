@@ -103,9 +103,17 @@ class _AppointmentsListState extends State<AppointmentsList> {
       physics: const AlwaysScrollableScrollPhysics(),
       itemCount: filtered.length,
       itemBuilder: (context, index) {
+        final a = filtered[index];
+        // Stable identity when multiple rows share doctor+child+similar layout.
+        final k = a.bookingId;
         return AppointmentCard(
-          appointment: filtered[index],
-          onCancel: () => _confirmAndCancel(context, filtered[index]),
+          key: k != null && k.isNotEmpty
+              ? ValueKey<String>(k)
+              : ValueKey<String>(
+                  '${a.childId ?? ''}-${a.date.toIso8601String()}-${a.startTime.hour}:${a.startTime.minute}',
+                ),
+          appointment: a,
+          onCancel: () => _confirmAndCancel(context, a),
         );
       },
     );
