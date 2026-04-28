@@ -10,6 +10,8 @@ class CustomButton extends StatelessWidget {
     super.key,
     this.text,
     required this.onTap,
+    this.enabled = true,
+    this.isLoading = false,
     this.icon,
     this.iconSize,
     this.width = double.infinity,
@@ -24,6 +26,8 @@ class CustomButton extends StatelessWidget {
 
   final String? text;
   final VoidCallback onTap;
+  final bool enabled;
+  final bool isLoading;
   final Color? color;
   final Color? textColor;
   final TextStyle? textStyle;
@@ -43,26 +47,41 @@ class CustomButton extends StatelessWidget {
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
 
+    final isEnabled = enabled && !isLoading;
+    final resolvedColor =
+        color ??
+        (isEnabled
+            ? (isDark
+                ? AppColors.button_primary_default_dark
+                : AppColors.button_primary_default_light)
+            : (isDark
+                ? AppColors.bg_button_primary_disabled_dark
+                : AppColors.bg_button_primary_disabled_light));
+    final resolvedBorderColor =
+        borderColor ??
+        (isDark
+            ? AppColors.border_button_primary_dark
+            : AppColors.border_button_primary_light);
+    final resolvedTextColor =
+        textColor ??
+        (isEnabled
+            ? (isDark ? AppColors.text_button_dark : AppColors.text_button_light)
+            : (isDark
+                ? AppColors.text_button_disabled_dark
+                : AppColors.text_button_disabled_light));
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: isEnabled ? onTap : null,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(
             borderRadius ?? AppRadius.radius_lg,
           ),
           border: Border.all(
-            color:
-                borderColor ??
-                (isDark
-                    ? AppColors.border_button_primary_dark
-                    : AppColors.border_button_primary_light),
+            color: resolvedBorderColor,
             width: borderWidth ?? AppRadius.stroke_thin,
           ),
-          color:
-              color ??
-              (isDark
-                  ? AppColors.button_primary_default_dark
-                  : AppColors.button_primary_default_light),
+          color: resolvedColor,
         ),
         width: width,
         height: height ?? 48.h,
@@ -70,17 +89,26 @@ class CustomButton extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (isLoading) ...[
+                SizedBox(
+                  width: 18.r,
+                  height: 18.r,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.4,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      resolvedTextColor,
+                    ),
+                  ),
+                ),
+                if (text != null) SizedBox(width: 10.w),
+              ],
               if (text != null)
                 Text(
                   text!,
                   style:
                       textStyle ??
                       TextStyle(
-                        color:
-                            textColor ??
-                            (isDark
-                                ? AppColors.text_button_dark
-                                : AppColors.text_button_light),
+                        color: resolvedTextColor,
                         fontWeight: FontWeight.w600,
                         fontSize: 16.sp,
                         fontFamily: FontFamilies.ibm,
@@ -90,11 +118,7 @@ class CustomButton extends StatelessWidget {
                 if (text != null) SizedBox(width: 8.w),
                 Icon(
                   icon,
-                  color:
-                      textColor ??
-                      (isDark
-                          ? AppColors.text_button_dark
-                          : AppColors.text_button_light),
+                  color: resolvedTextColor,
                   size: iconSize ?? 18.r,
                 ),
               ],

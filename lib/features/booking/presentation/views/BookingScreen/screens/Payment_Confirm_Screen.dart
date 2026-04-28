@@ -164,7 +164,9 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(24.r),
         child: CustomButton(
-          onTap: _submitting ? () {} : _submitBooking,
+          onTap: _submitBooking,
+          enabled: !_submitting,
+          isLoading: _submitting,
           text: _submitting
               ? context.l10n.confirming
               : context.l10n.confirmBooking,
