@@ -55,7 +55,7 @@ class VideoCard extends StatelessWidget {
             MediaQuery.of(context).platformBrightness == Brightness.dark);
     final isRtl = Localizations.localeOf(context).languageCode == 'ar';
     final width = imageWidth ?? 142.w;
-    final cover = video.imageUrl.trim();
+    final cover = video.resolvedImageUrl.trim();
     final isNetworkCover =
         cover.startsWith('http://') || cover.startsWith('https://');
     final hasCover = cover.isNotEmpty;

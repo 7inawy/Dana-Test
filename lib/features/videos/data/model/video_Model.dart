@@ -1,3 +1,5 @@
+import '../../../../core/config/app_config.dart';
+
 class VideoModel {
   final String id;
   final String title;
@@ -27,6 +29,22 @@ class VideoModel {
       views: int.tryParse(json['views']?.toString() ?? ''),
       videoUrl: json['link']?.toString(),
     );
+  }
+
+  /// Best-effort resolution for `cover` values returned by the backend.
+  ///
+  /// Many deployments return relative paths like `/uploads/foo.jpg` (or `uploads/foo.jpg`).
+  /// The API base URL is typically `https://host.tld/api`, while static assets are served
+  /// from `https://host.tld/...`, so we strip the trailing `/api` when present.
+  String get resolvedImageUrl {
+    final raw = imageUrl.trim();
+    if (raw.isEmpty) return '';
+    if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
+
+    final base = AppConfig.apiBaseUrl.trim().replaceAll(RegExp(r'/+$'), '');
+    final assetHost = base.replaceFirst(RegExp(r'/api$'), '');
+    final normalizedPath = raw.startsWith('/') ? raw : '/$raw';
+    return '$assetHost$normalizedPath';
   }
 }
 
