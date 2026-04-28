@@ -179,12 +179,7 @@ class SkillsOverviewCard extends StatelessWidget {
                           context.l10n.skillsNotAvailableDesc,
                           style: AppTextStyle.regular12TextBody(context),
                         ),
-                      ] else if (visibleSkills.isEmpty)
-                        Text(
-                          '—',
-                          style: AppTextStyle.regular12TextBody(context),
-                        )
-                      else
+                      ] else
                         for (final s in visibleSkills)
                           InkWell(
                             onTap: () => _openSkillChecklist(
