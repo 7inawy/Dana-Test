@@ -40,17 +40,29 @@ class NewPasswordScreen extends StatelessWidget {
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.bg_surface_default_dark
-            : AppColors.bg_surface_default_light,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(AppRadius.radius_lg),
-          topRight: Radius.circular(AppRadius.radius_lg),
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: bottomInset),
+      child: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDark
+                  ? AppColors.bg_surface_default_dark
+                  : AppColors.bg_surface_default_light,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(AppRadius.radius_lg),
+                topRight: Radius.circular(AppRadius.radius_lg),
+              ),
+            ),
+            child: NewPasswordBody(phone: phone, token: token),
+          ),
         ),
       ),
-      child: NewPasswordBody(phone: phone, token: token),
     );
   }
 }
