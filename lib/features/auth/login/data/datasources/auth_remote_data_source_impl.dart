@@ -6,6 +6,7 @@ import '../../../../../core/api/api_endpoint.dart';
 import '../../../../../core/api/api_error.dart';
 import '../../../../../core/api/api_response.dart';
 import '../../../../../core/errors/exceptions.dart';
+import '../../../../../core/log/app_logger.dart';
 import '../model/user_model.dart';
 import 'auth_remote_data_source.dart';
 
@@ -142,6 +143,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'فشل حفظ كلمة المرور');
     } on DioException catch (e) {
+      AppLogger.warn(
+        'GoogleOAuth: /v1/parent/google failed '
+        'status=${e.response?.statusCode} data=${e.response?.data}',
+      );
       final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
         message: ApiError.messageFromDecoded(
@@ -398,6 +403,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   // ── Parent / Google OAuth ────────────────────────────────────────────────────
 
+  String? _tryExtractRedirectUriFromGoogleLocation(String location) {
+    try {
+      final uri = Uri.parse(location);
+      final redirect = uri.queryParameters['redirect_uri'] ??
+          uri.queryParameters['redirectUri'] ??
+          uri.queryParameters['redirect'];
+      final trimmed = redirect?.trim();
+      return (trimmed == null || trimmed.isEmpty) ? null : trimmed;
+    } catch (_) {
+      return null;
+    }
+  }
+
   @override
   Future<dynamic> googleSignIn() async {
     try {
@@ -414,6 +432,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       final location = response.headers.value('location');
       if (location != null && location.trim().isNotEmpty) {
+        // Log redirect_uri so backend/Google Console can be aligned byte-for-byte.
+        // NOTE: This does NOT include any access tokens; it's the consent URL.
+        final redirectUri = _tryExtractRedirectUriFromGoogleLocation(location);
+        final shortLocation = location.length > 300
+            ? '${location.substring(0, 300)}…'
+            : location;
+        AppLogger.info(
+          'GoogleOAuth: /v1/parent/google status=${response.statusCode} '
+          'location=$shortLocation',
+        );
+        final expectedCallback = '${dio.options.baseUrl}${ApiEndpoint.googleCallback}';
+        AppLogger.info('GoogleOAuth: expected_callback=$expectedCallback');
+        if (redirectUri != null) {
+          AppLogger.info('GoogleOAuth: redirect_uri=$redirectUri');
+        }
         return {'redirectUrl': location};
       }
 
