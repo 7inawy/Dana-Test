@@ -11,7 +11,6 @@ import 'package:dana/features/auth/login/presentation/cubit/google_auth_state.da
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../../../../providers/app_theme_provider.dart';
 import '../widgets/sign_up_page_view.dart';
@@ -154,22 +153,66 @@ class _SignUpScreenState extends State<SignUpScreen> {
           BlocListener<GoogleAuthCubit, GoogleAuthState>(
             listener: (context, state) async {
               if (state is GoogleAuthLaunchUrl) {
-                final ok = await launchUrl(
-                  Uri.parse(state.url),
-                  mode: LaunchMode.externalApplication,
+                final result = await Navigator.pushNamed(
+                  context,
+                  AppRoutes.googleAuthWebView,
+                  arguments: state.url,
                 );
                 if (!context.mounted) return;
-                if (!ok) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Could not open browser'),
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: Colors.red,
-                    ),
+
+                if (result is Map) {
+                  final type = result['type']?.toString();
+                  final value = result['value']?.toString() ?? '';
+                  if (type == 'token' && value.isNotEmpty) {
+                    await sl<AuthSession>().setToken(value);
+                    if (!context.mounted) return;
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      AppRoutes.home,
+                      (route) => false,
+                    );
+                    return;
+                  }
+                  if (type == 'tempKey' && value.isNotEmpty) {
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.googleComplete,
+                      arguments: value,
+                    );
+                    return;
+                  }
+                  if (type == 'error') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:
+                            Text(value.isEmpty ? 'Google sign-up failed' : value),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                }
+
+                // Legacy fallback: if callback didn't return JSON but URL had UUID.
+                if (result is String && result.isNotEmpty) {
+                  if (result.startsWith('ERROR:')) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(result),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.googleComplete,
+                    arguments: result,
                   );
                   return;
                 }
-                Navigator.pushNamed(context, AppRoutes.googleRequestId);
               } else if (state is GoogleAuthFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
