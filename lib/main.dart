@@ -1,6 +1,7 @@
 import 'package:dana/my_app.dart';
 import 'package:dana/core/config/app_config.dart';
 import 'package:dana/core/log/debug_audit_log.dart';
+import 'package:dana/features/auth/login/presentation/google_oauth_deeplink_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,6 +28,9 @@ void main() async {
   );
 
   await init();
+
+  // Must be started after DI init() so it can use Dio/AuthSession.
+  await GoogleOAuthDeepLinkHandler.start();
 
   DebugAuditLog.log(
     runId: 'pre-fix',

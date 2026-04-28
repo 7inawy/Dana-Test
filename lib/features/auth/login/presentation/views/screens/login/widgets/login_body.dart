@@ -15,6 +15,7 @@ import 'package:dana/features/auth/login/presentation/views/screens/login/widget
 import 'package:dana/core/widgets/otp_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginBody extends StatelessWidget {
   const LoginBody({super.key});
@@ -53,60 +54,27 @@ class LoginBody extends StatelessWidget {
         BlocListener<GoogleAuthCubit, GoogleAuthState>(
           listener: (context, state) async {
             if (state is GoogleAuthLaunchUrl) {
-              final result = await Navigator.pushNamed(
-                context,
-                AppRoutes.googleAuthWebView,
-                arguments: state.url,
+              final ok = await launchUrl(
+                Uri.parse(state.url),
+                mode: LaunchMode.externalApplication,
               );
               if (!context.mounted) return;
-              if (result is Map) {
-                final type = result['type']?.toString();
-                final value = result['value']?.toString() ?? '';
-                if (type == 'token' && value.isNotEmpty) {
-                  await sl<AuthSession>().setToken(value);
-                  if (!context.mounted) return;
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                  return;
-                }
-                if (type == 'tempKey' && value.isNotEmpty) {
-                  Navigator.pushNamed(
-                    context,
-                    AppRoutes.googleComplete,
-                    arguments: value,
-                  );
-                  return;
-                }
-                if (type == 'error') {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(value.isEmpty ? 'Google sign-in failed' : value),
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                  return;
-                }
-              }
-
-              // Legacy fallback: if callback didn't return JSON but URL had UUID.
-              if (result is String && result.isNotEmpty) {
-                if (result.startsWith('ERROR:')) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(result),
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                  return;
-                }
-                Navigator.pushNamed(
-                  context,
-                  AppRoutes.googleComplete,
-                  arguments: result,
+              if (!ok) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Could not open browser'),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: Colors.red,
+                  ),
                 );
                 return;
               }
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Continue Google sign-in in your browser…'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
             } else if (state is GoogleAuthFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
