@@ -160,18 +160,18 @@ class SkillsHorizontalList extends StatelessWidget {
                 for (var i = 0; i < cards.length; i++) ...[
                   GestureDetector(
                     onTap: () {
-                      _openSkillInfoSheet(context, cards[i]);
+                      final s = visible[i];
+                      _openSkillChecklist(
+                        context,
+                        cubit: cubit,
+                        skillId: s.id,
+                        title: cards[i].title,
+                      );
                     },
                     child: SkillCard(
                       data: cards[i],
                       onExpandTap: () {
-                        final s = visible[i];
-                        _openSkillChecklist(
-                          context,
-                          cubit: cubit,
-                          skillId: s.id,
-                          title: cards[i].title,
-                        );
+                        _openSkillInfoSheet(context, cards[i]);
                       },
                     ),
                   ),
