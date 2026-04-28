@@ -4,6 +4,7 @@ import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/Appointments/data/models/appointment_model.dart';
+import 'package:dana/features/Appointments/presentation/appointment_rebook_args.dart';
 import 'package:dana/features/Appointments/presentation/bottom_sheets/change_appointment_bottom_sheet.dart';
 import 'package:dana/features/Appointments/presentation/bottom_sheets/rebook_cancelled_bottom_sheet.dart';
 import 'package:dana/features/Appointments/presentation/bottom_sheets/rebook_completed_bottom_sheet.dart';
@@ -41,12 +42,23 @@ class AppointmentActionButtons extends StatelessWidget {
   }
 
   void _openRebookBottomSheet(BuildContext context, Appointment appointment) {
+    // Ensure we can build a booking draft later (doctor data required).
+    final args = bookingDoctorArgsFromAppointment(appointment);
+    if (args == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('تعذر بدء الحجز: بيانات الطبيب غير مكتملة.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
     switch (appointment.status) {
       case Status.completed:
-        _showSheet(context, const RebookCompletedBottomSheet());
+        _showSheet(context, RebookCompletedBottomSheet(appointment: appointment));
         return;
       case Status.cancelled:
-        _showSheet(context, const RebookCancelledBottomSheet());
+        _showSheet(context, RebookCancelledBottomSheet(appointment: appointment));
         return;
       case Status.upcoming:
         // Upcoming doesn't use "rebook" here.

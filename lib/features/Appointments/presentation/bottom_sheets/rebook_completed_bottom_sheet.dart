@@ -1,21 +1,26 @@
 import 'package:dana/core/widgets/home_indicator.dart';
-import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/widgets/custom_screen_header.dart';
 import 'package:dana/extensions/localization_extension.dart';
+import 'package:dana/features/Appointments/data/models/appointment_model.dart';
 import 'package:dana/features/Appointments/logic/appointment_calendar_logic.dart';
-import 'package:dana/features/Appointments/presentation/bottom_sheets/confirm_appointment_bottom_sheet.dart';
+import 'package:dana/features/Appointments/presentation/appointment_rebook_args.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointment_date_row.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointment_month_navigator.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointment_time_data.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointment_time_grid.dart';
-import 'package:dana/providers/app_theme_provider.dart';
+import 'package:dana/features/booking/booking_flow_models.dart';
+import 'package:dana/core/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 
 class RebookCompletedBottomSheet extends StatefulWidget {
-  const RebookCompletedBottomSheet({super.key});
+  const RebookCompletedBottomSheet({
+    super.key,
+    required this.appointment,
+  });
+
+  final Appointment appointment;
 
   @override
   State<RebookCompletedBottomSheet> createState() =>
@@ -53,29 +58,34 @@ class _RebookCompletedBottomSheetState
     setState(() => _selectedTimeIndex = index);
   }
 
-  void _onConfirm(BuildContext context, bool isDark) {
+  void _onConfirm(BuildContext context) {
+    final args = bookingDoctorArgsFromAppointment(widget.appointment);
+    if (args == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('تعذر بدء الحجز: بيانات الطبيب غير مكتملة.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    if (_selectedDate == null || _selectedTimeIndex < 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.selectAppointment)),
+      );
+      return;
+    }
+    final dateIso = BookingDoctorArgs.dateKey(_selectedDate!);
+    final t = AppointmentTimeData.availableTimes[_selectedTimeIndex];
+    final timeHm = BookingDraft.timeToApi(t);
+    final draft = BookingDraft(doctor: args, dateIso: dateIso, timeHm: timeHm);
+
     Navigator.pop(context);
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: isDark
-          ? AppColors.bg_surface_default_dark
-          : AppColors.bg_surface_default_light,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      builder: (_) => const ConfirmAppointmentBottomSheet(),
-    );
+    Navigator.of(context).pushNamed(AppRoutes.paymentMethod, arguments: draft);
   }
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<AppThemeProvider>();
-    final isDark =
-        themeProvider.appTheme == ThemeMode.dark ||
-        (themeProvider.appTheme == ThemeMode.system &&
-            MediaQuery.of(context).platformBrightness == Brightness.dark);
-
     return Padding(
       padding: EdgeInsets.only(
         left: 24.w,
@@ -118,7 +128,7 @@ class _RebookCompletedBottomSheetState
 
             CustomButton(
               text: context.l10n.bookFollowUpSession,
-              onTap: () => _onConfirm(context, isDark),
+              onTap: () => _onConfirm(context),
             ),
             SizedBox(height: 20.h),
           ],
