@@ -143,10 +143,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'فشل حفظ كلمة المرور');
     } on DioException catch (e) {
-      AppLogger.warn(
-        'GoogleOAuth: /v1/parent/google failed '
-        'status=${e.response?.statusCode} data=${e.response?.data}',
-      );
       final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
         message: ApiError.messageFromDecoded(
@@ -416,6 +412,37 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
   }
 
+  String? _extractAccessToken(dynamic decoded) {
+    if (decoded is! Map) return null;
+
+    // Common: { accessToken: { access_token: "..." } }
+    final accessToken = decoded['accessToken'];
+    if (accessToken is Map) {
+      final token = accessToken['access_token']?.toString().trim();
+      if (token != null && token.isNotEmpty) return token;
+    }
+    if (accessToken is String) {
+      final token = accessToken.trim();
+      if (token.isNotEmpty) return token;
+    }
+
+    // Notes format: { token: { response: {...}, accessToken: { access_token: "..." } } }
+    final tokenWrapper = decoded['token'];
+    if (tokenWrapper is Map) {
+      final nested = tokenWrapper['accessToken'];
+      if (nested is Map) {
+        final token = nested['access_token']?.toString().trim();
+        if (token != null && token.isNotEmpty) return token;
+      }
+      if (nested is String) {
+        final token = nested.trim();
+        if (token.isNotEmpty) return token;
+      }
+    }
+
+    return null;
+  }
+
   @override
   Future<dynamic> googleSignIn() async {
     try {
@@ -454,6 +481,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       _throwIfError(data, response.statusCode, 'فشل تسجيل الدخول بجوجل');
       return data;
     } on DioException catch (e) {
+      AppLogger.warn(
+        'GoogleOAuth: /v1/parent/google failed '
+        'status=${e.response?.statusCode} data=${e.response?.data}',
+      );
       final data = ApiResponse.decode(e.response?.data);
       throw ServerException(
         message: ApiError.messageFromDecoded(
@@ -494,11 +525,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final data = ApiResponse.decode(response.data);
       _throwIfError(data, response.statusCode, 'فشل استكمال بيانات حساب جوجل');
 
-      // Expected to return an access token like the other auth endpoints.
-      final accessToken = (data is Map ? data['accessToken'] : null);
-      final token =
-          (accessToken is Map ? accessToken['access_token'] : null) as String?;
-      if (token == null || token.trim().isEmpty) {
+      final token = _extractAccessToken(data);
+      if (token == null || token.isEmpty) {
         throw const ServerException(message: 'لم يتم استلام التوكن');
       }
       return UserModel.fromToken(token: token);

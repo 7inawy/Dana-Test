@@ -13,7 +13,8 @@ class ApiEndpoint {
       '/v1/parent/verify-password-otp',
       // Google auth flow is unauthenticated (no Bearer token yet).
       '/v1/parent/google',
-      '/v1/parent/google/compelete',
+      '/v1/parent/google/compelete', // legacy spelling (kept for backward compat)
+      '/v1/parent/google/complete',
       '/v1/parent/google/callback',
     ];
     for (final s in suffixes) {
@@ -37,7 +38,11 @@ class ApiEndpoint {
   static const String googleCallback =
       '/v1/parent/google/callback'; // GET (handled by server)
   static const String googleComplete =
-      '/v1/parent/google/compelete'; // GET + body
+      '/v1/parent/google/complete'; // POST + body
+
+  /// Legacy endpoint spelling used by older backend deployments.
+  static const String googleCompleteLegacy =
+      '/v1/parent/google/compelete'; // POST + body (legacy)
 
   // ── Parent Profile ───────────────────────────────────────────────────────────
   static const String parentMe = '/v1/parentMe'; // GET / PATCH / DELETE
