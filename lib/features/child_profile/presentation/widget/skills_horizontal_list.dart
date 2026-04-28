@@ -1,8 +1,6 @@
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/child_profile/data/models/skill_api_models.dart';
-import 'package:dana/features/child_profile/data/skills_data.dart';
-import 'package:dana/features/child_profile/presentation/bottom_sheets/data_bottom_sheet.dart';
 import 'package:dana/features/child_profile/presentation/bottom_sheets/skill_checklist_bottom_sheet.dart';
 import 'package:dana/features/child_profile/presentation/widget/skill_card.dart';
 import 'package:dana/providers/app_theme_provider.dart';
@@ -44,30 +42,6 @@ void _openSkillChecklist(
         title: title,
         description: '',
       ),
-    ),
-  );
-}
-
-void _openSkillInfoSheet(BuildContext hostContext, SkillCardData data) {
-  final themeProvider = hostContext.read<AppThemeProvider>();
-  final isDark =
-      themeProvider.appTheme == ThemeMode.dark ||
-      (themeProvider.appTheme == ThemeMode.system &&
-          MediaQuery.of(hostContext).platformBrightness == Brightness.dark);
-
-  showModalBottomSheet<void>(
-    context: hostContext,
-    isScrollControlled: true,
-    backgroundColor: isDark
-        ? AppColors.bg_surface_default_dark
-        : AppColors.bg_surface_default_light,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-    ),
-    builder: (_) => DataBottomSheet(
-      title: data.bottomSheetTitle,
-      description: data.bottomSheetDescription,
-      items: data.bottomSheetItems,
     ),
   );
 }
@@ -130,7 +104,6 @@ class SkillsHorizontalList extends StatelessWidget {
             final cubit = context.read<SkillsCubit>();
 
             final visible = visibleSkillsUpToFour(skillList, total);
-            final infoCards = getSkillCards(context);
 
             final cards = <SkillCardData>[];
             for (var i = 0; i < visible.length; i++) {
@@ -138,7 +111,6 @@ class SkillsHorizontalList extends StatelessWidget {
               final done = checked[s.id] ?? 0;
               final tot = total[s.id] ?? 0;
               final countLabel = tot > 0 ? '$done/$tot' : '—';
-              final info = i < infoCards.length ? infoCards[i] : null;
 
               cards.add(
                 SkillCardData(
@@ -146,9 +118,9 @@ class SkillsHorizontalList extends StatelessWidget {
                   subtitle: '',
                   iconSrc: iconSrcs[i % iconSrcs.length],
                   count: countLabel,
-                  bottomSheetTitle: info?.bottomSheetTitle ?? s.name,
-                  bottomSheetDescription: info?.bottomSheetDescription ?? '',
-                  bottomSheetItems: info?.bottomSheetItems ?? const [],
+                  bottomSheetTitle: s.name,
+                  bottomSheetDescription: '',
+                  bottomSheetItems: const [],
                   progressDone: done,
                   progressTotal: tot,
                 ),
@@ -171,7 +143,13 @@ class SkillsHorizontalList extends StatelessWidget {
                     child: SkillCard(
                       data: cards[i],
                       onExpandTap: () {
-                        _openSkillInfoSheet(context, cards[i]);
+                        final s = visible[i];
+                        _openSkillChecklist(
+                          context,
+                          cubit: cubit,
+                          skillId: s.id,
+                          title: cards[i].title,
+                        );
                       },
                     ),
                   ),
