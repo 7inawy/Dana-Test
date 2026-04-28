@@ -63,7 +63,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       };
       if (profileImage != null) {
         // New image upload routes require a known parentId; pre-sign-up doesn't have it.
-        throw const ServerException(message: 'Use add-profile-image after signup');
+        throw const ServerException(
+          message: 'Use add-profile-image after signup',
+        );
       }
 
       final response = await dio.post(
@@ -402,7 +404,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   String? _tryExtractRedirectUriFromGoogleLocation(String location) {
     try {
       final uri = Uri.parse(location);
-      final redirect = uri.queryParameters['redirect_uri'] ??
+      final redirect =
+          uri.queryParameters['redirect_uri'] ??
           uri.queryParameters['redirectUri'] ??
           uri.queryParameters['redirect'];
       final trimmed = redirect?.trim();
@@ -449,13 +452,58 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       // Many implementations respond with 302 redirect to Google consent screen.
       // We must NOT follow redirects here; we need the `Location` header to open
       // it in a browser/WebView.
-      final response = await dio.get(
-        ApiEndpoint.googleSignIn,
-        options: Options(
-          followRedirects: false,
-          validateStatus: (s) => s != null && s >= 200 && s < 400,
-        ),
-      );
+      //
+      // Some backend deployments require passing the callback as a query param
+      // (even though older contracts didn't). We try the no-param request first,
+      // then retry with common callback param names when we get `invalid input`.
+
+      Future<Response<dynamic>> _call({Map<String, dynamic>? queryParameters}) {
+        return dio.get(
+          ApiEndpoint.googleSignIn,
+          queryParameters: queryParameters,
+          options: Options(
+            followRedirects: false,
+            // Accept 4xx here so we can decide whether to retry with params.
+            validateStatus: (s) => s != null && s >= 200 && s < 500,
+          ),
+        );
+      }
+
+      final expectedCallback =
+          '${dio.options.baseUrl}${ApiEndpoint.googleCallback}';
+
+      Response<dynamic> response = await _call();
+
+      final decoded0 = ApiResponse.decode(response.data);
+      final msg0 = ApiError.messageFromDecoded(
+        decoded0,
+        fallback: '',
+      ).toLowerCase();
+      if (response.statusCode == 400 && msg0.contains('invalid input')) {
+        AppLogger.warn(
+          'GoogleOAuth: /v1/parent/google returned invalid input. Retrying with callback params.',
+        );
+
+        const paramNames = <String>[
+          'redirect_uri',
+          'redirectUri',
+          'callback',
+          'callbackUrl',
+          'returnUrl',
+        ];
+
+        for (final name in paramNames) {
+          response = await _call(queryParameters: {name: expectedCallback});
+          final decoded = ApiResponse.decode(response.data);
+          final msg = ApiError.messageFromDecoded(
+            decoded,
+            fallback: '',
+          ).toLowerCase();
+          if (!(response.statusCode == 400 && msg.contains('invalid input'))) {
+            break;
+          }
+        }
+      }
 
       final location = response.headers.value('location');
       if (location != null && location.trim().isNotEmpty) {
@@ -469,7 +517,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'GoogleOAuth: /v1/parent/google status=${response.statusCode} '
           'location=$shortLocation',
         );
-        final expectedCallback = '${dio.options.baseUrl}${ApiEndpoint.googleCallback}';
         AppLogger.info('GoogleOAuth: expected_callback=$expectedCallback');
         if (redirectUri != null) {
           AppLogger.info('GoogleOAuth: redirect_uri=$redirectUri');
