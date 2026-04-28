@@ -2,10 +2,10 @@ import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/display_name_utils.dart';
 import 'package:dana/core/utils/app_raduis.dart';
-import 'package:dana/core/utils/app_routes.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/child_profile/child_profile_args.dart';
+import 'package:dana/features/child_profile/presentation/screens/child_profile_page.dart';
 import 'package:dana/features/child_profile/presentation/cubit/growth_cubit.dart';
 import 'package:dana/features/parent_profile/data/models/parent_profile_model.dart';
 import 'package:dana/features/parent_profile/presentation/cubit/parent_profile_cubit.dart';
@@ -193,16 +193,23 @@ class ChildSelectorHeader extends StatelessWidget {
                     icon: Icons.arrow_forward_ios_rounded,
                     iconSize: 14.w,
                     onTap: () {
+                      final parentCubit = context.read<ParentProfileCubit>();
                       Navigator.of(context)
-                          .pushNamed(
-                            AppRoutes.childProfile,
-                            arguments: ChildProfileArgs.fromParentChild(c),
+                          .push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => BlocProvider.value(
+                                value: parentCubit,
+                                child: ChildProfileScreen(
+                                  args: ChildProfileArgs.fromParentChild(c),
+                                ),
+                              ),
+                            ),
                           )
                           .then((_) {
-                            if (context.mounted) {
-                              context.read<GrowthCubit>().load(childId: c.id);
-                            }
-                          });
+                        if (context.mounted) {
+                          context.read<GrowthCubit>().load(childId: c.id);
+                        }
+                      });
                     },
                   ),
                 ],

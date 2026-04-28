@@ -3,6 +3,7 @@ import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_routes.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/child_profile/child_profile_args.dart';
+import 'package:dana/features/child_profile/presentation/screens/child_profile_page.dart';
 import 'package:dana/features/parent_profile/presentation/cubit/parent_profile_cubit.dart';
 import 'package:dana/features/parent_profile/presentation/cubit/parent_profile_state.dart';
 import 'package:flutter/material.dart';
@@ -59,9 +60,16 @@ class ProfileQuickAccess extends StatelessWidget {
                         return;
                       }
                       final c = s.profile.children.first;
-                      Navigator.of(context).pushNamed(
-                        AppRoutes.childProfile,
-                        arguments: ChildProfileArgs.fromParentChild(c),
+                      final parentCubit = context.read<ParentProfileCubit>();
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => BlocProvider.value(
+                            value: parentCubit,
+                            child: ChildProfileScreen(
+                              args: ChildProfileArgs.fromParentChild(c),
+                            ),
+                          ),
+                        ),
                       );
                     },
                   ),

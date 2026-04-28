@@ -39,6 +39,7 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
   late final GrowthCubit _growthCubit;
   late final VaccinationScheduleCubit _vaccinationCubit;
   late final ParentProfileCubit _parentProfileCubit;
+  late final bool _ownsParentProfileCubit;
 
   @override
   void initState() {
@@ -47,8 +48,16 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
     _skillsCubit = sl<SkillsCubit>()..loadSkills(childId: id);
     _growthCubit = sl<GrowthCubit>()..load(childId: id);
     _vaccinationCubit = sl<VaccinationScheduleCubit>()..load(childId: id);
-    _parentProfileCubit = ParentProfileCubit(sl<ParentProfileRepository>())
-      ..loadMe(silent: true);
+    // Prefer using an existing ParentProfileCubit from the caller (Home/Profile)
+    // so updates (like changing child photo) reflect across the whole app.
+    try {
+      _parentProfileCubit = context.read<ParentProfileCubit>();
+      _ownsParentProfileCubit = false;
+    } catch (_) {
+      _parentProfileCubit = ParentProfileCubit(sl<ParentProfileRepository>())
+        ..loadMe(silent: true);
+      _ownsParentProfileCubit = true;
+    }
   }
 
   @override
@@ -56,7 +65,9 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
     _skillsCubit.close();
     _growthCubit.close();
     _vaccinationCubit.close();
-    _parentProfileCubit.close();
+    if (_ownsParentProfileCubit) {
+      _parentProfileCubit.close();
+    }
     super.dispose();
   }
 
