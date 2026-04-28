@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dana/core/errors/exceptions.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/models/parent_profile_model.dart';
@@ -15,6 +16,13 @@ class ParentProfileCubit extends Cubit<ParentProfileState> {
   ParentProfileModel? _lastGoodProfile;
 
   String _errMsg(Object e) => e is ServerException ? e.message : e.toString();
+
+  void _evictNetworkImage(String? url) {
+    if (url == null) return;
+    final u = url.trim();
+    if (u.isEmpty || !u.startsWith('http')) return;
+    PaintingBinding.instance.imageCache.evict(NetworkImage(u));
+  }
 
   Future<void> loadMe({bool silent = false}) async {
     if (!silent) emit(const ParentProfileLoading());
@@ -112,6 +120,19 @@ class ParentProfileCubit extends Cubit<ParentProfileState> {
     required DateTime birthDate,
     File? profileImage,
   }) async {
+    final before = _lastGoodProfile;
+    final beforeUrl = before?.children
+        .firstWhere(
+          (c) => c.id == childId,
+          orElse: () => ParentChildModel(
+            id: '',
+            childName: '',
+            gender: '',
+            birthDate: null,
+            profileImageUrl: null,
+          ),
+        )
+        .profileImageUrl;
     try {
       await repo.updateChild(
         childId: childId,
@@ -120,7 +141,27 @@ class ParentProfileCubit extends Cubit<ParentProfileState> {
         birthDate: birthDate,
         profileImage: profileImage,
       );
+      // If the backend overwrites the image at the same URL, Flutter may keep
+      // showing the old bitmap until the cache is evicted.
+      if (profileImage != null) {
+        _evictNetworkImage(beforeUrl);
+      }
       await loadMe(silent: true);
+      if (profileImage != null) {
+        final afterUrl = _lastGoodProfile?.children
+            .firstWhere(
+              (c) => c.id == childId,
+              orElse: () => ParentChildModel(
+                id: '',
+                childName: '',
+                gender: '',
+                birthDate: null,
+                profileImageUrl: null,
+              ),
+            )
+            .profileImageUrl;
+        _evictNetworkImage(afterUrl);
+      }
       return null;
     } catch (e) {
       final msg = _errMsg(e);

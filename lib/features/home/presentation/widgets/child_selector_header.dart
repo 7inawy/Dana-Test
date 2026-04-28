@@ -32,6 +32,7 @@ Widget _childAvatar({
   return ClipRRect(
     borderRadius: BorderRadius.circular(AppRadius.radius_full),
     child: Image.network(
+      key: ValueKey<String>('childAvatar:$u'),
       u,
       width: size,
       height: size,
