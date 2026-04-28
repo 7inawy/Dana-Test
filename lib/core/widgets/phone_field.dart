@@ -38,7 +38,10 @@ class _PhoneFieldState extends State<PhoneField> {
     return null;
   }
 
-  TextEditingValue _enforceStartsWith1(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue _enforceStartsWith1(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     final digitsOnly = newValue.text.replaceAll(RegExp(r'\D'), '');
     if (digitsOnly.isEmpty) return newValue.copyWith(text: '');
 
@@ -61,124 +64,129 @@ class _PhoneFieldState extends State<PhoneField> {
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
 
-    return IntlPhoneField(
-      controller: widget.controller,
-      initialCountryCode: 'EG',
+    // Phone numbers should stay LTR even in Arabic UI (RTL).
+    // This keeps the flag/prefix on the left and avoids digit reordering.
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: IntlPhoneField(
+        controller: widget.controller,
+        initialCountryCode: 'EG',
 
-      textAlign: TextAlign.left,
+        textAlign: TextAlign.left,
 
-      /// Package limits EG to 10; Egyptian numbers are often 11 with leading 0.
-      disableLengthCheck: true,
-      validator: _nationalValidator,
-      onChanged: (PhoneNumber pn) {
-        final nationalDigits = pn.number.replaceAll(RegExp(r'\D'), '');
-        if (nationalDigits.isEmpty) {
-          widget.onNormalizedNumberChanged?.call('');
-          return;
-        }
-        widget.onNormalizedNumberChanged?.call(
-          ParentPhoneUtils.normalizeForApi(pn.completeNumber),
-        );
-      },
+        /// Package limits EG to 10; Egyptian numbers are often 11 with leading 0.
+        disableLengthCheck: true,
+        validator: _nationalValidator,
+        onChanged: (PhoneNumber pn) {
+          final nationalDigits = pn.number.replaceAll(RegExp(r'\D'), '');
+          if (nationalDigits.isEmpty) {
+            widget.onNormalizedNumberChanged?.call('');
+            return;
+          }
+          widget.onNormalizedNumberChanged?.call(
+            ParentPhoneUtils.normalizeForApi(pn.completeNumber),
+          );
+        },
 
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: isDark
-            ? AppColors.bg_card_default_dark
-            : AppColors.bg_card_default_light,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
-          borderSide: BorderSide(
-            color: isDark
-                ? AppColors.border_card_default_dark
-                : AppColors.border_card_default_light,
-            width: 0.8.w,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
-          borderSide: BorderSide(
-            color: isDark
-                ? AppColors.border_card_default_dark
-                : AppColors.border_card_default_light,
-            width: 0.8.w,
-          ),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
-          borderSide: BorderSide(
-            color: Color.fromARGB(255, 213, 44, 44),
-            width: 0.8.w,
-          ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
-          borderSide: BorderSide(
-            color: Color.fromARGB(255, 213, 44, 44),
-            width: 0.8.w,
-          ),
-        ),
-        helperText: ' ',
-        contentPadding: EdgeInsetsDirectional.only(top: 33.5.h, start: 108.w),
-      ),
-      style: AppTextStyle.medium16TextBody(context),
-      flagsButtonMargin: EdgeInsets.symmetric(vertical: 9.h),
-      flagsButtonPadding: EdgeInsetsGeometry.symmetric(vertical: 10.h),
-      keyboardType: TextInputType.number,
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        TextInputFormatter.withFunction(_enforceStartsWith1),
-        LengthLimitingTextInputFormatter(10),
-      ],
-      dropdownDecoration: BoxDecoration(
-        color: isDark
-            ? AppColors.border_card_default_dark
-            : AppColors.border_card_default_light,
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(8.r),
-          bottomRight: Radius.circular(8.r),
-          bottomLeft: Radius.circular(8.r),
-          topLeft: Radius.circular(8.r),
-        ),
-      ),
-      pickerDialogStyle: PickerDialogStyle(
-        backgroundColor: isDark
-            ? AppColors.bg_surface_default_dark
-            : AppColors.bg_surface_default_light,
-        searchFieldInputDecoration: InputDecoration(
-          hintText: context.l10n.countrySearchHint,
-          hintStyle: TextStyle(
-            fontFamily: 'IBMPlexSansArabic',
-            fontWeight: FontWeight.w500,
-            fontSize: 16.sp,
-            color: AppColors.text_body_light,
-          ),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: isDark
+              ? AppColors.bg_card_default_dark
+              : AppColors.bg_card_default_light,
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(22.r),
+            borderRadius: BorderRadius.circular(8.r),
             borderSide: BorderSide(
               color: isDark
                   ? AppColors.border_card_default_dark
                   : AppColors.border_card_default_light,
+              width: 0.8.w,
             ),
           ),
-          fillColor: AppColors.bg_surface_default_light,
-          filled: true,
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(22.r),
+            borderRadius: BorderRadius.circular(8.r),
             borderSide: BorderSide(
               color: isDark
-                  ? AppColors.primary_default_dark
-                  : AppColors.primary_default_light,
+                  ? AppColors.border_card_default_dark
+                  : AppColors.border_card_default_light,
+              width: 0.8.w,
             ),
           ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: BorderSide(
+              color: Color.fromARGB(255, 213, 44, 44),
+              width: 0.8.w,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.r),
+            borderSide: BorderSide(
+              color: Color.fromARGB(255, 213, 44, 44),
+              width: 0.8.w,
+            ),
+          ),
+          helperText: ' ',
+          contentPadding: EdgeInsetsDirectional.only(top: 33.5.h, start: 108.w),
         ),
-        searchFieldCursorColor: isDark
-            ? AppColors.primary_default_dark
-            : AppColors.primary_default_light,
-        countryNameStyle: AppTextStyle.medium16TextBody(context),
-        countryCodeStyle: AppTextStyle.medium16TextBody(context),
+        style: AppTextStyle.medium16TextBody(context),
+        flagsButtonMargin: EdgeInsets.symmetric(vertical: 9.h),
+        flagsButtonPadding: EdgeInsetsGeometry.symmetric(vertical: 10.h),
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          TextInputFormatter.withFunction(_enforceStartsWith1),
+          LengthLimitingTextInputFormatter(10),
+        ],
+        dropdownDecoration: BoxDecoration(
+          color: isDark
+              ? AppColors.border_card_default_dark
+              : AppColors.border_card_default_light,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(8.r),
+            bottomRight: Radius.circular(8.r),
+            bottomLeft: Radius.circular(8.r),
+            topLeft: Radius.circular(8.r),
+          ),
+        ),
+        pickerDialogStyle: PickerDialogStyle(
+          backgroundColor: isDark
+              ? AppColors.bg_surface_default_dark
+              : AppColors.bg_surface_default_light,
+          searchFieldInputDecoration: InputDecoration(
+            hintText: context.l10n.countrySearchHint,
+            hintStyle: TextStyle(
+              fontFamily: 'IBMPlexSansArabic',
+              fontWeight: FontWeight.w500,
+              fontSize: 16.sp,
+              color: AppColors.text_body_light,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(22.r),
+              borderSide: BorderSide(
+                color: isDark
+                    ? AppColors.border_card_default_dark
+                    : AppColors.border_card_default_light,
+              ),
+            ),
+            fillColor: AppColors.bg_surface_default_light,
+            filled: true,
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(22.r),
+              borderSide: BorderSide(
+                color: isDark
+                    ? AppColors.primary_default_dark
+                    : AppColors.primary_default_light,
+              ),
+            ),
+          ),
+          searchFieldCursorColor: isDark
+              ? AppColors.primary_default_dark
+              : AppColors.primary_default_light,
+          countryNameStyle: AppTextStyle.medium16TextBody(context),
+          countryCodeStyle: AppTextStyle.medium16TextBody(context),
+        ),
+        dropdownTextStyle: AppTextStyle.medium16TextBody(context),
       ),
-      dropdownTextStyle: AppTextStyle.medium16TextBody(context),
     );
   }
 }
