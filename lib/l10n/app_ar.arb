@@ -1,0 +1,644 @@
+{
+  "dana": "ضنا",
+  "myBabyHealth": "صحة طفلي",
+  "babyHealthRecord": "سجل صحة الطفل",
+  "skip": "تخطي",
+  "relatedVideos": "فيديوهات ذات صلة",
+  "doctorConsult": "استشارة الطبيب",
+  "searchHint": "يمكنك من خلال البحث إيجاد الفيديوهات التي تريدها",
+  "childDoctorOptions": "اختر طبيب طفلك",
+  "noDescription": "لا يوجد وصف",
+  "featuredBooks": "اخترنا لرحلتك",
+  "guideBooks": "دليل الوعي الكامل",
+  "page": "صفحة",
+
+
+
+
+
+  "@home": {
+  "description": "الصفحه الرئيسيه"
+  },
+  "home": "الرئيسية",
+  "doctors": "الأطباء",
+  "chat": "المحادثة",
+  "account": "الحساب",
+
+  "ageFormat": "{years} سنوات و {months} شهور",
+  "@ageFormat": {
+  "placeholders": {
+    "years": {},
+    "months": {}
+    }
+  },
+  "weight": "الوزن",
+  "kg": "كجم",
+  "headCircumference": "محيط الرأس",
+  "cm": "سم",
+  "height": "الطول",
+
+  "quickAccess": "الوصول السريع",
+  "checkYourChild": "افحص إبنك",
+  "booksAndArticles": "الكتب والمقالات",
+  "vaccinations": "التطعيمات",
+
+  "alwaysBestForChildCare": "الأفضل دايمًا لرعاية طفلك",
+  "viewAll": "عرض الكل",
+  "dr": "د.",
+  "bookNow": "احجز الآن",
+  "physiotherapist": "أخصائي علاج طبيعي",
+
+
+
+
+
+
+  "children": "الأبناء",
+  "addNewChild": "إضافة ابن جديد",
+
+  "addChildTitle": "ضيف أولادك وابدأ رحلتك معاهم",
+  "add": "إضافة",
+
+  "yearSingular": "سنة",
+  "yearDual": "سنتين",
+  "yearPlural": "{years} سنوات",
+  "@yearPlural": {
+    "placeholders": {
+      "years": {}
+    }
+  },
+  "monthSingular": "شهر",
+  "monthDual": "شهرين",
+  "monthPlural": "{months} شهور",
+  "@monthPlural": {
+    "placeholders": {
+      "months": {}
+    }
+  },
+  "ageFormatBoth": "{years} و {months}",
+  "@ageFormatBoth": {
+    "placeholders": {
+      "years": {},
+      "months": {}
+    }
+  },
+  "and": "و",
+  
+  "growthTracking": "متابعة النمو",
+  "danaChat": "محادثة ضنا",
+
+  "settings": "الإعدادات",
+  "accountSettingsTitle": "إعدادات الحساب",
+  "accountSettingsDesc": "ساعدنا نخلي بياناتك دايماً دقيقة ومحمية. حدد الإجراء اللي عايزه.",
+  "editProfile": "تغيير بيانات الملف الشخصي",
+  "changePassword": "تغيير الرقم السري",
+  "editProfileTitle": "تعديل بيانات الملف الشخصي",
+  "editProfileDesc": "تأكد إن بياناتك دايمًا مظبوطة وحديثة، عشان نقدر نساعدك.",
+  "editData": "تعديل البيانات",
+  "changePasswordTitle": "تغيير كلمة السر",
+  "changePasswordDesc": "عشان نحافظ على أمان حسابك، محتاجين نتأكد إنك صاحب الرقم. اكتب رقمك وهنبعتلك كود التحقق حالاً عشان تغير كلمة السر.",
+  "sendVerificationCode": "إرسال كود التحقق",
+
+  "changeLanguage": "تغير اللغة",
+  "languageTitle": "لغة التطبيق",
+  "languageDesc": "اختار اللغة اللي تريحك وتخلي متابعة صحة أولادك أسهل عليك.",
+  "arabicLanguage": "اللغة العربية",
+  "englishLanguage": "اللغة الإنجليزية",
+  "arabic": "العربية",
+  "english": "الإنجليزية",
+  "theme": "سمة",
+  "light": "نهاري",
+  "dark": "ليلي",
+  "techSupport": "الدعم الفني",
+  "logout": "تسجيل الخروج",
+
+  "themeTitle": "مظهر التطبيق",
+  "themeDesc": "عشان راحتك وراحة عينك، اختار الشكل اللي تفضله.",
+  "lightMode": "الوضع الفاتح (نهاري)",
+  "darkMode": "الوضع الغامق (ليلي)",
+  "systemMode": "نفس إعدادات الموبايل",
+
+  "logoutTitle": "تسجيل الخروج",
+  "logoutDesc": "بيانات طفلك محفوظة بأمان. لضمان متابعة التطعيمات، يُفضل أن تبقى مسجل دخول.",
+  "stayButton": "خلينا متابعين",
+  "confirmLogoutButton": "تأكيد الخروج",
+
+
+
+
+
+
+
+
+  "appointments": "الحجوزات",
+  "appointmentsUpcoming": "قادمة",
+
+  "changeAppointment": "تغيير الموعد",
+  "needBetterTimeTitle": "محتاج ميعاد يناسبك أكتر؟",
+  "needBetterTimeDesc": "تقدر تلغي حجزك القديم وتختار وقت تاني مناسب لظروفك بخطوة واحدة، عشان راحتكم وراحة طفلك دايماً تهمنا.",
+  "confirmNewAppointment": "تأكيد الميعاد الجديد",
+  "selectAppointment": "اختر الموعد",
+  "availableTime": "الوقت المتاح",
+  "reviewBookingTitle": "مراجعة الحجز",
+  "reviewBookingDesc": "اتأكد من التفاصيل قبل إكمال الحجز.",
+  "confirmBooking": "تأكيد الحجز",
+  "confirming": "جاري التأكيد…",
+  "visitTypeExam": "كشف",
+  "visitTypeFollowUp": "إعادة",
+
+  
+  "cancelAppointment": "إلغاء الحجز",
+
+  "appointmentsCompleted": "مكتملة",
+
+  "rebook": "إعادة الحجز",
+  "followUpAppointment": "تحديد ميعاد المتابعة",
+  "followUpAppointmentDesc": "المتابعة بتعمل فرق كبير! احجز جلسة الإعادة دلوقتي وتابع تطورات طفلك مع نفس الدكتور.. خطوة بخطوة إحنا معاكم.",
+  "bookFollowUpSession": "حجز جلسة متابعة",
+
+  "rateDoctor": "تقييم الطبيب",
+  "rateDoctorTitle": "طمنا.. أخبار استشارتكم إيه؟",
+  "rateDoctorDesc": "نريد رأيك في تجربتك مع {doctorName}. تقييمك يساعدنا في تحسين الرعاية.",
+  "@rateDoctorDesc": {
+    "placeholders": {
+      "doctorName": {
+        "type": "String",
+        "example": "د. حور محمد"
+      }
+    }
+  },
+  "ratingNotAllowedTitle": "التقييم غير متاح حالياً",
+  "ratingNotAllowedDesc": "تقدر تقيّم الطبيب بعد انتهاء الموعد.",
+  "ratingSubmitFailed": "مش قادرين نبعت تقييمك دلوقتي. جرّب تاني بعد شوية.",
+  "sendRating": "إرسال التقييم",
+  "rate": "التقييم",
+
+  "appointmentsCancelled": "مُلغاة",
+  "changeAppointmentTitle": "نكمل المشوار من تاني؟",
+  "changeAppointmentDesc": "الرحلة على طفلك مستمرة. حدد وقت يناسبك لتكملوا خطوتكم.",
+  "selectNewAppointment": "اختيار ميعاد جديد",
+
+
+
+
+
+
+
+
+
+
+
+  "notificationsTitle": "الإشعارات",
+
+  "notificationsNew": "جديدة",
+  "notificationsOld": "سابقة",
+  "notificationsEmpty": "لا توجد إشعارات حتى الآن.",
+  "doctorsListEmpty": "لا يوجد أطباء لعرضهم حالياً.",
+  "markAllAsRead": "تحديد الكل كمقروء",
+
+  "vaccineReminderTitle": "ميعاد حمايته النهارده!",
+  "vaccineReminderDesc": "بطلنا الصغير نوح عنده ميعاد مع (التطعيم الخماسي) النهارده. دي خطوة مهمة جداً لمناعته.. طمنونا، أخد الجرعة؟",
+
+  "consultationReminderTitle": "استشارتكم قربت",
+  "consultationReminderDesc": "بنفكركم بميعاد جلسة المتابعة مع د. [اسم الدكتور] بكرة الساعة ٤ العصر. جهزوا كل أسئلتكم، وإحنا دايماً معاكم.",
+
+  "supportSessionTitle": "جلسة الدعم",
+  "supportSessionDesc": "نتطلع للقائكم في جلسة الدعم المباشرة غداً، حيث سنقوم بمناقشة التقدم الذي أحرزتموه.",
+
+  "appointmentReminderTitle": "تذكير بالموعد",
+  "appointmentReminderDesc": "لا تنسوا أن مواعيد المتابعة مهمة جداً. كونوا جاهزين لمشاركة أي مستجدات أو تساؤلات مع د. [اسم الدكتور] غداً.",
+
+  "feedbackSurveyTitle": "استبيان رضا",
+  "feedbackSurveyDesc": "بعد الجلسة، سنرسل لكم استبيان للرضا. آراؤكم مهمة بالنسبة لنا لتحسين الخدمة.",
+
+  "prepareDocumentsTitle": "تحضير المستندات",
+  "prepareDocumentsDesc": "تأكدوا من تحضير جميع المستندات المطلوبة لجلسة المتابعة. وجودها سيساعدنا في تقديم أفضل دعم.",
+
+  "faqTitle": "الأسئلة الشائعة",
+  "faqDesc": "لمزيد من المعلومات، يمكنكم مراجعة الأسئلة الشائعة المتاحة على موقعنا الإلكتروني.",
+
+  "statusUpdatesTitle": "تحديثات الحالة",
+  "statusUpdatesDesc": "سنقوم بإرسال تحديثات دورية عن حالتكم عبر البريد الإلكتروني. تابعوا صندوق الوارد.",
+
+  "supportProgramTitle": "برنامج الدعم",
+  "supportProgramDesc": "يسعدنا أن نعلن عن بدء برنامج الدعم الجديد الذي يهدف لتحسين جودة الحياة.",
+
+  "personalConsultationTitle": "استشارة شخصية",
+  "personalConsultationDesc": "إذا كان لديكم أي استفسارات خاصة، يمكنكم حجز استشارة شخصية مع د. [اسم الدكتور].",
+
+  "additionalResourcesTitle": "موارد إضافية",
+  "additionalResourcesDesc": "يمكنكم الاطلاع على مجموعة من الموارد الإضافية المفيدة على موقعنا.",
+
+  "shareExperienceTitle": "مشاركة التجارب",
+  "shareExperienceDesc": "ندعوكم لمشاركة تجاربكم مع الآخرين في جلسة التواصل القادمة.",
+
+  "confirmAttendanceTitle": "تأكيد الحضور",
+  "confirmAttendanceDesc": "يرجى التأكيد على حضوركم للجلسة عبر الرابط المرسل إليكم.",
+
+  "billingReviewTitle": "مراجعة الفواتير",
+  "billingReviewDesc": "تأكدوا من مراجعة الفواتير الخاصة بخدماتنا وتواصلوا معنا في حال وجود أي استفسار.",
+
+  "availableServicesTitle": "الخدمات المتاحة",
+  "availableServicesDesc": "استكشفوا جميع الخدمات المتاحة لنا وكيف يمكننا مساعدتكم في تحقيق أهدافكم.",
+
+
+
+
+
+
+
+
+
+
+"vaccineWarningDescription": "جدول التطعيمات الموضح هنا مطابق تماماً لأحدث الجداول الإجبارية الرسمية، عشان تتابعوا مواعيد حماية بطلنا الصغير بكل ثقة وأمان.",
+
+"vaccineDelayed": "متأخر",
+"vaccineTaken": "تم أخذ الجرعة",
+"vaccineNotTaken": "لم يتم بعد",
+
+"vaccineSuccessTitle": "خطوة حماية جديدة تمت!",
+"vaccineSuccessDesc": "عاش بطلنا الصغير! سجل تاريخ التطعيم عشان نحسب مواعيد الجرعات اللي جاية بدقة.",
+"vaccineDateLabel": "تاريخ التطعيم",
+"vaccineDateHint": "أختر تاريخ الميلاد",
+"saveToRecord": "حفظ في السجل",
+
+"vaccineAlertTitle": "زوروا أقرب وحدة صحية",
+"vaccineAlertDesc": "ولا يهمكم.. التطعيم ده ضروري لمناعته، حاولوا تزوروا أقرب وحدة صحية في أقرب وقت عشان مصلحته",
+"cancel": "إلغاء",
+
+
+"vaccinePolioZeroDose": "تطعيم شلل الأطفال (الجرعة الصفرية)",
+"vaccineHepBZeroDose": "تطعيم الالتهاب الكبدي (ب) - الجرعة الصفرية",
+"vaccineBCG": "تطعيم الدرن (BCG)",
+"vaccinePolioSabin": "تطعيم شلل الأطفال (سابين)",
+"vaccinePolioSalk": "تطعيم شلل الأطفال (سولك)",
+"vaccinePentavalent": "التطعيم الخماسي",
+"vaccinePolioNineMonths": "تطعيم شلل الأطفال (جرعة ٩ شهور)",
+
+"vaccineDescPolioZeroDose": "درع حماية يدري أجهزته العصبي في أول ٢٤ ساعة من ولادته، بيتاخد نقط بالفم.",
+"vaccineDescHepBZeroDose": "حماية أساسية من السل خلال أول ٤٠ يوم، بيتاخد حقنة في الكتف وبتسبب علامة صغيرة تطمنكم.",
+"vaccineDescBCG": "حماية أساسية من السل خلال أول ٤٠ يوم، بيتاخد حقنة في الكتف وبتسبب علامة صغيرة تطمنكم.",
+"vaccineDescPolioTwoMonths": "جرعة أساسية عند إتمام شهرين لاستمرار حمايته، بيتاخد نقط بالفم.",
+"vaccineDescSalk": "إضافة أمان جديدة ومهمة في الشهر الثاني في تعزيز مناعته، بيتاخد حقنة في الفخذ.",
+"vaccineDescPentavalent": "حقنة بطولة بتحمي من ٥ أمراض مرة واحدة في شهره الثاني، بيتاخد حقنة في الفخذ.",
+"vaccineDescNineMonths": "جرعة منشطة سريعة عند إتمام ٩ شهور عشان تفضل مناعته قوية، بيتاخد نقط بالفم.",
+
+
+
+
+
+
+
+
+
+
+
+"childWorldTitle": "عالم طفلك",
+"growthIndicator": "مؤشر النمو",
+"growthStatusHealthy": "مطمئن وينمو بشكل سليم",
+
+"currentMeasurements": "القياسات الحالية",
+"growthCurveTitle": "منحنى التطور",
+"updateData": "تحديث البيانات",
+"updateChildMeasurements": "تحديث قياسات {childName}",
+"updateDataTitle": "طمنا عليه، أخباره إيه النهارده؟",
+"updateDataDesc": "اتأكد إن بياناتك دايماً مظبوطة وحديثة، عشان نقدر نساعدك.",
+"exampleValue": "مثال: 12",
+"saveNewMeasurements": "حفظ القياسات الجديدة",
+
+"growthCelebrationTitle": "بيكبر قدام عينينا!",
+"growthSavedMessage": "تسلم إيديكم.. قياسات الطفل الجديدة اتسجلت في ملفه بأمان. متابعتكم المستمرة لوزنه وطوله هي أهم خطوة عشان نطمن على صحته ونموه السليم.",
+  "growthDuplicateMonth": "تم تسجيل بيانات النمو لهذا الشهر بالفعل. يمكنك إضافة قياس جديد الشهر القادم.",
+  "growthNotLoaded": "بيانات الطفل غير جاهزة. حاول مرة أخرى.",
+  "addChildMissingFields": "أدخل اسم الطفل وتاريخ الميلاد.",
+  "addChildMinimumAge": "يجب أن يكون عمر الطفل شهراً على الأقل.",
+  "parentPhotoNoProfile": "لم يتم تحميل الملف الشخصي. افتح تبويب الحساب وحاول مرة أخرى.",
+
+"newSkills": "مهاراته الجديدة",
+"childGrowthTitle": "بيكبر وبيتعلم كل يوم",
+"skillsNotAvailableTitle": "المهارات غير متاحة حالياً",
+"skillsNotAvailableDesc": "هنعرض مهارات وتطور طفلك أول ما تبقى متاحة على السيرفر.",
+"skillMotor": "حركته ونشاطه",
+"skillSpeech": "كلامه وتعبيره",
+"skillCognition": "فهمه وإدراكه",
+"skillSocial": "اجتماعياته ومشاعره",
+
+
+"developmentJourney": "رحلة تطوره واكتشافه",
+"skill": "مهارة",
+
+"skillMotorDesc": "خطواته وتطوره الجسدي يوم ورا يوم",
+"motorBottomTitle": "تطور حركته",
+"motorBottomDesc": "طمنا، إيه الحاجات اللي طفلك بدأ يعملها مؤخراً؟ (تقدر تختار أكتر من مهارة.. وكل طفل بياخد وقته براحته).",
+"motorItem1": "بيمشي ويجري بثبات من غير ما يقع.",
+"motorItem2": "بيعرف يطلع السلم وينزل لوحده.",
+"motorItem3": "بيقدر ينط في مكانه على رجليه الاتنين.",
+"motorItem4": "بيمسك القلم وبيحاول يشخبط بوضوح.",
+
+"skillSpeechDesc": "كلماته الجديدة وطريقة تواصله",
+"speechBottomTitle": "صوته وحكاياته",
+"speechBottomDesc": "كل كلمة جديدة بينطقها إنجاز.. شاركونا تطور كلامه (تقدر تختار أكتر من مهارة.. وكل طفل بياخد وقته براحته).",
+"speechItem1": "بيعرف يقول اسمه الأول وسنه لما حد يسأله.",
+"speechItem2": "بيقدر يكوّن جملة بسيطة من ٣ لـ ٤ كلمات.",
+"speechItem3": "الناس الغريبة بتقدر تفهم أغلب كلامه.",
+"speechItem4": "بدأ يسأل أسئلة كتير زي \"ليه؟\" و\"إيه ده؟\".",
+
+"skillCognitionDesc": "استيعابه واكتشافه للعالم حواليه",
+"cognitionBottomTitle": "بيكتشف العالم",
+"cognitionBottomDesc": "عقله بيكبر وبيفهم أكتر.. إيه المهارات اللي لاحظتوها عليه دلوقتي؟ (تقدر تختار أكتر من مهارة.. وكل طفل بياخد وقته براحته).",
+"cognitionItem1": "بيقدر يطابق الأشكال والألوان ببعضها.",
+"cognitionItem2": "بيقدر يركب بازل بسيط (من ٣ لـ ٤ قطع).",
+"cognitionItem3": "بيفتكر أماكن ألعابه وحاجاته المفضلة في البيت.",
+"cognitionItem4": "يفهم الأوامر المركبة مثل \"هات الكورة\".",
+
+"skillSocialDesc": "تعامله وتفاعله مع اللي حواليه",
+"socialBottomTitle": "مشاعره وتعامله",
+"socialBottomDesc": "شخصيته بتبان وتكبر.. إيه التطورات اللي لاحظتوها في تفاعله؟ (تقدر تختار أكتر من مهارة.. وكل طفل بياخد وقته براحته).",
+"socialItem1": "بيحب يلعب مع أطفال تانيين (مش بيلعب لوحده بس).",
+"socialItem2": "بدأ يفهم فكرة \"الدور\" (أنا ألعب شوية وأنت شوية).",
+"socialItem3": "بيبان عليه التعاطف لما يشوف طفل تاني زعلان.",
+"socialItem4": "بيحاول يعتمد على نفسه (زي إنه ياكل لوحده).",
+
+"saveProgress": "حفظ التطورات",
+"growthConfirmTitle": "خطوة جديدة في رحلته!",
+"growthConfirmDesc": "تسلم إيديكم.. سجلنا المهارات الجديدة في ملفه بنجاح. كل يوم بيكبر وبيتعلم حاجة جديدة، وإحنا فخورين إننا بنتابع الرحلة دي معاكم.",
+
+
+"nextVaccineTitle": "التطعيم القادم",
+"mmrVaccineName": "التطعيم الثلاثي الفيروسي (MMR)",
+"vaccineTimeInfo": "بعد {days} يوم ({date})",
+"fullVaccinationRecord": "سجل التطعيمات الكامل",
+
+
+
+
+
+
+
+
+
+
+
+
+  "readBook": "اقرأ الكتاب",
+  "publishedYear": "تم نشره سنة",
+  "smartAssistant": "المساعد الذكي",
+  "smartSymptomCheck": "فحص الأعراض خطوة بخطوة",
+  "onboarding1Title": "صحة أولادك... كلها في مكان واحد!",
+  "onboarding1Desc": "انسِ الورق والفحوصات. تابع كل تفاصيل صحة طفلك بطريقة آمنة من أول التطعيمات حتى متابعة النمو والتطور، كل ذلك من هاتفك.",
+  "onboarding2Title": "استشارة الطبيب بقت أسهل وأسرع!",
+  "onboarding2Desc": "اختر طبيب متخصص لطفلك في أي وقت. احجز مواعيدك أونلاين أو في العيادة واطلع على استشارة الطبيب بأمان وأنت في مكانك.",
+  "onboarding3Title": "المساعد الذكي معك خطوة بخطوة",
+  "onboarding3Desc": "احصل على مساعد ذكي يساعدك في متابعة أعراض طفلك، يعطيك إرشادات ونصائح في نفس اللحظة.",
+  "personalInfoTitle": "خلّينا نتعرّف عليك",
+  "personalInfoDesc": "املأ بياناتك الأساسية عشان نقدر نجهزلك تجربة تناسبك وتساعدك تتابع صحة طفلك بسهولة وأمان.",
+  "fullNameLabel": "الاسم بالكامل",
+  "fullNameHint": "ادخل اسمك رباعي",
+  "governorateLabel": "المحافظة",
+  "governorateHint": "اختر محافظتك",
+  "addressLabel": "العنوان",
+  "addressHint": "ادخل عنوانك بالتفصيل",
+  "accountLabel": "البريد الإلكتروني",
+  "accountHint": "أدخل البريد الإلكتروني",
+  "continueButton": "متابعة",
+  "registerWith": "سجل بالطريقة اللي تريحك",
+  "alreadyHaveAccount": "عندك حساب؟",
+  "signIn": "سجل دخول",
+  "addChildTitle": "ضيف أولادك وابدأ رحلتك معاهم",
+  "addChildDesc": "ابدأ دلوقتي وخلي كل حاجة تخص ولدك قريبة منك دايمًا.",
+  "childNameLabel": "اسم الطفل",
+  "childNameHint": "ادخل اسم ابنك",
+  "birthDateLabel": "تاريخ ميلاده",
+  "birthDateHint": "اختر تاريخ الميلاد",
+  "childGenderLabel": "نوع الطفل",
+  "childGenderBoy": "ولد",
+  "childGenderGirl": "بنت",
+  "bloodTypeLabel": "فصيلة الدم",
+  "bloodTypeHint": "اختر فصيلة الدم",
+  "addAnotherChild": "عايز تضيف طفل تاني؟",
+  "nextButton": "التالي",
+  "childGender": "نوع الطفل",
+  "boy": "ولد",
+  "girl": "بنت",
+  "howCanWeReachYou": "إزاي نقدر نتواصل معاك؟",
+  "howCanWeReachYouHint": "اكتب رقمك وبريدك عشان نقدر نبعتلك التحديثات والتنبيهات المهمة أول بأول.",
+  "phoneNumber": "رقم الهاتف",
+  "email": "البريد الإلكتروني",
+  "enterEmail": "ادخل البريد الإلكتروني",
+  "getVerificationCode": "أحصل على رمز التأكيد",
+  "verificationTitle": "اكتب رمز التأكيد اللي جالك",
+  "verificationDescLine1": "بعتنالك كود مكوّن من 6 أرقام على رقمك +{phoneNumber}",
+  "@verificationDescLine1": {
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "verificationDescLine2": "دخل الكود هنا عشان نأكد إن الرقم بتاعك مظبوط.",
+  "resendCode": "أرسل كود تاني",
+  "timer": "00:20",
+  "choosePasswordTitle": "اختر كلمة سر تحمي حسابك",
+  "choosePasswordDesc": "خليها سهلة عليك وصعبة على غيرك، عشان تقدر تدخل بأمان في أي وقت.",
+  "confirmPasswordLabel": "تأكيد كلمة السر",
+  "confirmPasswordHint": "اكتب كلمة المرور مرة أخرى",
+  "passwordsMismatch": "كلمتا السر غير متطابقتين",
+  "createAccountButton": "إنشاء حساب",
+  "welcomeBackTitle": "أهلاً بيك من تاني!",
+  "loginDesc": "دخل بياناتك عشان تكمل تعاملاتك لصحة صغيرك بسهولة وأمان.",
+  "phoneNumberLabel": "رقم الموبايل",
+  "phoneNumberHint": "ادخل رقم الموبايل",
+  "countrySearchHint": "ابحث عن الدولة",
+  "passwordLabel": "كلمة السر",
+  "passwordHint": "ادخل كلمة سر قوية",
+  "forgotPassword": "نسيت كلمة السر؟",
+  "loginButton": "تسجيل الدخول",
+  "loginWith": "سجل بواسطة البريد الإلكتروني",
+  "noAccount": "لسه جديد هنا؟",
+  "createAccount": "أنشئ حساب",
+  "forgotPasswordTitle": "نسيت كلمة المرور؟",
+  "forgotPasswordDesc": "اكتب رقم موبايلك عشان نتأكد إن الحساب بتاعك ملكك، وبعدها تقدر تختار كلمة مرور جديدة.",
+  "newPasswordTitle": "اختار كلمة مرور جديدة",
+  "newPasswordDesc": "خليها سهلة عليك وصعبة على غيرك، بس في نفس الوقت قوية تحافظ على أمان حسابك.",
+  "newPasswordLabel": "كلمة المرور الجديدة",
+  "newPasswordHint": "ادخل كلمة مرور قوية",
+  "confirmPasswordButton": "تأكيد كلمة المرور",
+  "choosDate": "اختر موعد",
+  "availableTime": "الوقت المتاح",
+  "next": "التالي",
+  "saturday": "السبت",
+  "sunday": "الأحد",
+  "monday": "الإثنين",
+  "tuesday": "الثلاثاء",
+  "wednesday": "الأربع",
+  "thursday": "الخميس",
+  "friday": "الجمعة",
+  "doctorName": "د.إسلام غنيم",
+  "doctorSpecialty": "أخصائي علاج طبيعي",
+  "doctorLocation": "القاهرة - مصر الجديدة",
+  "yearsExperience": "من الخبرة",
+  "patients": "مريض",
+  "reviews": "تقييم",
+  "years": "سنين",
+  "reviewBookingTitle": "مراجعة الحجز",
+  "reviewBookingSubtitle": "تأكد من التفاصيل قبل إكمال الحجز.",
+  "continueToPayment": "استمرار للدفع",
+  "bookingConfirmed": "تم تأكيد الحجز!",
+  "bookingConfirmedSubtitle": "سيتم التواصل معك قريباً لتأكيد الموعد.",
+  "done": "تم",
+  "date": "التاريخ",
+  "time": "الوقت",
+  "bookingNumber": "رقم الحجز",
+  "serviceCost": "تكلفة الخدمة",
+  "tax": "ضريبة",
+  "totalCost": "إجمالي التكلفة",
+  "electronicPayment": "الدفع الإلكتروني",
+  "paymentAtVisit": "الدفع عند الزيارة",
+  "bookVisit": "أحجز زيارتك",
+  "lastStepTitle": "خطوة أخيرة... علشان نطمن على ابنك",
+  "lastStepSubtitle": "اختار المريض وطريقة الدفع... وخلاص تكفل الحجز.",
+  "patient": "المريض",
+  "selectYorChildName": "اختر اسم طفلك",
+  "visitType": "نوع الزيارة",
+  "doctorNote": "ملاحظة للطبيب",
+  "writeNoteHint": "اكتب أي تعليق بسيط… (اختياري)",
+  "selectPaymentMethod": "اختر طريقة الدفع",
+  "payOnVisit": "الدفع عند الزيارة",
+  "bookingSuccessMessageOnVisit": "حجزك اتسجّل بنجاح. الدفع هيكون في العيادة وقت الزيارة.",
+  "payWithCard": "الدفع عن طريق الفيزا",
+  "bookVisit": "احجز زيارتك",
+  "priceValue": "250",
+  "currencyPound": "ج",
+  "years": "سنين",
+  "thousand": "ألف",
+  "seven": "7",
+  "fourPointFive": "4.5",
+  "threePointFive": "3.5",
+  "videos": "الفيديوهات",
+  "books": "الكتب",
+  "examination": "الفحص",
+  "viewAll": "عرض الكل",
+  "understandSPD": "افهم عليهم الحسي (SPD)",
+  "heroGrowthJourney": "رحلة نمو بطلك الصغير",
+  "healthCapsules": "كبسولات وعي صحة أفضل",
+  "searchVideos": "ابحث عن الفيديو اللي محتاجه...",
+  "noResults": "لا توجد نتائج مطابقة لبحثك",
+  "searchResults": "نتائج بحث ....",
+  "sensoryActivities": "أنشطة حسية مميلة في البيت",
+  "angerManagement": "احتواء نوبات الغضب الحسية",
+  "sensoryDisorder": "ما هو اضطراب الحركة الحسية؟",
+  "babyGrowth": "رحلة نمو طفلك الصغير",
+  "motorDevelopment": "تطور الحركة: من الحبو للمشي",
+  "firstWords": "أول كلمات: إزاي تشجع الكلام؟",
+  "sleepCapsule": "كبسولة النوم الصحي",
+  "nutritionCapsule": "كبسولة التغذية السليمة",
+  "touchAndSoundTitle": "الاستجابة للمس والصوت",
+  "touchAndSoundSubtitle": "(التحسس)",
+  "examinationTitle": "افحص إبنك",
+  "warningTitle": "تنبيه",
+  "responseRarely": "نادراً / أبداً",
+  "responseSometimes": "أحياناً",
+  "responseAlways": "دائماً",
+  "views": "مشاهدة",
+  "doctorSpecialty": "أخصائي علاج طبيعي",
+  "backButton": "رجوع",
+  "endToEndEncrypted": "مشفرة من البداية إلى النهاية.",
+  "encryptionSubtitle": "الرسائل مؤمنة بتشفير من البداية إلى النهاية.",
+  "viewProfile": "عرض الملف الشخصي",
+  "messageRead": "تمت قراءتها",
+  "doctorName": "د.إسلام غنيم",
+  "aiAssistantName": "مساعد ضنا الذكي",
+  "newChat": "محادثة جديدة",
+  "noChatsYet": "لا توجد محادثات حتى الآن.",
+  "tapToContinue": "اضغط للمتابعة",
+  "suggestedQuestionsHint": "دي شوية أسئلة مقترحة تساعدك تبدأ معايا...\nاختر اللي يناسبك وهنكمل سوا.",  "suggestedQ1": "كيف أقيم حالة ابني؟",
+  "suggestedQ2": "ما الخطوات للبدء في البيت؟",
+  "suggestedQ3": "نصائح الصحة العامة",
+  "suggestedQ4": "هل الشكلة دي بتأثر على تطور ابني؟",
+  "suggestedQ5": "طرق الوقاية والعلاج الأمن",
+  "askAboutChild": "أسألني عن حالة ابنك هنا...",
+  "doctorSpecialty": "أخصائي علاج طبيعي",
+  "doctorLocation": "القاهرة - مصر الجديدة",
+  "sampleMessage1": "دكتور، بعد لحضرتك عشان أطمن على ابني.",
+  "sampleMessage2": "شكرًا لمشاركتك التفاصيل. هل الحركات دي بتحصل لا إرادي؟",
+  "sampleMessage3": "أيوه دكتور، بتحصل من غير ما يقصد.",
+  "sampleMessage4": "واضح إنها قد تكون من نوع الحركات اللاإرادية البسيطة.",
+  "sampleMessage5": "تمام يا دكتور... هل الوضوع محتاج علاج فوراً؟",
+  "sampleMessage6": "في الغالب بنبدأ بتقييم بسيط.",
+  "sampleMessage7": "حاضر يا دكتور. هنتابع معاه.",
+  "sampleMessage8": "يفضل نعمل زيارة في أقرب وقت.",
+  "writeMessage": "اكتب رسالة للدكتور",
+  "endToEndEncrypted": "مشفرة من البداية إلى النهاية.",
+  "encryptionSubtitle": "الرسائل مؤمنة بتشفير من البداية إلى النهاية.",
+  "viewProfile": "عرض الملف الشخصي",
+  "messageRead": "تمت قراءتها",
+  "noDescription": "لا يوجد وصف",
+  "warningDescription": "هذا التقييم أداة إرشادية لمساعدتك، ولا يغني عن الاستشارة الطبية للتخصصية.",
+  "resultSpecialistTitle": "استشر متخصص للحصول على الدعم.",
+  "resultSpecialistDescription": "التقييم يظهر أن طفلك يواجه تحديات حسية تؤثر على يومه. هذا ليس تقصيراً في تربيتك، بل اختلاف في جهازه العصبي. التدخل البكر مهم، لذا ننصحك بحجز استشارة مع أخصائي تكامل حسي.",
+  "bookSpecialistConsultation": "احجزي استشارة متخصصة الآن",
+  "resultSensitivityTitle": "محتاج متابعة: طفلك لديه بعض الحساسية",
+  "resultSensitivityDescription": "إجاباتك توضح أن طفلك يتأثر ببعض المؤثرات الحسية (مثل الأصوات أو اللامس) أكثر من المعتاد، وهذا قد يكون سبب بعض انفعالاته. يحتاج منك للاحظة الأسباب التي تزعجه وتجنبها، مع تجربة بعض الأنشطة الحسية المهدئة في المنزل لمساعدته على التأقلم.",
+  "sensoryActivitiesPlan": "خطة أنشطة حسية للمنزل",
+  "sensorySubmitFailed": "مش قادرين نبعت إجاباتك دلوقتي. جرّب تاني بعد شوية.",
+  "resultNormalTitle": "نتيجة مطمئنة: طفلك يتطور بشكل طبيعي",
+  "resultNormalDescription": "بناءً على إجاباتك، استجابات طفلك للمؤثرات الحسية من حوله طبيعية ومناسبة لمرحلته العمرية. أي انزعاج أو نوبات غضب يمر بها حالياً هي جزء طبيعي جداً من نموه وتطوره العاطفي ولا تدعو للقلق. استمري في احتوائه وتوفير بيئة آمنة وداعمة له.",
+  "browseActivities": "تصفحي أنشطة لتنمية مهاراته",
+  "sectionHeaderTitle": "التقييم المبدئي للتحديات الحسية",
+  "sectionHeaderSubtitle": "أسئلة سريعة هتساعدنا نفهم طبيعة استجابة طفلك للمؤثرات اللي حواليه.",
+  "motorInteractionTitle": "التفاعل الحركي والبيئي",
+  "motorInteractionSubtitle": "(البحث عن الإحساس أو تجنبه)",
+  "behaviorAndTantrumsTitle": "السلوك ونوبات الغضب",
+  "behaviorAndTantrumsSubtitle": "(الانهيار الحسي)",
+  "question1": "هل يزعج طفلك بشدة من الأصوات العادية مثل الكنسة، الخلاط، أو صوت عالٍ مفاجئ ويقوم بتغطية أذنيه؟",
+  "question2": "هل يرفض ارتداء ملابس معينة بشدة بسبب ملمسها، أو يبكي ويتذرع جداً من \"تيكت\" الملابس أو خطوط الجوارب في الجوارب؟",
+  "question3": "هل يبالغ الطفل في رد فعله إذا لمسه أحد فجأة، أو يتجنب تجنباً شديداً التقبيل والتقفيل حتى من أقاربه؟",
+  "question4": "هل يتحرك بشكل مستمر ومفرط (كأنه يدور بدون محرك) ويجد صعوبة بالغة في الجلوس ثابتاً لفترة تناسب عمره؟",
+  "question5": "عندما يغضب طفلك، هل تستمر النوبة لفترة طويلة (أكثر من ١٥ دقيقة) ويصعب جداً تهدئته أو تشتيت انتباهه بأي طريقة؟",
+  "question6": "هل تلاحظين أن نوبات الغضب أو الانهيار تحدث غالباً بعد التواجد في مكان مزدحم أو صاخب (مثل السوبر ماركت، الحفلات، أو التجمعات العائلية)؟",
+  "showResult": "عرض النتيجة",
+  "noResultsDesc": "يرجى التأكد من الكلمة المكتوبة، أو تجربة البحث في الأقسام الرئيسية للمكتبة.",
+  "bookSensoryIntegrationTitle": "التكامل الحسي والطفل",
+  "bookSensoryIntegrationAuthor": "ليندسي بل جاكسون بسنك",
+  "bookSensoryIntegrationDesc": "كتاب متخصص في فهم الجهاز الحسي عند الأطفال وكيفية التعامل مع تحدياته اليومية بأسلوب علمي ومبسط.",
+  "bookSensoryChapter1Title": "ما هو التكامل الحسي؟",
+  "bookSensoryChapter1Body": "التكامل الحسي هو العملية التي يقوم بها الدماغ لتنظيم المعلومات الواردة من الحواس المختلفة. عندما يعمل هذا النظام بشكل صحيح، يستطيع الطفل الاستجابة للبيئة المحيطة به بطريقة مناسبة.",
+  "bookSensoryChapter2Title": "علامات صعوبات التكامل الحسي",
+  "bookSensoryChapter2Body": "هناك علامات كثيرة قد تدل على وجود صعوبات في التكامل الحسي، منها: رفض ارتداء ملابس معينة بسبب ملمسها، الحساسية الشديدة من الأصوات العالية.",
+  "bookAsyncChildTitle": "الطفل غير المتزامن",
+  "bookAsyncChildAuthor": "إيمي قوس",
+  "bookAsyncChildDesc": "دليل شامل للتعامل مع الأطفال الذين ينمون بإيقاع مختلف عن أقرانهم، ويحتاجون إلى فهم ودعم خاص.",
+  "bookAsyncChapter1Title": "من هو الطفل غير المتزامن؟",
+  "bookAsyncChapter1Body": "الطفل غير المتزامن هو الطفل الذي تتفاوت فيه مستويات النمو المختلفة، فقد يكون متقدماً جداً في جانب معين كالذكاء أو اللغة.",
+  "bookAsyncChapter2Title": "كيف تدعم طفلك غير المتزامن؟",
+  "bookAsyncChapter2Body": "الدعم الحقيقي يبدأ بالقبول والفهم. عليك أن تتقبل أن طفلك يسير بإيقاعه الخاص، وأن هذا ليس عيباً بل خاصية تحتاج إلى رعاية مختلفة.",
+  "bookSensorySignalsTitle": "اقبلي إشارات طفلك الحسية",
+  "bookSensorySignalsAuthor": "د. كارين سوركافي",
+  "bookSensorySignalsDesc": "كتاب عملي يساعدك على فهم وقراءة إشارات طفلك الحسية والتعامل معها بشكل صحيح وفعال.",
+  "bookSensorySignalsChapter1Title": "ما هي الإشارات الحسية؟",
+  "bookSensorySignalsChapter1Body": "الإشارات الحسية هي الطريقة التي يعبر بها جسم طفلك عن احتياجاته الحسية.",
+  "bookSensorySignalsChapter2Title": "كيف تستجيبين لإشارات طفلك؟",
+  "bookSensorySignalsChapter2Body": "الاستجابة الصحيحة للإشارات الحسية تعتمد على نوع الإشارة وسياقها.",
+  "bookGuide1Author": "إنجي قوس",
+  "bookGuide1Desc": "كتب مرجعي سريع يشرح إزاي ترخمي سلوكيات طفلك للفاهمة، وإزاي تتدخلي بهدوء لاحتواء نوبات الغضب.",
+  "bookGuide1Chapter1Title": "إلى كل أم وأب تشعر أن طفلها يصعب حله",
+  "bookGuide1Chapter1Body": "نحن نحرص على الحركة النيكية التي تبدأ من لحظة استيقاظ طفلك.",
+  "bookGuide1Chapter2Title": "تخيلوا لو أن كل لمسة هي ورقة صنفرة",
+  "bookGuide1Chapter2Body": "تخيلوا أنكم تمشون داخل مدينة مليئة بملايين الأصوات.",
+  "bookBodyLanguageTitle": "دليلك لفهم لغة جسد طفلك",
+  "bookBodyLanguageAuthor": "مريم العبدالله",
+  "bookBodyLanguageDesc": "يعرفك على إشارات جسدية تساعدك في تحسين التواصل مع طفلك وتفهم احتياجاته بشكل أفضل.",
+  "bookBodyLanguageChapter1Title": "مقدمة - لغة الجسد عند الأطفال",
+  "bookBodyLanguageChapter1Body": "الأطفال يتواصلون بطرق كثيرة قبل أن يتقنوا الكلام.",
+  "bookAngerTitle": "استراتيجيات للتعامل مع نوبات الغضب",
+  "bookAngerAuthor": "أحمد قاسم",
+  "bookAngerDesc": "مجموعة نصائح فعالة لفهم كيفية التعامل مع نوبات الغضب بطريقة إيجابية وفعالة.",
+  "bookAngerChapter1Title": "لماذا يغضب طفلك؟",
+  "bookAngerChapter1Body": "نوبات الغضب عند الأطفال ليست تمرداً أو عناداً في معظم الأحيان.",
+  "bookEmotionsTitle": "كيف تتعرف على مشاعر طفلك",
+  "bookEmotionsAuthor": "رنا سمير",
+  "bookEmotionsDesc": "دليل يساعدك على تحديد مشاعر طفلك وتوجيهه للتعبير عن نفسه بطريقة صحيحة.",
+  "bookEmotionsChapter1Title": "الذكاء العاطفي يبدأ من البيت",
+  "bookEmotionsChapter1Body": "الأطفال لا يولدون وهم يعرفون أسماء مشاعرهم، ولا يعرفون كيف يتعاملون معها."
+
+}

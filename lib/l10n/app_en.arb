@@ -1,0 +1,650 @@
+{
+  "dana": "Dana",
+  "myBabyHealth": "My Baby Health",
+  "babyHealthRecord": "Baby Health Record",
+  "skip": "Skip",
+  "next": "Next",
+  "relatedVideos": "Related Videos",
+  "noDescription": "No description",
+  "searchHint": "You can find the videos you need through search",
+  "doctorConsult": "Doctor Consult",
+  "guideBooks": "Complete Awareness Guide",
+  "page": "Page",
+
+
+
+
+
+
+
+
+  "@home": {
+  "description": "Bottom navigation home label"
+  },
+  "home": "Home",
+  "doctors": "Doctors",
+  "chat": "Chat",
+  "account": "Account",
+
+  "ageFormat": "{years} years and {months} months",
+  "@ageFormat": {
+  "placeholders": {
+    "years": {},
+    "months": {}
+    }
+  },
+  "weight": "Weight",
+  "kg": "Kg",
+  "headCircumference": "Head circumference",
+  "cm": "cm",
+  "height": "Height",
+
+  "quickAccess": "Quick Access",
+  "checkYourChild": "Check Your Child",
+  "booksAndArticles": "Books & Articles",
+  "vaccinations": "Vaccinations",
+
+  "alwaysBestForChildCare": "Always the best for your child’s care",
+  "viewAll": "View All",
+  "dr": "Dr.",
+  "bookNow": "Book Now",
+  "physiotherapist": "Physiotherapist",
+
+
+
+
+
+
+
+
+  "children": "Children",
+  "addNewChild": "Add New Child",
+
+  "addChildTitle": "Add your children and start your journey",
+  "add": "Add",
+  "yearSingular": "year",
+  "yearDual": "2 years",
+  "yearPlural": "{years} years",
+  "@yearPlural": {
+    "placeholders": {
+      "years": {}
+    }
+  },
+  "monthSingular": "month",
+  "monthDual": "2 months",
+  "monthPlural": "{months} months",
+  "@monthPlural": {
+    "placeholders": {
+      "months": {}
+    }
+  },
+  "ageFormatBoth": "{years} and {months}",
+  "@ageFormatBoth": {
+    "placeholders": {
+      "years": {},
+      "months": {}
+    }
+  },
+  "and": "and",
+
+  "growthTracking": "Growth tracking",
+  "danaChat": "Dana chat",
+
+  "settings": "Settings",
+  "accountSettingsTitle": "Account Settings",
+  "accountSettingsDesc": "Help us keep your data accurate and secure. Choose the action you want.",
+  "editProfile": "Edit Profile",
+  "changePassword": "Change Password",
+  "editProfileTitle": "Edit Profile Information",
+  "editProfileDesc": "Make sure your information is always accurate and up to date so we can better assist you.",
+  "editData": "Edit Data",
+  "changePasswordTitle": "Change Password",
+  "changePasswordDesc": "To keep your account secure, we need to verify that you own this number. Enter your phone number and we will send you a verification code to reset your password.",
+  "sendVerificationCode": "Send Verification Code",
+
+  "changeLanguage": "Change language",
+  "languageTitle": "App Language",
+  "languageDesc": "Choose the language that suits you and makes tracking your children's health easier.",
+  "arabicLanguage": "Arabic Language",
+  "englishLanguage": "English Language",
+  "arabic": "Arabic",
+  "english": "English",
+  "theme": "Theme",
+  "light": "Light",
+  "dark": "Dark",
+  "techSupport": "Technical support",
+  "logout": "Log out",
+
+  "themeTitle": "App Appearance",
+  "themeDesc": "Choose the appearance that suits your comfort and eye relaxation.",
+  "lightMode": "Light Mode (Day)",
+  "darkMode": "Dark Mode (Night)",
+  "systemMode": "System Default",
+
+  "logoutTitle": "Log Out",
+  "logoutDesc": "Your child's data is safely stored. To keep tracking vaccinations, it's better to stay logged in.",
+  "stayButton": "Stay Logged In",
+  "confirmLogoutButton": "Confirm Logout",
+
+
+
+
+
+
+
+
+
+
+  "appointments": "Appointments",
+  "appointmentsUpcoming": "Upcoming",
+
+  "changeAppointment": "Change appointment",
+  "needBetterTimeTitle": "Need a better time?",
+  "needBetterTimeDesc": "You can cancel your current appointment and choose another time that fits your schedule in one step, because your comfort and your child's comfort always matter to us.",
+  "confirmNewAppointment": "Confirm new appointment",
+  "selectAppointment": "Select appointment",
+  "availableTime": "Available time",
+  "reviewBookingTitle": "Review Booking",
+  "reviewBookingDesc": "Make sure all details are correct before confirming.",
+  "confirmBooking": "Confirm Booking",
+  "confirming": "Confirming...",
+  "visitTypeExam": "Consultation",
+  "visitTypeFollowUp": "Follow-up",
+
+  "cancelAppointment": "Cancel booking",
+
+  "appointmentsCompleted": "Completed",
+  
+  "rebook": "Rebook",
+  "followUpAppointmentTitle": "Set follow-up appointment",
+  "followUpAppointmentDesc": "Follow-up makes a big difference! Book your follow-up session now and track your child's progress with the same doctor. Step by step, we are with you.",
+  "bookFollowUpSession": "Book follow-up session",
+
+  "rateDoctor": "Rate doctor",
+  "rateDoctorTitle": "How was your consultation?",
+  "rateDoctorDesc": "We'd love your feedback on your experience with {doctorName}. Your rating helps us improve care.",
+  "@rateDoctorDesc": {
+    "placeholders": {
+      "doctorName": {
+        "type": "String",
+        "example": "Dr. Hager Mohamed"
+      }
+    }
+  },
+  "ratingNotAllowedTitle": "Rating not available yet",
+  "ratingNotAllowedDesc": "You can rate the doctor only after the appointment is completed.",
+  "ratingSubmitFailed": "We couldn’t submit your rating right now. Please try again later.",
+  "sendRating": "Submit rating",
+  "rate": "Rate",
+
+
+  "appointmentsCancelled": "Cancelled",
+  "changeAppointmentTitle": "Continue the journey?",
+  "changeAppointmentDesc": "Your child's journey continues. Choose a time that suits you to continue your progress.",
+  "selectNewAppointment": "Select new appointment",
+
+
+
+
+
+
+
+
+
+
+
+  "notificationsTitle": "Notifications",
+
+  "notificationsNew": "New",
+  "notificationsOld": "Earlier",
+  "notificationsEmpty": "You have no notifications yet.",
+  "doctorsListEmpty": "No doctors to show yet.",
+  "markAllAsRead": "Mark all as read",
+
+  "vaccineReminderTitle": "Vaccination appointment today!",
+  "vaccineReminderDesc": "Our little hero Noah has a vaccination appointment today (Pentavalent vaccine). This is a very important step for his immunity. Let us know, did he take it?",
+
+  "consultationReminderTitle": "Your consultation is soon", 
+  "consultationReminderDesc": "Reminder for your follow-up session with Dr. [Doctor Name] tomorrow at 4 PM. Prepare your questions, we are always with you.",
+
+  "supportSessionTitle": "Support session",
+  "supportSessionDesc": "We look forward to meeting you in tomorrow’s live support session to discuss your progress.",
+
+  "appointmentReminderTitle": "Appointment reminder",
+  "appointmentReminderDesc": "Don’t forget that follow-up appointments are very important. Be ready to share any updates or questions with Dr. [Doctor Name] tomorrow.",
+
+  "feedbackSurveyTitle": "Feedback survey",
+  "feedbackSurveyDesc": "After the session, we will send you a satisfaction survey. Your feedback helps us improve our service.",
+
+  "prepareDocumentsTitle": "Prepare documents",
+  "prepareDocumentsDesc": "Make sure to prepare all required documents for the follow-up session. This will help us provide the best support.",
+
+  "faqTitle": "FAQ",
+  "faqDesc": "For more information, you can check the frequently asked questions available on our website.",
+
+  "statusUpdatesTitle": "Status updates",
+  "statusUpdatesDesc": "We will send regular updates about your status via email. Please check your inbox.",
+
+  "supportProgramTitle": "Support program",
+  "supportProgramDesc": "We are pleased to announce the launch of a new support program aimed at improving quality of life.",
+
+  "personalConsultationTitle": "Personal consultation",
+  "personalConsultationDesc": "If you have any specific questions, you can book a personal consultation with Dr. [Doctor Name].",
+
+  "additionalResourcesTitle": "Additional resources",
+  "additionalResourcesDesc": "You can explore a collection of helpful additional resources on our website.",
+
+  "shareExperienceTitle": "Share your experience",
+  "shareExperienceDesc": "We invite you to share your experiences with others in the upcoming session.",
+
+  "confirmAttendanceTitle": "Confirm attendance",
+  "confirmAttendanceDesc": "Please confirm your attendance via the link sent to you.",
+
+  "billingReviewTitle": "Billing review",
+  "billingReviewDesc": "Make sure to review your service invoices and contact us if you have any questions.",
+
+  "availableServicesTitle": "Available services",
+  "availableServicesDesc": "Explore all the services we offer and how we can help you achieve your goals.",
+
+
+
+
+
+
+
+
+
+
+
+
+ "vaccineWarningDescription": "The vaccination schedule shown here matches the latest official mandatory schedules, helping you track your child's protection with full confidence and safety.",
+
+  "vaccineDelayed": "Delayed",
+  "vaccineTaken": "Dose Taken",
+  "vaccineNotTaken": "Not Yet",
+
+  "vaccineSuccessTitle": "A new protection step completed!",
+  "vaccineSuccessDesc": "Well done! Save the vaccination date to track upcoming doses accurately.",
+  "vaccineDateLabel": "Vaccination Date",
+  "vaccineDateHint": "Select date",
+  "saveToRecord": "Save to record",
+
+  "vaccineAlertTitle": "Visit the nearest health unit",
+  "vaccineAlertDesc": "No worries.. this vaccine is important for immunity. Please visit the nearest health unit as soon as possible.",
+  "cancel": "Cancel",
+
+
+  "vaccinePolioZeroDose": "Polio Vaccine (Zero Dose)",
+  "vaccineHepBZeroDose": "Hepatitis B Vaccine (Zero Dose)",
+  "vaccineBCG": "BCG Vaccine",
+  "vaccinePolioSabin": "Polio Vaccine (Sabin)",
+  "vaccinePolioSalk": "Polio Vaccine (Salk)",
+  "vaccinePentavalent": "Pentavalent Vaccine",
+  "vaccinePolioNineMonths": "Polio Vaccine (9 Months Dose)",
+
+  "vaccineDescPolioZeroDose": "Protection for the nervous system within the first 24 hours after birth.",
+  "vaccineDescHepBZeroDose": "Essential protection within the first 40 days, given as an injection.",
+  "vaccineDescBCG": "Essential protection against TB in early life.",
+  "vaccineDescPolioTwoMonths": "A booster dose at 2 months to strengthen immunity.",
+  "vaccineDescSalk": "Additional protection dose at 2 months injected in the thigh.",
+  "vaccineDescPentavalent": "One injection protecting against 5 diseases at 2 months.",
+  "vaccineDescNineMonths": "A booster dose at 9 months to maintain strong immunity.",
+
+
+
+
+
+
+
+
+
+
+"childWorldTitle": "Your Child’s World",
+"growthIndicator": "Growth Indicator",
+"growthStatusHealthy": "Healthy and growing normally",
+
+"currentMeasurements": "Current Measurements",
+"growthCurveTitle": "Growth Curve",
+"updateData": "Update Data",
+"updateChildMeasurements": "Update {childName}'s Measurements",
+"updateDataTitle": "How is your child doing today?",
+"updateDataDesc": "Make sure your data is always accurate and up to date so we can help you.",
+"exampleValue": "Example: 12",
+"saveNewMeasurements": "Save New Measurements",
+
+"growthCelebrationTitle": "Growing before our eyes!",
+"growthSavedMessage": "Great job! The child's new measurements have been safely saved. Regular tracking of weight and height is important for healthy growth.",
+  "growthDuplicateMonth": "Growth data for this calendar month is already saved. You can add a new measurement next month.",
+  "growthNotLoaded": "Child data is not ready. Please try again.",
+  "addChildMissingFields": "Enter the child's name and birth date.",
+  "addChildMinimumAge": "The child must be at least one month old.",
+  "parentPhotoNoProfile": "Profile is not loaded. Open the profile tab and try again.",
+
+"newSkills": "New Skills",
+"childGrowthTitle": "Growing and learning every day",
+"skillMotor": "Motor skills & activity",
+"skillSpeech": "Speech & expression",
+"skillCognition": "Understanding & cognition",
+"skillSocial": "Social & emotions",
+
+
+"developmentJourney": "Development Journey",
+"skill": "Skill",
+
+"skillMotorDesc": "His movement and physical development day by day",
+"motorBottomTitle": "Motor Development",
+"motorBottomDesc": "Tell us, what new things has your child started doing recently? (You can select more than one skill… every child develops at their own pace.)",
+"motorItem1": "Walks and runs steadily without falling.",
+"motorItem2": "Can go up and down the stairs on his own.",
+"motorItem3": "Can jump in place using both feet.",
+"motorItem4": "Holds a pencil and tries to scribble clearly.",
+
+"skillSpeechDesc": "His new words and how he communicates",
+"speechBottomTitle": "Speech & Expression",
+"speechBottomDesc": "Every new word is an achievement… share your child’s speech progress. (You can select more than one skill… every child develops at their own pace.)",
+"speechItem1": "Can say his first name and age when asked.",
+"speechItem2": "Can form simple sentences of 3 to 4 words.",
+"speechItem3": "Strangers can understand most of what he says.",
+"speechItem4": "Started asking many questions like \"Why?\" and \"What’s this?\".",
+
+"skillCognitionDesc": "His understanding and how he explores the world around him",
+"cognitionBottomTitle": "Exploring the World",
+"cognitionBottomDesc": "Their mind is growing and understanding more… what skills have you noticed recently? (You can select more than one skill… every child develops at their own pace.)",
+"cognitionItem1": "Can match shapes and colors together.",
+"cognitionItem2": "Can complete a simple puzzle (3–4 pieces).",
+"cognitionItem3": "Remembers where his toys and favorite items are at home.",
+"cognitionItem4": "Understands simple instructions like \"Bring the ball\".",
+
+"skillSocialDesc": "His interactions and emotional development",
+"socialBottomTitle": "Emotions & Social Skills",
+"socialBottomDesc": "Their personality is growing… what changes have you noticed in their interactions? (You can select more than one skill… every child develops at their own pace.)",
+"socialItem1": "Enjoys playing with other children (not just alone).",
+"socialItem2": "Understands the idea of taking turns.",
+"socialItem3": "Shows empathy when another child is upset.",
+"socialItem4": "Tries to be independent (like eating on his own).",
+
+"saveProgress": "Save progress",
+"growthConfirmTitle": "A new step in his journey!",
+"growthConfirmDesc": "Well done… we’ve successfully saved his new skills. Every day he grows and learns something new, and we’re proud to follow this journey with you.",
+
+
+"nextVaccineTitle": "Next vaccine",
+"mmrVaccineName": "MMR vaccine",
+"vaccineTimeInfo": "in {days} days ({date})",
+"fullVaccinationRecord": "Full vaccination record",
+
+
+
+
+
+
+
+
+
+
+  "responseRarely": "Rarely / Never",
+  "responseSometimes": "Sometimes",
+  "responseAlways": "Always",
+  "views": "views",
+  "doctorSpecialty": "Physical Therapy Specialist",
+  "backButton": "Back",
+  "writeMessage": "Write a message to the doctor",
+  "endToEndEncrypted": "End-to-end encrypted.",
+  "encryptionSubtitle": "Messages are secured with end-to-end encryption.",
+  "viewProfile": "View Profile",
+  "messageRead": "Read at",
+  "noDescription": "No description available",
+  "warningTitle": "Notice",
+  "endToEndEncrypted": "End-to-end encrypted.",
+  "encryptionSubtitle": "Messages are secured with end-to-end encryption.",
+  "viewProfile": "View Profile",
+  "messageRead": "Read at",
+  "aiAssistantName": "Dana AI Assistant",
+  "newChat": "New chat",
+  "noChatsYet": "No chats yet.",
+  "tapToContinue": "Tap to continue",
+  "suggestedQuestionsHint": "Here are some suggested questions to help you get started...\nPick what suits you and we'll go from there.",  "suggestedQ1": "How do I assess my child's condition?",
+  "suggestedQ2": "What are the steps to start at home?",
+  "suggestedQ3": "General health tips",
+  "suggestedQ4": "Does this problem affect my child's development?",
+  "suggestedQ5": "Prevention and safe treatment methods",
+  "askAboutChild": "Ask me about your child's condition here...",
+  "doctorName": "Dr. Islam Ghanem",
+  "doctorSpecialty": "Physical Therapy Specialist",
+  "doctorLocation": "Cairo - Heliopolis",
+  "sampleMessage1": "Doctor, I came to check on my son.",
+  "sampleMessage2": "Thank you for sharing. Are these movements involuntary?",
+  "sampleMessage3": "Yes doctor, they happen without him meaning to.",
+  "sampleMessage4": "It seems like simple involuntary movements.",
+  "sampleMessage5": "Okay doctor... does this need immediate treatment?",
+  "sampleMessage6": "We usually start with a simple assessment.",
+  "sampleMessage7": "Sure doctor. We will monitor and record all observations.",
+  "sampleMessage8": "It is best to schedule a visit soon.",
+  "warningDescription": "This assessment is a guidance tool to help you and does not replace specialized medical consultation.",
+  "resultSpecialistTitle": "Consult a Specialist for Support.",
+  "resultSpecialistDescription": "The assessment shows that your child faces sensory challenges affecting their daily life. This is not a failure in your parenting, but a difference in their nervous system. Early intervention is important, so we recommend booking a consultation with a sensory integration specialist.",
+  "bookSpecialistConsultation": "Book a Specialist Consultation Now",
+  "resultNormalTitle": "Reassuring Result: Your Child is Developing Normally",
+  "resultNormalDescription": "Based on your answers, your child's responses to sensory stimuli are normal and appropriate for their age. Any discomfort or tantrums they experience now are a very natural part of their emotional growth. Keep providing a safe and supportive environment.",
+  "browseActivities": "Browse Activities to Develop Their Skills",
+  "readBook": "Read Book",
+  "resultSensitivityTitle": "Needs Attention: Your Child Has Some Sensitivity",
+  "resultSensitivityDescription": "Your answers show that your child is more affected by certain sensory stimuli (such as sounds or touch) than usual, which may be causing some of their reactions. They need you to observe what bothers them and avoid it, while trying some calming sensory activities at home to help them adapt.",
+  "sensoryActivitiesPlan": "Sensory Activities Plan for Home",
+  "sensorySubmitFailed": "We couldn’t submit your answers right now. Please try again later.",
+
+  "skillsNotAvailableTitle": "Skills are not available yet",
+  "skillsNotAvailableDesc": "We’ll show your child’s skills and progress as soon as they are available on the server.",
+  "sectionHeaderTitle": "Initial Assessment of Sensory Challenges",
+  "sectionHeaderSubtitle": "Quick questions to help us understand how your child responds to surrounding stimuli.",
+  "examinationTitle": "Examine Your Child",
+  "touchAndSoundTitle": "Response to Touch and Sound",
+  "touchAndSoundSubtitle": "(Sensitivity)",
+  "motorInteractionTitle": "Motor and Environmental Interaction",
+  "motorInteractionSubtitle": "(Seeking or Avoiding Sensation)",
+  "behaviorAndTantrumsTitle": "Behavior and Tantrums",
+  "behaviorAndTantrumsSubtitle": "(Sensory Breakdown)",
+  "question1": "Does your child get severely bothered by normal sounds like a vacuum cleaner, blender, or a sudden loud noise, covering their ears?",
+  "question2": "Does your child strongly refuse to wear certain clothes due to their texture, or cry excessively about clothing tags or sock seams?",
+  "question3": "Does your child overreact when suddenly touched, or strongly avoid hugging and cuddling even from close relatives?",
+  "question4": "Does your child move constantly and excessively (as if motor-driven) and have great difficulty sitting still for a period appropriate for their age?",
+  "question5": "When your child gets angry, does the tantrum last for a long time (more than 15 minutes) and is it very difficult to calm them down or distract them?",
+  "question6": "Do you notice that tantrums or meltdowns often happen after being in a crowded or noisy place (like supermarkets, parties, or family gatherings)?",
+  "showResult": "Show Result",
+  "publishedYear": "Published in",
+  "featuredBooks": "Our Picks for Your Journey",
+  "childDoctorOptions": "Choose Your Child's Doctor",
+  "smartAssistant": "Smart Assistant",
+  "smartSymptomCheck": "Step-by-step Symptom Check",
+  "onboarding1Title": "All Your Kids' Health in One Place!",
+  "onboarding1Desc": "Forget the paperwork. Keep track of all your child's health details safely from the first vaccinations to growth tracking and development updates, all from your phone.",
+  "onboarding2Title": "Doctor Consultation Made Easier & Faster!",
+  "onboarding2Desc": "Select a specialist for your child anytime. Book appointments online or at the clinic and consult the doctor securely from your home.",
+  "onboarding3Title": "Your Personal Assistant, Step by Step",
+  "onboarding3Desc": "Have a smart assistant that helps you track your child's symptoms, gives guidance, and provides tips in real-time.",
+  "personalInfoTitle": "Let's Get to Know You",
+  "personalInfoDesc": "Fill in your basic information so we can personalize your experience and help you easily track your child's health.",
+  "fullNameLabel": "Full Name",
+  "fullNameHint": "Enter your full name",
+  "governorateLabel": "Governorate",
+  "governorateHint": "Select your governorate",
+  "addressLabel": "Address",
+  "addressHint": "Enter your full address",
+  "accountLabel": "Email",
+  "accountHint": "Enter your email",
+  "continueButton": "Continue",
+  "registerWith": "Register the Way You Prefer",
+  "alreadyHaveAccount": "Already have an account?",
+  "signIn": "Sign In",
+  "addChildTitle": "Add Your Children and Start Your Journey with Them",
+  "addChildDesc": "Start now and keep everything about your child always close to you.",
+  "childNameLabel": "Child name",
+  "childNameHint": "Enter your child's name",
+  "birthDateLabel": "Date of Birth",
+  "birthDateHint": "Select the date of birth",
+  "childGenderLabel": "Child Gender",
+  "childGenderBoy": "Boy",
+  "childGenderGirl": "Girl",
+  "bloodTypeLabel": "Blood Type",
+  "bloodTypeHint": "Select the blood type",
+  "addAnotherChild": "Want to add another child?",
+  "nextButton": "Next",
+  "childGender": "Child Gender",
+  "boy": "Boy",
+  "girl": "Girl",
+  "howCanWeReachYou": "How can we reach you?",
+  "howCanWeReachYouHint": "Enter your phone number and email so we can send you updates and important notifications as soon as possible.",
+  "phoneNumber": "Phone Number",
+  "countrySearchHint": "Search for country",
+  "email": "Email",
+  "enterEmail": "Enter your email",
+  "getVerificationCode": "Get Verification Code",
+  "verificationTitle": "Enter the verification code sent to you",
+  "verificationDescLine1": "We sent you a 6-digit code to your number +{phoneNumber}",
+  "@verificationDescLine1": {
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "verificationDescLine2": "Enter the code here to confirm your number is correct.",
+  "resendCode": "Resend Code",
+  "timer": "00:20",
+  "choosePasswordTitle": "Choose a password to protect your account",
+  "choosePasswordDesc": "Make it easy for you and hard for others, so you can log in safely anytime.",
+  "passwordLabel": "Password",
+  "passwordHint": "Enter a strong password",
+  "confirmPasswordLabel": "Confirm Password",
+  "confirmPasswordHint": "Re-enter your password",
+  "passwordsMismatch": "Passwords do not match",
+  "createAccountButton": "Create Account",
+  "welcomeBackTitle": "Welcome Back!",
+  "loginDesc": "Enter your details to continue managing your baby's health easily and securely.",
+  "phoneNumberLabel": "Phone Number",
+  "phoneNumberHint": "Enter your phone number",
+  "forgotPassword": "Forgot Password?",
+  "loginButton": "Login",
+  "loginWith": "Login with email",
+  "noAccount": "New here?",
+  "createAccount": "Create Account",
+  "forgotPasswordTitle": "Forgot Password?",
+  "forgotPasswordDesc": "Enter your phone number so we can verify that the account is yours, then you can choose a new password.",
+  "newPasswordTitle": "Choose a new password",
+  "newPasswordDesc": "Make it easy for you and hard for others, but strong enough to keep your account safe.",
+  "newPasswordLabel": "New Password",
+  "newPasswordHint": "Enter a strong password",
+  "confirmPasswordButton": "Confirm Password",
+  "choosDate": "Choose Date",
+  "availableTime": "Available Time",
+  "saturday": "Saturday",
+  "sunday": "Sunday",
+  "monday": "Monday",
+  "tuesday": "Tuesday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "doctorName": "Dr. Islam Ghoneim",
+  "doctorSpecialty": "Physical Therapy Specialist",
+  "doctorLocation": "Cairo - Heliopolis",
+  "yearsExperience": "Experience",
+  "patients": "Patients",
+  "reviews": "Reviews",
+  "years": "Years",
+  "reviewBookingTitle": "Review Booking",
+  "reviewBookingSubtitle": "Check the details before completing the booking.",
+  "continueToPayment": "Continue to Payment",
+  "bookingConfirmed": "Booking Confirmed!",
+  "bookingConfirmedSubtitle": "We will contact you soon to confirm the appointment.",
+  "done": "Done",
+  "date": "Date",
+  "time": "Time",
+  "bookingNumber": "Booking Number",
+  "serviceCost": "Service Cost",
+  "tax": "Tax",
+  "totalCost": "Total Cost",
+  "electronicPayment": "Electronic Payment",
+  "paymentAtVisit": "Pay at Visit",
+  "bookVisit": "Book Your Visit",
+  "lastStepTitle": "Last Step... To Make Sure Your Child is Safe",
+  "lastStepSubtitle": "Choose the patient and payment method... and confirm the booking.",
+  "patient": "Patient",
+  "selectYorChildName": "Select your child name",
+  "visitType": "Visit type",
+  "doctorNote": "Note to doctor",
+  "writeNoteHint": "Write any simple comment… (optional)",
+  "selectPaymentMethod": "Choose Payment Method",
+  "payOnVisit": "Pay on visit",
+  "bookingSuccessMessageOnVisit": "Your booking was successful. Payment will be made at the clinic during your visit.",
+  "payWithCard": "Pay with card",
+  "bookVisit": "Book your visit",
+  "priceValue": "250",
+  "currencyPound": "EGP",
+  "years": "Years",
+  "thousand": "K",
+  "seven": "7",
+  "fourPointFive": "4.5",
+  "threePointFive": "3.5",
+  "videos": "Videos",
+  "books": "Books",
+  "examination": "Examination",
+  "viewAll": "View All",
+  "searchResults": "Search Results ....",
+  "heroGrowthJourney": "Your Little Hero's Growth Journey",
+  "searchVideos": "Search for the video you need...",
+  "noResults": "No results match your search",
+  "understandSPD": "Understand His Sensory World (SPD)",
+  "sensoryActivities": "Fun Sensory Activities at Home",
+  "angerManagement": "Managing Sensory Anger Episodes",
+  "sensoryDisorder": "What is Sensory Processing Disorder?",
+  "babyGrowth": "Your Baby's Growth Journey",
+  "motorDevelopment": "Motor Development: From Crawling to Walking",
+  "firstWords": "First Words: How to Encourage Speech?",
+  "healthCapsules": "Better Awareness Capsules",
+  "sleepCapsule": "Healthy Sleep Capsule",
+  "nutritionCapsule": "Healthy Nutrition Capsule",
+  "noResultsDesc": "Please check the spelling, or try searching in the main library sections.",
+  "bookSensoryIntegrationTitle": "Sensory Integration and the Child",
+  "bookSensoryIntegrationAuthor": "Lindsay Biel & Nancy Peske",
+  "bookSensoryIntegrationDesc": "A specialized book on understanding children's sensory systems and how to handle daily challenges in a scientific and simplified way.",
+  "bookSensoryChapter1Title": "What is Sensory Integration?",
+  "bookSensoryChapter1Body": "Sensory integration is the process by which the brain organizes information from different senses. When this system works properly, the child can respond to the environment appropriately.",
+  "bookSensoryChapter2Title": "Signs of Sensory Integration Difficulties",
+  "bookSensoryChapter2Body": "There are many signs that may indicate sensory integration difficulties, including: refusing to wear certain clothes due to texture, extreme sensitivity to loud sounds.",
+  "bookAsyncChildTitle": "The Out-of-Sync Child",
+  "bookAsyncChildAuthor": "Carol Stock Kranowitz",
+  "bookAsyncChildDesc": "A comprehensive guide for dealing with children who develop at a different pace than their peers and need special understanding and support.",
+  "bookAsyncChapter1Title": "Who is the Out-of-Sync Child?",
+  "bookAsyncChapter1Body": "The out-of-sync child is one whose developmental levels vary significantly, being very advanced in one area like intelligence or language, while being at an earlier stage emotionally or socially.",
+  "bookAsyncChapter2Title": "How to Support Your Out-of-Sync Child?",
+  "bookAsyncChapter2Body": "Real support starts with acceptance and understanding. You must accept that your child moves at their own pace, and that this is not a flaw but a characteristic that needs different care.",
+  "bookSensorySignalsTitle": "Accept Your Child's Sensory Signals",
+  "bookSensorySignalsAuthor": "Dr. Karen Sourkav",
+  "bookSensorySignalsDesc": "A practical book that helps you understand and read your child's sensory signals and deal with them correctly and effectively.",
+  "bookSensorySignalsChapter1Title": "What are Sensory Signals?",
+  "bookSensorySignalsChapter1Body": "Sensory signals are the way your child's body expresses its sensory needs.",
+  "bookSensorySignalsChapter2Title": "How to Respond to Your Child's Signals?",
+  "bookSensorySignalsChapter2Body": "The correct response to sensory signals depends on the type of signal and its context.",
+  "bookGuide1Author": "Anji Qaws",
+  "bookGuide1Desc": "A quick reference book explaining how to understand your child's behaviors and how to intervene calmly to contain tantrums.",
+  "bookGuide1Chapter1Title": "To Every Parent Who Feels Their Child is Hard to Handle",
+  "bookGuide1Chapter1Body": "We focus on the dynamic movement that begins from the moment your child wakes up.",
+  "bookGuide1Chapter2Title": "Imagine if Every Touch was Sandpaper",
+  "bookGuide1Chapter2Body": "Imagine walking inside a city filled with millions of sounds.",
+  "bookBodyLanguageTitle": "Your Guide to Understanding Your Child's Body Language",
+  "bookBodyLanguageAuthor": "Mariam Al-Abdullah",
+  "bookBodyLanguageDesc": "Introduces you to physical signals that help improve communication with your child and better understand their needs.",
+  "bookBodyLanguageChapter1Title": "Introduction - Body Language in Children",
+  "bookBodyLanguageChapter1Body": "Children communicate in many ways before they master speech.",
+  "bookAngerTitle": "Strategies for Dealing with Tantrums",
+  "bookAngerAuthor": "Ahmed Qasim",
+  "bookAngerDesc": "A collection of effective tips for understanding how to deal with tantrums in a positive and effective way.",
+  "bookAngerChapter1Title": "Why Does Your Child Get Angry?",
+  "bookAngerChapter1Body": "Tantrums in children are usually not rebellion or stubbornness, but a clear message: I cannot handle what is happening now.",
+  "bookEmotionsTitle": "How to Identify Your Child's Emotions",
+  "bookEmotionsAuthor": "Rana Samir",
+  "bookEmotionsDesc": "A guide that helps you identify your child's emotions and guide them to express themselves in a healthy way.",
+  "bookEmotionsChapter1Title": "Emotional Intelligence Starts at Home",
+  "bookEmotionsChapter1Body": "Children are not born knowing the names of their feelings, nor do they know how to deal with them. This is a skill that is taught and acquired."
+
+}
