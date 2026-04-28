@@ -457,9 +457,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       // (even though older contracts didn't). We try the no-param request first,
       // then retry with common callback param names when we get `invalid input`.
 
-      Future<Response<dynamic>> _call({Map<String, dynamic>? queryParameters}) {
+      Future<Response<dynamic>> _call(
+        String path, {
+        Map<String, dynamic>? queryParameters,
+      }) {
         return dio.get(
-          ApiEndpoint.googleSignIn,
+          path,
           queryParameters: queryParameters,
           options: Options(
             followRedirects: false,
@@ -472,7 +475,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final expectedCallback =
           '${dio.options.baseUrl}${ApiEndpoint.googleCallback}';
 
-      Response<dynamic> response = await _call();
+      Response<dynamic> response = await _call(ApiEndpoint.googleSignIn);
 
       final decoded0 = ApiResponse.decode(response.data);
       final msg0 = ApiError.messageFromDecoded(
@@ -493,7 +496,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         ];
 
         for (final name in paramNames) {
-          response = await _call(queryParameters: {name: expectedCallback});
+          response = await _call(
+            ApiEndpoint.googleSignIn,
+            queryParameters: {name: expectedCallback},
+          );
           final decoded = ApiResponse.decode(response.data);
           final msg = ApiError.messageFromDecoded(
             decoded,
@@ -505,6 +511,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         }
       }
 
+      // Backend workaround:
+      // Some deployments don't support GET /v1/parent/google and instead start the
+      // flow from the callback route itself.
+      final decoded1 = ApiResponse.decode(response.data);
+      final msg1 = ApiError.messageFromDecoded(decoded1, fallback: '').toLowerCase();
+      if (response.statusCode == 400 && msg1.contains('invalid input')) {
+        AppLogger.warn(
+          'GoogleOAuth: /v1/parent/google still invalid input. Falling back to /v1/parent/google/callback start.',
+        );
+        response = await _call(ApiEndpoint.googleCallback);
+      }
+
       final location = response.headers.value('location');
       if (location != null && location.trim().isNotEmpty) {
         // Log redirect_uri so backend/Google Console can be aligned byte-for-byte.
@@ -514,7 +532,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             ? '${location.substring(0, 300)}…'
             : location;
         AppLogger.info(
-          'GoogleOAuth: /v1/parent/google status=${response.statusCode} '
+          'GoogleOAuth: start status=${response.statusCode} '
           'location=$shortLocation',
         );
         AppLogger.info('GoogleOAuth: expected_callback=$expectedCallback');
