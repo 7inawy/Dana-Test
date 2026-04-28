@@ -1,7 +1,9 @@
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_raduis.dart';
 import 'package:dana/core/utils/app_text_style.dart';
+import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/widgets/home_indicator.dart';
+import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +13,7 @@ import '../../data/models/skill_api_models.dart';
 import '../cubit/skills_cubit.dart';
 import '../cubit/skills_state.dart';
 
-class SkillChecklistBottomSheet extends StatelessWidget {
+class SkillChecklistBottomSheet extends StatefulWidget {
   final String skillId;
   final String title;
   final String description;
@@ -24,6 +26,19 @@ class SkillChecklistBottomSheet extends StatelessWidget {
   });
 
   @override
+  State<SkillChecklistBottomSheet> createState() =>
+      _SkillChecklistBottomSheetState();
+}
+
+class _SkillChecklistBottomSheetState extends State<SkillChecklistBottomSheet> {
+  bool _hasLocalChanges = false;
+
+  void _markChanged() {
+    if (_hasLocalChanges) return;
+    setState(() => _hasLocalChanges = true);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<AppThemeProvider>();
     final isDark =
@@ -33,72 +48,92 @@ class SkillChecklistBottomSheet extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      child: Padding(
-        padding: EdgeInsetsDirectional.only(
-          end: 24.w,
-          start: 24.w,
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: BlocBuilder<SkillsCubit, SkillsState>(
-          builder: (context, state) {
-            final items = state is ChecklistLoaded
-                ? state.items
-                : <SkillChecklistItemApiModel>[];
-            final loading = state is ChecklistLoading || state is SkillsLoading;
+      child: BlocBuilder<SkillsCubit, SkillsState>(
+        builder: (context, state) {
+          final items = state is ChecklistLoaded
+              ? state.items
+              : <SkillChecklistItemApiModel>[];
+          final loading = state is ChecklistLoading || state is SkillsLoading;
 
-            return SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Center(child: HomeIndicator()),
-                  SizedBox(height: 12.h),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: AppTextStyle.medium20TextDisplay(context),
-                        ),
-                      ),
-                      _CloseButton(isDark: isDark),
-                    ],
-                  ),
-                  if (description.trim().isNotEmpty) ...[
-                    SizedBox(height: 8.h),
-                    Text(
-                      description,
-                      style: AppTextStyle.regular16TextBody(context),
-                    ),
-                  ],
-                  SizedBox(height: 12.h),
-                  if (loading) ...[
-                    SizedBox(height: 12.h),
-                    const Center(child: CircularProgressIndicator()),
-                    SizedBox(height: 12.h),
-                  ] else if (items.isEmpty) ...[
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
+          final isButtonEnabled = _hasLocalChanges && !loading;
+          final disabledColor = isDark
+              ? AppColors.button_primary_default_dark.withValues(alpha: 0.35)
+              : AppColors.button_primary_default_light.withValues(alpha: 0.35);
+          final disabledBorder = isDark
+              ? AppColors.border_button_primary_dark.withValues(alpha: 0.35)
+              : AppColors.border_button_primary_light.withValues(alpha: 0.35);
+
+          return Padding(
+            padding: EdgeInsetsDirectional.only(
+              end: 24.w,
+              start: 24.w,
+              bottom: 16.h + MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Center(child: HomeIndicator()),
+                SizedBox(height: 12.h),
+                Row(
+                  children: [
+                    Expanded(
                       child: Text(
-                        '—',
-                        style: AppTextStyle.regular16TextBody(context),
+                        widget.title,
+                        textAlign: TextAlign.center,
+                        style: AppTextStyle.medium20TextDisplay(context),
                       ),
                     ),
-                  ] else ...[
-                    for (final item in items)
-                      _ChecklistRow(
-                        item: item,
-                        isDark: isDark,
-                        skillId: skillId,
-                      ),
+                    _CloseButton(isDark: isDark),
                   ],
-                  SizedBox(height: 20.h),
+                ),
+                if (widget.description.trim().isNotEmpty) ...[
+                  SizedBox(height: 8.h),
+                  Text(
+                    widget.description,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.medium12TextBody(context),
+                  ),
                 ],
-              ),
-            );
-          },
-        ),
+                SizedBox(height: 16.h),
+
+                Flexible(
+                  child: loading
+                      ? const Center(child: CircularProgressIndicator())
+                      : items.isEmpty
+                      ? Center(
+                          child: Text(
+                            '—',
+                            style: AppTextStyle.regular16TextBody(context),
+                          ),
+                        )
+                      : ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: items.length,
+                          separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                          itemBuilder: (context, i) => _ChecklistRow(
+                            item: items[i],
+                            isDark: isDark,
+                            skillId: widget.skillId,
+                            onChanged: _markChanged,
+                          ),
+                        ),
+                ),
+
+                SizedBox(height: 16.h),
+                CustomButton(
+                  text: context.l10n.saveProgress,
+                  onTap: isButtonEnabled
+                      ? () => Navigator.of(context).maybePop()
+                      : () {},
+                  color: isButtonEnabled ? null : disabledColor,
+                  borderColor: isButtonEnabled ? null : disabledBorder,
+                  textStyle: AppTextStyle.semibold16TextButton(context),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -142,17 +177,20 @@ class _ChecklistRow extends StatelessWidget {
   final SkillChecklistItemApiModel item;
   final bool isDark;
   final String skillId;
+  final VoidCallback? onChanged;
 
   const _ChecklistRow({
     required this.item,
     required this.isDark,
     required this.skillId,
+    this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        onChanged?.call();
         context.read<SkillsCubit>().toggle(
           skillId: skillId,
           itemId: item.id,
@@ -161,7 +199,7 @@ class _ChecklistRow extends StatelessWidget {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        margin: EdgeInsets.symmetric(vertical: 4.h),
+        margin: EdgeInsets.zero,
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: item.checked
@@ -184,25 +222,26 @@ class _ChecklistRow extends StatelessWidget {
         ),
         child: Row(
           children: [
+            Expanded(
+              child: Text(
+                item.title,
+                style: AppTextStyle.medium16TextBody(context),
+              ),
+            ),
+            SizedBox(width: 8.w),
             SizedBox(
               width: 20.w,
               height: 20.w,
               child: Checkbox(
                 value: item.checked,
                 onChanged: (val) {
+                  onChanged?.call();
                   context.read<SkillsCubit>().toggle(
                     skillId: skillId,
                     itemId: item.id,
                     checked: val ?? false,
                   );
                 },
-              ),
-            ),
-            SizedBox(width: 8.w),
-            Expanded(
-              child: Text(
-                item.title,
-                style: AppTextStyle.medium16TextBody(context),
               ),
             ),
           ],
