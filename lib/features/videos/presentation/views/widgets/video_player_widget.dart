@@ -9,6 +9,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_raduis.dart';
 import '../../../data/model/video_Model.dart';
+import '../../utils/video_playback_coordinator.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   final VideoModel video;
@@ -30,6 +31,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   String? _initError;
   Duration _currentPosition = Duration.zero;
   Duration _totalDuration = Duration.zero;
+  bool _wasPlaying = false;
 
   String get _url => (widget.video.videoUrl ?? '').trim();
 
@@ -150,6 +152,9 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         _youtubeController!.addListener(() {
           if (!mounted) return;
           final c = _youtubeController!;
+          if (c.value.isPlaying) {
+            VideoPlaybackCoordinator.setActiveYoutube(c);
+          }
           setState(() {
             _currentPosition = c.value.position;
             _totalDuration = c.metadata.duration;
@@ -172,6 +177,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         final controller = VideoPlayerController.networkUrl(uri);
         _videoController = controller;
         await controller.initialize();
+        controller.addListener(_handleNativeVideoPlaybackChange);
         _chewieController = ChewieController(
           videoPlayerController: controller,
           autoPlay: false,
@@ -236,6 +242,15 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   void _disposePlayers() {
+    final vc = _videoController;
+    if (vc != null) {
+      vc.removeListener(_handleNativeVideoPlaybackChange);
+      VideoPlaybackCoordinator.clearVideo(vc);
+    }
+    final yc = _youtubeController;
+    if (yc != null) {
+      VideoPlaybackCoordinator.clearYoutube(yc);
+    }
     _chewieController?.dispose();
     _chewieController = null;
     _videoController?.dispose();
@@ -243,6 +258,21 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     _youtubeController?.dispose();
     _youtubeController = null;
     _webViewController = null;
+  }
+
+  void _handleNativeVideoPlaybackChange() {
+    final c = _videoController;
+    if (c == null) return;
+
+    final isPlaying = c.value.isPlaying;
+    if (isPlaying && !_wasPlaying) {
+      _wasPlaying = true;
+      VideoPlaybackCoordinator.setActiveVideo(c);
+      return;
+    }
+    if (!isPlaying && _wasPlaying) {
+      _wasPlaying = false;
+    }
   }
 
   String _formatDuration(Duration duration) {
@@ -358,6 +388,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                             if (c.value.isPlaying) {
                               c.pause();
                             } else {
+                              VideoPlaybackCoordinator.setActiveYoutube(c);
                               c.play();
                             }
                             setState(() {});
