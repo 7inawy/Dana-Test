@@ -17,11 +17,18 @@ class GoogleOAuthDeepLinkHandler {
   static StreamSubscription<Uri>? _sub;
   static bool _started = false;
 
-  static bool _isGoogleCallback(Uri uri) {
+  static bool _isGoogleHttpsCallback(Uri uri) {
     // Backend callback is a normal HTTPS URL:
     // https://rhostdev.qzz.io/api/v1/parent/google/callback?...oauth params...
-    return uri.path == ApiEndpoint.googleCallback ||
-        uri.path.endsWith(ApiEndpoint.googleCallback);
+    return uri.scheme == 'https' &&
+        (uri.path == ApiEndpoint.googleCallback ||
+            uri.path.endsWith(ApiEndpoint.googleCallback));
+  }
+
+  static bool _isDanaSchemeCallback(Uri uri) {
+    // Backend may redirect to:
+    // dana://oauth?tempKey=...  OR dana://oauth?token=...
+    return uri.scheme == 'dana' && uri.host == 'oauth';
   }
 
   static String? _extractTempKey(dynamic decoded) {
@@ -65,9 +72,36 @@ class GoogleOAuthDeepLinkHandler {
     final appLinks = AppLinks();
 
     Future<void> handle(Uri uri) async {
-      if (!_isGoogleCallback(uri)) return;
+      if (!(_isGoogleHttpsCallback(uri) || _isDanaSchemeCallback(uri))) return;
 
-      AppLogger.info('GoogleOAuth: received callback deep link: $uri');
+      AppLogger.info('GoogleOAuth: received deep link: $uri');
+
+      // 1) Fast path: dana://oauth?token=... or ?tempKey=...
+      if (_isDanaSchemeCallback(uri)) {
+        final token = uri.queryParameters['token']?.trim();
+        if (token != null && token.isNotEmpty) {
+          await sl<AuthSession>().setToken(token);
+          AppNavigator.key.currentState?.pushNamedAndRemoveUntil(
+            AppRoutes.home,
+            (r) => false,
+          );
+          return;
+        }
+
+        final tempKey = uri.queryParameters['tempKey']?.trim();
+        if (tempKey != null && tempKey.isNotEmpty) {
+          AppNavigator.key.currentState?.pushNamed(
+            AppRoutes.googleComplete,
+            arguments: tempKey,
+          );
+          return;
+        }
+
+        AppLogger.warn('GoogleOAuth: dana://oauth missing token/tempKey');
+        return;
+      }
+
+      // 2) HTTPS callback path: fetch JSON from backend then route.
       try {
         final dio = sl<Dio>();
         final res = await dio.getUri(
@@ -104,7 +138,11 @@ class GoogleOAuthDeepLinkHandler {
         );
         AppLogger.warn('GoogleOAuth: callback parse failed: $msg');
       } catch (e, st) {
-        AppLogger.error('GoogleOAuth: deep link handler failed', error: e, stackTrace: st);
+        AppLogger.error(
+          'GoogleOAuth: deep link handler failed',
+          error: e,
+          stackTrace: st,
+        );
       }
     }
 
