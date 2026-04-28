@@ -30,13 +30,9 @@ class SkillChecklistBottomSheet extends StatelessWidget {
         themeProvider.appTheme == ThemeMode.dark ||
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
-    final isRtl = Localizations.localeOf(context).languageCode == 'ar';
-
-    final primary = isDark
-        ? AppColors.primary_default_dark
-        : AppColors.primary_default_light;
 
     return SafeArea(
+      top: false,
       child: Padding(
         padding: EdgeInsetsDirectional.only(
           end: 24.w,
@@ -48,72 +44,57 @@ class SkillChecklistBottomSheet extends StatelessWidget {
             final items = state is ChecklistLoaded
                 ? state.items
                 : <SkillChecklistItemApiModel>[];
-            final loading =
-                state is ChecklistLoading || state is SkillsLoading;
+            final loading = state is ChecklistLoading || state is SkillsLoading;
 
-            return Theme(
-              data: Theme.of(context).copyWith(
-                checkboxTheme: CheckboxThemeData(
-                  fillColor: WidgetStateProperty.resolveWith((states) {
-                    if (states.contains(WidgetState.selected)) {
-                      return primary;
-                    }
-                    return null;
-                  }),
-                  side: BorderSide(
-                    color: isDark
-                        ? AppColors.border_card_default_dark
-                        : AppColors.border_card_default_light,
-                    width: AppRadius.stroke_regular,
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(child: HomeIndicator()),
+                  SizedBox(height: 12.h),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: AppTextStyle.medium20TextDisplay(context),
+                        ),
+                      ),
+                      _CloseButton(isDark: isDark),
+                    ],
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4.r),
-                  ),
-                ),
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Center(child: HomeIndicator()),
-                    SizedBox(height: 20.h),
+                  if (description.trim().isNotEmpty) ...[
+                    SizedBox(height: 8.h),
                     Text(
-                      title,
-                      textAlign: isRtl ? TextAlign.right : TextAlign.left,
-                      textDirection:
-                          isRtl ? TextDirection.rtl : TextDirection.ltr,
-                      style: AppTextStyle.medium20TextDisplay(context),
+                      description,
+                      style: AppTextStyle.regular16TextBody(context),
                     ),
-                    if (description.isNotEmpty) ...[
-                      SizedBox(height: 8.h),
-                      Text(
-                        description,
-                        textAlign: isRtl ? TextAlign.right : TextAlign.left,
-                        textDirection:
-                            isRtl ? TextDirection.rtl : TextDirection.ltr,
+                  ],
+                  SizedBox(height: 12.h),
+                  if (loading) ...[
+                    SizedBox(height: 12.h),
+                    const Center(child: CircularProgressIndicator()),
+                    SizedBox(height: 12.h),
+                  ] else if (items.isEmpty) ...[
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                      child: Text(
+                        '—',
                         style: AppTextStyle.regular16TextBody(context),
                       ),
-                    ],
-                    SizedBox(height: 16.h),
-                    if (loading)
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 24.h),
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    else
-                      for (final item in items)
-                        _ChecklistRow(
-                          item: item,
-                          isDark: isDark,
-                          isRtl: isRtl,
-                          skillId: skillId,
-                        ),
-                    SizedBox(height: 24.h),
+                    ),
+                  ] else ...[
+                    for (final item in items)
+                      _ChecklistRow(
+                        item: item,
+                        isDark: isDark,
+                        skillId: skillId,
+                      ),
                   ],
-                ),
+                  SizedBox(height: 20.h),
+                ],
               ),
             );
           },
@@ -123,93 +104,108 @@ class SkillChecklistBottomSheet extends StatelessWidget {
   }
 }
 
+class _CloseButton extends StatelessWidget {
+  final bool isDark;
+
+  const _CloseButton({required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor =
+        isDark ? AppColors.border_card_default_dark : AppColors.border_card_default_light;
+    final bgColor =
+        isDark ? AppColors.bg_surface_subtle_dark : AppColors.bg_surface_subtle_light;
+    final iconColor = isDark ? AppColors.icon_onDark_dark : AppColors.icon_onLight_light;
+
+    return Semantics(
+      button: true,
+      label: MaterialLocalizations.of(context).closeButtonLabel,
+      child: InkWell(
+        onTap: () => Navigator.of(context).maybePop(),
+        borderRadius: BorderRadius.circular(AppRadius.radius_sm),
+        child: Container(
+          width: 40.w,
+          height: 40.w,
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(AppRadius.radius_sm),
+            border: Border.all(color: borderColor, width: AppRadius.stroke_thin),
+          ),
+          child: Icon(Icons.close, color: iconColor, size: 20.sp),
+        ),
+      ),
+    );
+  }
+}
+
 class _ChecklistRow extends StatelessWidget {
   final SkillChecklistItemApiModel item;
   final bool isDark;
-  final bool isRtl;
   final String skillId;
 
   const _ChecklistRow({
     required this.item,
     required this.isDark,
-    required this.isRtl,
     required this.skillId,
   });
 
   @override
   Widget build(BuildContext context) {
-    final border = isDark
-        ? AppColors.border_card_default_dark
-        : AppColors.border_card_default_light;
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: Material(
-        color: item.checked
-            ? (isDark
-                  ? AppColors.primary_50_dark
-                  : AppColors.primary_50_light)
-            : (isDark
-                  ? AppColors.bg_surface_subtle_dark
-                  : AppColors.bg_surface_subtle_light),
-        borderRadius: BorderRadius.circular(AppRadius.radius_md),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () {
-            context.read<SkillsCubit>().toggle(
-                  skillId: skillId,
-                  itemId: item.id,
-                  checked: !item.checked,
-                );
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppRadius.radius_md),
-              border: Border.all(
-                color: item.checked
-                    ? (isDark
-                          ? AppColors.primary_default_dark
-                          : AppColors.primary_default_light)
-                    : border,
-                width: AppRadius.stroke_thin,
+    return GestureDetector(
+      onTap: () {
+        context.read<SkillsCubit>().toggle(
+          skillId: skillId,
+          itemId: item.id,
+          checked: !item.checked,
+        );
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        margin: EdgeInsets.symmetric(vertical: 4.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          color: item.checked
+              ? isDark
+                    ? AppColors.primary_50_dark
+                    : AppColors.primary_50_light
+              : isDark
+              ? AppColors.bg_card_default_dark
+              : AppColors.bg_card_default_light,
+          borderRadius: BorderRadius.circular(AppRadius.radius_md),
+          border: Border.all(
+            color: item.checked
+                ? isDark
+                      ? AppColors.primary_default_dark
+                      : AppColors.primary_default_light
+                : isDark
+                ? AppColors.border_card_default_dark
+                : AppColors.border_card_default_light,
+          ),
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 20.w,
+              height: 20.w,
+              child: Checkbox(
+                value: item.checked,
+                onChanged: (val) {
+                  context.read<SkillsCubit>().toggle(
+                    skillId: skillId,
+                    itemId: item.id,
+                    checked: val ?? false,
+                  );
+                },
               ),
             ),
-            child: Row(
-              textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 22.w,
-                  height: 22.w,
-                  child: Checkbox(
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    value: item.checked,
-                    onChanged: (val) {
-                      context.read<SkillsCubit>().toggle(
-                            skillId: skillId,
-                            itemId: item.id,
-                            checked: val ?? false,
-                          );
-                    },
-                  ),
-                ),
-                SizedBox(width: 10.w),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 2.h),
-                    child: Text(
-                      item.title,
-                      textAlign: isRtl ? TextAlign.right : TextAlign.left,
-                      textDirection:
-                          isRtl ? TextDirection.rtl : TextDirection.ltr,
-                      style: AppTextStyle.medium12TextBody(context),
-                    ),
-                  ),
-                ),
-              ],
+            SizedBox(width: 8.w),
+            Expanded(
+              child: Text(
+                item.title,
+                style: AppTextStyle.medium16TextBody(context),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
