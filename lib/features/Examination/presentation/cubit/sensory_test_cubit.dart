@@ -25,6 +25,7 @@ class SensoryTestCubit extends Cubit<SensoryTestState> {
 
   Future<SensoryTestResult?> submit(
     Map<String, int> answersByQuestionId,
+    {String? childId}
   ) async {
     final current = state;
     final questions = current is SensoryTestLoaded
@@ -36,8 +37,11 @@ class SensoryTestCubit extends Cubit<SensoryTestState> {
 
     try {
       final me = await parentRepo.getMe();
-      final childId = me.children.isNotEmpty ? me.children.first.id : '';
-      if (childId.isEmpty) throw Exception('No child found');
+      var resolvedChildId = childId;
+      if (resolvedChildId == null || resolvedChildId.isEmpty) {
+        resolvedChildId = me.children.isNotEmpty ? me.children.first.id : '';
+      }
+      if (resolvedChildId.isEmpty) throw Exception('No child found');
 
       final answers = answersByQuestionId.entries
           .map(
@@ -45,7 +49,8 @@ class SensoryTestCubit extends Cubit<SensoryTestState> {
           )
           .toList();
 
-      final result = await repo.submit(childId: childId, answers: answers);
+      final result =
+          await repo.submit(childId: resolvedChildId, answers: answers);
       emit(SensoryTestSubmitted(result));
       return result;
     } catch (e) {

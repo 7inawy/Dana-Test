@@ -107,7 +107,11 @@ class HomeTabBody extends StatelessWidget {
                           style: AppTextStyle.medium16TextHeading(context),
                         ),
                         SizedBox(height: 12.h),
-                        HomeQuickAccess(context: context, isDark: isDark),
+                        HomeQuickAccess(
+                          context: context,
+                          isDark: isDark,
+                          selectedChildId: selectedChildId,
+                        ),
                       ],
                     ),
                   ),

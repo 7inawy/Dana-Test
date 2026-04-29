@@ -10,10 +10,12 @@ class HomeQuickAccess extends StatelessWidget {
     super.key,
     required this.context,
     required this.isDark,
+    required this.selectedChildId,
   });
 
   final BuildContext context;
   final bool isDark;
+  final String? selectedChildId;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,10 @@ class HomeQuickAccess extends StatelessWidget {
                         ? const Color.fromARGB(255, 63, 157, 168)
                         : AppColors.primary_default_light,
                     onTap: () {
-                      Navigator.of(context).pushNamed(AppRoutes.examination);
+                      Navigator.of(context).pushNamed(
+                        AppRoutes.examination,
+                        arguments: selectedChildId,
+                      );
                     },
                   ),
                 ),
@@ -90,7 +95,10 @@ class HomeQuickAccess extends StatelessWidget {
                         ? const Color.fromARGB(255, 63, 157, 168)
                         : AppColors.primary_default_light,
                     onTap: () {
-                      Navigator.of(context).pushNamed(AppRoutes.vaccine);
+                      Navigator.of(context).pushNamed(
+                        AppRoutes.vaccine,
+                        arguments: selectedChildId,
+                      );
                     },
                   ),
                 ),

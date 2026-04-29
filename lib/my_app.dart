@@ -162,7 +162,11 @@ class MyApp extends StatelessWidget {
       AppRoutes.books: (_) => const BooksScreen(),
 
       /// Examination
-      AppRoutes.examination: (_) => const ExaminationScreen(),
+      AppRoutes.examination: (ctx) {
+        final raw = ModalRoute.of(ctx)?.settings.arguments;
+        final id = raw is String ? raw : null;
+        return ExaminationScreen(childId: id);
+      },
 
       /// Child Profile
       AppRoutes.childProfile: (context) {

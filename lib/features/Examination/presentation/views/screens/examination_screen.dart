@@ -9,6 +9,9 @@ import '../../../../../core/utils/app_colors.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../providers/app_theme_provider.dart';
+import '../../../../home/presentation/widgets/child_selector_header.dart';
+import '../../../../parent_profile/presentation/cubit/parent_profile_cubit.dart';
+import '../../../../parent_profile/presentation/cubit/parent_profile_state.dart';
 
 import '../../../../videos/presentation/views/widgets/videos_TabBar.dart';
 import '../../../data/model/examination_model.dart';
@@ -70,7 +73,9 @@ ResponseOption? _uiOptionFromApiValue(SensoryQuestion q, int v) {
 class ExaminationScreen extends StatefulWidget {
   static const String routeName = 'ExaminationScreen';
 
-  const ExaminationScreen({super.key});
+  const ExaminationScreen({super.key, this.childId});
+
+  final String? childId;
 
   @override
   State<ExaminationScreen> createState() => _ExaminationScreenState();
@@ -81,9 +86,18 @@ class _ExaminationScreenState extends State<ExaminationScreen> {
   late List<ExamSection> _sections;
   bool _initialized = false;
   late final SensoryTestCubit _cubit;
+  late final ParentProfileCubit _parentProfileCubit;
   final Map<String, int> _answersByQuestionId = {};
   List<List<SensoryQuestion>> _sectionQuestions = [];
   List<SensoryQuestion>? _stableQuestions;
+  String? _selectedChildId;
+  bool _childPickerExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedChildId = widget.childId;
+  }
 
   @override
   void didChangeDependencies() {
@@ -96,12 +110,43 @@ class _ExaminationScreenState extends State<ExaminationScreen> {
 
     _sections = [];
     _cubit = sl<SensoryTestCubit>()..loadQuestions();
+    _parentProfileCubit = sl<ParentProfileCubit>()..loadMe();
   }
 
   @override
   void dispose() {
     _cubit.close();
+    _parentProfileCubit.close();
     super.dispose();
+  }
+
+  (int years, int months) _ageFromBirth(DateTime? birthDate) {
+    if (birthDate == null) return (0, 0);
+    final now = DateTime.now();
+    var y = now.year - birthDate.year;
+    var m = now.month - birthDate.month;
+    if (now.day < birthDate.day) m -= 1;
+    if (m < 0) {
+      y -= 1;
+      m += 12;
+    }
+    return (y < 0 ? 0 : y, m < 0 ? 0 : m);
+  }
+
+  void _ensureValidSelectedChild(ParentProfileState pState) {
+    if (pState is! ParentProfileLoaded) return;
+    final children = pState.profile.children;
+    if (children.isEmpty) {
+      if (_selectedChildId != null && _selectedChildId!.isNotEmpty) {
+        setState(() => _selectedChildId = '');
+      }
+      return;
+    }
+    final ids = children.map((e) => e.id).toSet();
+    final current = _selectedChildId;
+    if (current == null || current.isEmpty || !ids.contains(current)) {
+      setState(() => _selectedChildId = children.first.id);
+    }
   }
 
   List<ExamSection> _buildSectionsFromQuestions(
@@ -196,31 +241,42 @@ class _ExaminationScreenState extends State<ExaminationScreen> {
             MediaQuery.of(context).platformBrightness == Brightness.dark);
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocProvider.value(
-      value: _cubit,
-      child: BlocListener<SensoryTestCubit, SensoryTestState>(
-        listenWhen: (prev, next) =>
-            next is SensoryTestLoaded ||
-            (next is SensoryTestSubmitError && prev is! SensoryTestSubmitError),
-        listener: (context, state) {
-          if (state is SensoryTestLoaded) {
-            setState(() {
-              _stableQuestions = List<SensoryQuestion>.from(state.questions);
-              _rebuildUiFromStableQuestions(context);
-            });
-          } else if (state is SensoryTestSubmitError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  state.message.isNotEmpty
-                      ? state.message
-                      : context.l10n.sensorySubmitFailed,
-                ),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          }
-        },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SensoryTestCubit>.value(value: _cubit),
+        BlocProvider<ParentProfileCubit>.value(value: _parentProfileCubit),
+      ],
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<SensoryTestCubit, SensoryTestState>(
+            listenWhen: (prev, next) =>
+                next is SensoryTestLoaded ||
+                (next is SensoryTestSubmitError &&
+                    prev is! SensoryTestSubmitError),
+            listener: (context, state) {
+              if (state is SensoryTestLoaded) {
+                setState(() {
+                  _stableQuestions = List<SensoryQuestion>.from(state.questions);
+                  _rebuildUiFromStableQuestions(context);
+                });
+              } else if (state is SensoryTestSubmitError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      state.message.isNotEmpty
+                          ? state.message
+                          : context.l10n.sensorySubmitFailed,
+                    ),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
+          ),
+          BlocListener<ParentProfileCubit, ParentProfileState>(
+            listener: (context, pState) => _ensureValidSelectedChild(pState),
+          ),
+        ],
         child: Scaffold(
           appBar: CustomAppBar(title: l10n.examinationTitle, isDark: isDark),
           backgroundColor: isDark
@@ -232,6 +288,28 @@ class _ExaminationScreenState extends State<ExaminationScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: AppSizes.h12),
+                  ChildSelectorHeader(
+                    isDark: isDark,
+                    selectedChildId: _selectedChildId,
+                    pickerExpanded: _childPickerExpanded,
+                    onChildSelected: (id) {
+                      setState(() {
+                        _selectedChildId = id;
+                        _childPickerExpanded = false;
+                        _answersByQuestionId.clear();
+                        for (final s in _sections) {
+                          for (final q in s.questions) {
+                            q.selectedOption = null;
+                          }
+                        }
+                      });
+                    },
+                    onTogglePicker: () => setState(() {
+                      _childPickerExpanded = !_childPickerExpanded;
+                    }),
+                    ageFromBirth: _ageFromBirth,
+                  ),
                   SizedBox(height: AppSizes.h12),
                   VideosTabBar(
                     activeTab: _activeTab,
@@ -286,10 +364,10 @@ class _ExaminationScreenState extends State<ExaminationScreen> {
                     isEnabled: _allAnswered(),
                     label: l10n.showResult,
                     onTap: () async {
-                      // Use [_cubit] — [State.context] is above [BlocProvider.value], so
-                      // context.read<SensoryTestCubit>() would throw ProviderNotFoundException.
-                      final result =
-                          await _cubit.submit(_answersByQuestionId);
+                      final result = await _cubit.submit(
+                        _answersByQuestionId,
+                        childId: _selectedChildId,
+                      );
                       if (result == null || !mounted) return;
                       _showResultForLevel(context, result);
                     },
