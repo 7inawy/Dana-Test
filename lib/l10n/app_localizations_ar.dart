@@ -302,7 +302,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rebook => 'إعادة الحجز';
 
   @override
-  String get followUpAppointmentTitle => 'Set follow-up appointment';
+  String get followUpAppointmentTitle => 'تحديد ميعاد المتابعة';
 
   @override
   String get followUpAppointmentDesc =>
@@ -1537,4 +1537,207 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get bookEmotionsChapter1Body =>
       'الأطفال لا يولدون وهم يعرفون أسماء مشاعرهم، ولا يعرفون كيف يتعاملون معها.';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get generateVaccinationSchedule => 'إنشاء جدول التطعيمات';
+
+  @override
+  String get couldNotOpenBrowser => 'تعذر فتح المتصفح';
+
+  @override
+  String get continueGoogleInBrowser => 'كمّل تسجيل الدخول بجوجل في المتصفح…';
+
+  @override
+  String get googleSignUpTitle => 'إنشاء حساب';
+
+  @override
+  String get googleSignInTitle => 'تسجيل الدخول بجوجل';
+
+  @override
+  String get googleContinueSignupTitle => 'متابعة التسجيل بجوجل';
+
+  @override
+  String get googleContinueSignupDesc =>
+      'بعد ما تكمّل تسجيل الدخول بجوجل في المتصفح، هتتحوّل لصفحة/رابط فيه requestId.\n\nالصق الـ requestId هنا علشان نكمل.';
+
+  @override
+  String get pasteRequestIdFirst => 'الصق requestId (UUID) أولاً';
+
+  @override
+  String get requestIdLabel => 'requestId';
+
+  @override
+  String get requestIdHint => 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
+
+  @override
+  String get paste => 'لصق';
+
+  @override
+  String get completeAccountTitle => 'إكمال الحساب';
+
+  @override
+  String get completeAccountHeaderTitle => 'إكمال الحساب';
+
+  @override
+  String get completeAccountHeaderSubtitle =>
+      'من فضلك أضف بيانات التواصل وتفاصيل الأطفال.';
+
+  @override
+  String get phoneLabel => 'رقم الهاتف';
+
+  @override
+  String get phoneRequired => 'رقم الهاتف مطلوب';
+
+  @override
+  String get passwordRequirementsMin8 => 'الحد الأدنى 8 أحرف (حروف + أرقام)';
+
+  @override
+  String childIndexLabel(int index) {
+    return 'الطفل $index';
+  }
+
+  @override
+  String get genderLabel => 'النوع';
+
+  @override
+  String get addChild => 'إضافة طفل';
+
+  @override
+  String maxChildrenReached(int max) {
+    return 'الحد الأقصى $max أطفال';
+  }
+
+  @override
+  String get submitting => 'جاري الإرسال…';
+
+  @override
+  String get complete => 'إكمال';
+
+  @override
+  String get fieldRequired => 'مطلوب';
+
+  @override
+  String maxCharacters(int max) {
+    return 'الحد الأقصى $max حرف';
+  }
+
+  @override
+  String get onlyLettersAllowed => 'يسمح بالحروف فقط';
+
+  @override
+  String get birthDateFormatYyyyMmDd => 'استخدم YYYY-MM-DD';
+
+  @override
+  String get invalidDate => 'تاريخ غير صالح';
+
+  @override
+  String get dateMustBePast => 'يجب أن يكون التاريخ في الماضي';
+
+  @override
+  String get childAgeRange => 'عمر الطفل يجب أن يكون من 0 إلى 18';
+
+  @override
+  String passwordMinChars(int min) {
+    return 'الحد الأدنى $min أحرف';
+  }
+
+  @override
+  String passwordMaxChars(int max) {
+    return 'الحد الأقصى $max حرف';
+  }
+
+  @override
+  String get passwordLettersAndNumbers => 'استخدم حروف وأرقام';
+
+  @override
+  String enterPhoneDigitsRange(int min, int max) {
+    return 'أدخل $min–$max رقم';
+  }
+
+  @override
+  String get aiChatSendFailed => 'تعذر إرسال الرسالة. حاول مرة أخرى.';
+
+  @override
+  String get bookingDraftIncomplete => 'بيانات الحجز غير مكتملة';
+
+  @override
+  String get noBookingToShow => 'لا يوجد حجز للعرض.';
+
+  @override
+  String get bookingSlotAlreadyBooked =>
+      'هذا الموعد تم حجزه بالفعل. اختر وقتًا آخر.';
+
+  @override
+  String get bookingStartFailedMissingDoctorData =>
+      'تعذر بدء الحجز: بيانات الطبيب غير مكتملة.';
+
+  @override
+  String get selectDoctorFirst => 'اختر طبيباً من قائمة الأطباء أولاً';
+
+  @override
+  String get networkError => 'مشكلة في الاتصال بالشبكة. حاول مرة أخرى.';
+
+  @override
+  String get unknownError => 'حدث خطأ غير متوقع. حاول مرة أخرى.';
+
+  @override
+  String get cancelBookingConfirmMessage =>
+      'سيتم إلغاء هذا الحجز. هل تريد المتابعة؟';
+
+  @override
+  String get appointmentsEmptyUpcoming => 'لا توجد حجوزات قادمة';
+
+  @override
+  String get appointmentsEmptyCompleted => 'لا توجد حجوزات مكتملة';
+
+  @override
+  String get appointmentsEmptyCancelled => 'لا توجد حجوزات ملغاة';
+
+  @override
+  String get paymentDetailsTitle => 'تفاصيل الدفع';
+
+  @override
+  String get accountAlreadyExistsTitle => 'الحساب موجود بالفعل';
+
+  @override
+  String get editInfo => 'تعديل البيانات';
+
+  @override
+  String get login => 'تسجيل الدخول';
+
+  @override
+  String get addNewCardTitle => 'إضافة بطاقة جديدة';
+
+  @override
+  String get addNewCardSubtitle => 'ادخل بيانات بطاقتك لإتمام الدفع بأمان.';
+
+  @override
+  String get cardNumberLabel => 'رقم البطاقة';
+
+  @override
+  String get cardNumberHint => '0000 0000 0000 0000';
+
+  @override
+  String get expiryDateLabel => 'تاريخ الانتهاء';
+
+  @override
+  String get securityCodeLabel => 'رمز الأمان';
+
+  @override
+  String get cvvHint => 'CVV';
+
+  @override
+  String get cardHolderNameLabel => 'اسم صاحب البطاقة';
+
+  @override
+  String get cardHolderNameHint => 'اكتب الاسم كما هو على البطاقة';
+
+  @override
+  String get saveCard => 'حفظ البطاقة';
+
+  @override
+  String get dataEncryptedNotice => 'بياناتك مشفرة ومحميّة بالكامل.';
 }

@@ -1555,4 +1555,210 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get bookEmotionsChapter1Body =>
       'Children are not born knowing the names of their feelings, nor do they know how to deal with them. This is a skill that is taught and acquired.';
+
+  @override
+  String get retry => 'Try again';
+
+  @override
+  String get generateVaccinationSchedule => 'Generate vaccination schedule';
+
+  @override
+  String get couldNotOpenBrowser => 'Could not open browser';
+
+  @override
+  String get continueGoogleInBrowser =>
+      'Continue Google sign-in in your browser…';
+
+  @override
+  String get googleSignUpTitle => 'Sign up';
+
+  @override
+  String get googleSignInTitle => 'Google Sign In';
+
+  @override
+  String get googleContinueSignupTitle => 'Continue Google signup';
+
+  @override
+  String get googleContinueSignupDesc =>
+      'After you finish Google sign-in in the browser, you will be redirected to a page/URL containing a requestId.\n\nPaste that requestId here to continue.';
+
+  @override
+  String get pasteRequestIdFirst => 'Paste the requestId (UUID) first';
+
+  @override
+  String get requestIdLabel => 'requestId';
+
+  @override
+  String get requestIdHint => 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
+
+  @override
+  String get paste => 'Paste';
+
+  @override
+  String get completeAccountTitle => 'Complete account';
+
+  @override
+  String get completeAccountHeaderTitle => 'Complete account';
+
+  @override
+  String get completeAccountHeaderSubtitle =>
+      'Please add your contact info and your children details.';
+
+  @override
+  String get phoneLabel => 'Phone';
+
+  @override
+  String get phoneRequired => 'Phone is required';
+
+  @override
+  String get passwordRequirementsMin8 => 'Min 8 characters (letters + numbers)';
+
+  @override
+  String childIndexLabel(int index) {
+    return 'Child $index';
+  }
+
+  @override
+  String get genderLabel => 'Gender';
+
+  @override
+  String get addChild => 'Add child';
+
+  @override
+  String maxChildrenReached(int max) {
+    return 'Max $max children';
+  }
+
+  @override
+  String get submitting => 'Submitting…';
+
+  @override
+  String get complete => 'Complete';
+
+  @override
+  String get fieldRequired => 'Required';
+
+  @override
+  String maxCharacters(int max) {
+    return 'Max $max characters';
+  }
+
+  @override
+  String get onlyLettersAllowed => 'Only letters are allowed';
+
+  @override
+  String get birthDateFormatYyyyMmDd => 'Use YYYY-MM-DD';
+
+  @override
+  String get invalidDate => 'Invalid date';
+
+  @override
+  String get dateMustBePast => 'Date must be in the past';
+
+  @override
+  String get childAgeRange => 'Child age must be 0–18';
+
+  @override
+  String passwordMinChars(int min) {
+    return 'Min $min characters';
+  }
+
+  @override
+  String passwordMaxChars(int max) {
+    return 'Max $max characters';
+  }
+
+  @override
+  String get passwordLettersAndNumbers => 'Use letters and numbers';
+
+  @override
+  String enterPhoneDigitsRange(int min, int max) {
+    return 'Enter $min–$max digits';
+  }
+
+  @override
+  String get aiChatSendFailed => 'Failed to send message. Please try again.';
+
+  @override
+  String get bookingDraftIncomplete => 'Booking details are incomplete';
+
+  @override
+  String get noBookingToShow => 'No booking to show.';
+
+  @override
+  String get bookingSlotAlreadyBooked =>
+      'This time is already booked. Please choose another time.';
+
+  @override
+  String get bookingStartFailedMissingDoctorData =>
+      'Couldn\'t start booking: doctor data is incomplete.';
+
+  @override
+  String get selectDoctorFirst => 'Select a doctor from the doctors list first';
+
+  @override
+  String get networkError => 'Network error. Please try again.';
+
+  @override
+  String get unknownError => 'Something went wrong. Please try again.';
+
+  @override
+  String get cancelBookingConfirmMessage =>
+      'This booking will be cancelled. Do you want to continue?';
+
+  @override
+  String get appointmentsEmptyUpcoming => 'No upcoming appointments';
+
+  @override
+  String get appointmentsEmptyCompleted => 'No completed appointments';
+
+  @override
+  String get appointmentsEmptyCancelled => 'No cancelled appointments';
+
+  @override
+  String get paymentDetailsTitle => 'Payment details';
+
+  @override
+  String get accountAlreadyExistsTitle => 'Account already exists';
+
+  @override
+  String get editInfo => 'Edit info';
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get addNewCardTitle => 'Add a new card';
+
+  @override
+  String get addNewCardSubtitle =>
+      'Enter your card details to complete payment securely.';
+
+  @override
+  String get cardNumberLabel => 'Card number';
+
+  @override
+  String get cardNumberHint => '0000 0000 0000 0000';
+
+  @override
+  String get expiryDateLabel => 'Expiry date';
+
+  @override
+  String get securityCodeLabel => 'Security code';
+
+  @override
+  String get cvvHint => 'CVV';
+
+  @override
+  String get cardHolderNameLabel => 'Cardholder name';
+
+  @override
+  String get cardHolderNameHint => 'Enter the name as it appears on the card';
+
+  @override
+  String get saveCard => 'Save card';
+
+  @override
+  String get dataEncryptedNotice =>
+      'Your data is fully encrypted and protected.';
 }

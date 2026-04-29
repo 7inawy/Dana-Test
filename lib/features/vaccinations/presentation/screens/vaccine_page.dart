@@ -173,13 +173,15 @@ class _VaccineScreenState extends State<VaccineScreen> {
                                   onPressed: () => context
                                       .read<VaccinationScheduleCubit>()
                                       .load(childId: widget.childId),
-                                  child: const Text('إعادة المحاولة'),
+                                  child: Text(context.l10n.retry),
                                 ),
                                 ElevatedButton(
                                   onPressed: () => context
                                       .read<VaccinationScheduleCubit>()
                                       .generateAndLoad(childId: widget.childId),
-                                  child: const Text('إنشاء جدول التطعيمات'),
+                                  child: Text(
+                                    context.l10n.generateVaccinationSchedule,
+                                  ),
                                 ),
                               ],
                             ),
@@ -207,7 +209,9 @@ class _VaccineScreenState extends State<VaccineScreen> {
                                 onPressed: () => context
                                     .read<VaccinationScheduleCubit>()
                                     .generateAndLoad(childId: widget.childId),
-                                child: const Text('إنشاء جدول التطعيمات'),
+                                child: Text(
+                                  context.l10n.generateVaccinationSchedule,
+                                ),
                               ),
                             ],
                           );

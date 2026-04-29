@@ -52,7 +52,7 @@ class ViewAllWidget extends StatelessWidget {
             video: videos[index],
             imageWidth: imageWidth ?? 192.w,
             relatedVideos: videos
-                .where((v) => v.title != videos[index].title)
+                .where((v) => v.id != videos[index].id)
                 .toList(),
           ),
         ),

@@ -4,6 +4,7 @@ import 'package:dana/features/Appointments/presentation/widgets/appointment_card
 import 'package:dana/features/Appointments/presentation/widgets/empty_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dana/core/errors/error_mapper.dart';
 
 import '../../../booking/presentation/cubit/booking_cubit.dart';
 
@@ -32,7 +33,7 @@ class _AppointmentsListState extends State<AppointmentsList> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(context.l10n.cancelAppointment),
-        content: const Text('سيتم إلغاء هذا الحجز. هل تريد المتابعة؟'),
+        content: Text(context.l10n.cancelBookingConfirmMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
@@ -60,7 +61,10 @@ class _AppointmentsListState extends State<AppointmentsList> {
     if (!context.mounted) return;
     if (err != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(err), behavior: SnackBarBehavior.floating),
+        SnackBar(
+          content: Text(ErrorMapper.localizeMessage(context, err)),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }
@@ -75,13 +79,13 @@ class _AppointmentsListState extends State<AppointmentsList> {
       String title;
       switch (widget.status) {
         case Status.upcoming:
-          title = 'لا توجد حجوزات قادمة';
+          title = context.l10n.appointmentsEmptyUpcoming;
           break;
         case Status.completed:
-          title = 'لا توجد حجوزات مكتملة';
+          title = context.l10n.appointmentsEmptyCompleted;
           break;
         case Status.cancelled:
-          title = 'لا توجد حجوزات ملغاة';
+          title = context.l10n.appointmentsEmptyCancelled;
           break;
       }
 

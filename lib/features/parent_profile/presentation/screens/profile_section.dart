@@ -8,6 +8,7 @@ import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/parent_profile/presentation/widgets/profile_quick_access.dart';
 import 'package:dana/features/parent_profile/data/models/child_model.dart';
+import 'package:dana/providers/app_language_provider.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dana/features/parent_profile/presentation/bottom_sheets/add_child_bottom_sheet.dart';
@@ -96,10 +97,18 @@ class _ProfileSectionState extends State<ProfileSection> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<AppThemeProvider>();
+    final languageProvider = context.watch<AppLanguageProvider>();
     final isDark =
         themeProvider.appTheme == ThemeMode.dark ||
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
+    final selectedLanguageLabel =
+        languageProvider.appLanguage == 'ar' ? context.l10n.arabic : context.l10n.english;
+    final selectedThemeLabel = switch (themeProvider.appTheme) {
+      ThemeMode.light => context.l10n.light,
+      ThemeMode.dark => context.l10n.dark,
+      ThemeMode.system => context.l10n.systemMode,
+    };
 
     return BlocProvider.value(
       value: widget.cubit,
@@ -335,7 +344,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                     ),
                     CustomTextFrame(
                       text: context.l10n.changeLanguage,
-                      sufText: context.l10n.arabic,
+                      sufText: selectedLanguageLabel,
                       width: double.infinity,
                       bottomMargin: 8.h,
                       preIconSrc: 'assets/Icons/profile/language_icon.svg',
@@ -358,7 +367,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                     ),
                     CustomTextFrame(
                       text: context.l10n.theme,
-                      sufText: context.l10n.light,
+                      sufText: selectedThemeLabel,
                       width: double.infinity,
                       bottomMargin: 8.h,
                       preIconSrc: 'assets/Icons/profile/theme_icon.svg',

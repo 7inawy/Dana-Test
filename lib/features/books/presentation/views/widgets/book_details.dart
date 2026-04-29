@@ -20,14 +20,15 @@ class BookDetails extends StatelessWidget {
             MediaQuery.of(context).platformBrightness == Brightness.dark);
     final l10n = AppLocalizations.of(context)!;
     final isRtl = Localizations.localeOf(context).languageCode == 'ar';
+    final locale = Localizations.localeOf(context);
 
     return Column(
       crossAxisAlignment: isRtl
-          ? CrossAxisAlignment.start
-          : CrossAxisAlignment.end,
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         Text(
-          book.title,
+          book.titleForLocale(locale),
           textAlign: isRtl ? TextAlign.right : TextAlign.left,
           textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
           style: AppTextStyle.semibold16TextHeading(context),
@@ -48,7 +49,7 @@ class BookDetails extends StatelessWidget {
           textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
           children: [
             Text(
-              book.author,
+              book.authorForLocale(locale),
               textAlign: isRtl ? TextAlign.right : TextAlign.left,
               textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
               style: AppTextStyle.medium12TextHeading(context).copyWith(

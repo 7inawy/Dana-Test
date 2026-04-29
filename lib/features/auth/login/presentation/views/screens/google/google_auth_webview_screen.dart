@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:dio/dio.dart';
 
+import 'package:dana/extensions/localization_extension.dart';
 import '../../../../../../../core/api/api_endpoint.dart';
 import '../../../../../../../core/api/api_response.dart';
 import '../../../../../../../core/config/app_config.dart';
@@ -188,7 +189,7 @@ class _GoogleAuthWebViewScreenState extends State<GoogleAuthWebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Google Sign In')),
+      appBar: AppBar(title: Text(context.l10n.googleSignInTitle)),
       body: WebViewWidget(controller: _controller),
     );
   }

@@ -152,7 +152,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [HomeIndicator(), _buildBody()],
+          children: [const HomeIndicator(), _buildBody()],
         ),
       ),
     );

@@ -43,7 +43,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
       await _bookingCubit.getMyAppointmentsByParent(parentId: me.id);
     } catch (e) {
       if (!mounted) return;
-      _bookingCubit.reportLoadError(ErrorMapper.message(e));
+      _bookingCubit.reportLoadError(ErrorMapper.localized(context, e));
     }
   }
 
@@ -146,15 +146,19 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (state is BookingError) {
+                      final msg = ErrorMapper.localizeMessage(
+                        context,
+                        state.error,
+                      );
                       return Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(state.error, textAlign: TextAlign.center),
+                            Text(msg, textAlign: TextAlign.center),
                             SizedBox(height: 12.h),
                             ElevatedButton(
                               onPressed: _loadBookings,
-                              child: const Text('إعادة المحاولة'),
+                              child: Text(context.l10n.retry),
                             ),
                           ],
                         ),

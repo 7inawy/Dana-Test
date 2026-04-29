@@ -28,7 +28,7 @@ class ConfirmDataBottomSheet extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Center(child: HomeIndicator()),
+            const Center(child: HomeIndicator()),
             SizedBox(height: 20.h),
             Center(
               child: SvgPicture.asset(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/di/injection_container.dart';
 import '../../../../../providers/app_theme_provider.dart';
 import '../../../data/model/book_Model.dart';
@@ -43,10 +42,8 @@ class BooksHorizontalList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<AppThemeProvider>();
-    final isDark =
-        themeProvider.appTheme == ThemeMode.dark ||
-        (themeProvider.appTheme == ThemeMode.system &&
-            MediaQuery.of(context).platformBrightness == Brightness.dark);
+    // Keep watching theme provider to rebuild consistently with app theme.
+    themeProvider.appTheme;
     final isRtl = Localizations.localeOf(context).languageCode == 'ar';
     return SizedBox(
       height: 230.h,
@@ -55,14 +52,8 @@ class BooksHorizontalList extends StatelessWidget {
         reverse: isRtl,
         padding: EdgeInsets.symmetric(horizontal: 24.w),
         itemCount: books.length,
-        separatorBuilder: (_, __) => SizedBox(
-          width: 8.w,
-          child: VerticalDivider(
-            color: isDark
-                ? AppColors.border_card_default_dark
-                : AppColors.border_card_default_light,
-          ),
-        ),
+        // No dividing lines between items (just spacing).
+        separatorBuilder: (_, __) => SizedBox(width: 8.w),
         itemBuilder: (context, index) => GestureDetector(
           onTap: () => _openBook(context, books[index]),
           child: BookCardHorizontal(book: books[index]),

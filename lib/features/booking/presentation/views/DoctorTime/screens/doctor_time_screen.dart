@@ -69,9 +69,7 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
           onTap: () async {
             if (!controller.hasDoctor) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('اختر طبيباً من قائمة الأطباء أولاً'),
-                ),
+                SnackBar(content: Text(context.l10n.selectDoctorFirst)),
               );
               return;
             }
@@ -151,7 +149,7 @@ class _DoctorTimeScreenState extends State<DoctorTimeScreen> {
                               children: [
                                 ExperienceCard(
                                   textOne: ratingsCount,
-                                  textTwo: 'التقييم',
+                                  textTwo: context.l10n.reviews,
                                   svgPicture: 'assets/Icons/medal_star.svg',
                                 ),
                                 SizedBox(width: 8.w),

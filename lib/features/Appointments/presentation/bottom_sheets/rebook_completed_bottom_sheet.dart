@@ -47,18 +47,18 @@ class _RebookCompletedBottomSheetState
     final args = bookingDoctorArgsFromAppointment(widget.appointment);
     if (args == null) {
       return Padding(
-        padding: EdgeInsets.only(
-          left: 24.w,
-          right: 24.w,
+        padding: EdgeInsetsDirectional.only(
+          start: 24.w,
+          end: 24.w,
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Center(child: HomeIndicator()),
-            SizedBox(height: 16),
-            Text('تعذر بدء الحجز: بيانات الطبيب غير مكتملة.'),
-            SizedBox(height: 16),
+          children: [
+            const Center(child: HomeIndicator()),
+            const SizedBox(height: 16),
+            Text(context.l10n.bookingStartFailedMissingDoctorData),
+            const SizedBox(height: 16),
           ],
         ),
       );
@@ -76,9 +76,9 @@ class _RebookCompletedBottomSheetState
       child: Consumer<AppointmentController>(
         builder: (context, controller, _) {
     return Padding(
-      padding: EdgeInsets.only(
-        left: 24.w,
-        right: 24.w,
+      padding: EdgeInsetsDirectional.only(
+        start: 24.w,
+        end: 24.w,
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: SingleChildScrollView(

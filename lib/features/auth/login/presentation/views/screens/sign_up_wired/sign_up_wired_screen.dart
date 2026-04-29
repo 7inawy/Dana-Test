@@ -2,12 +2,16 @@ import 'package:dana/core/di/injection_container.dart';
 import 'package:dana/core/utils/app_routes.dart';
 import 'package:dana/core/widgets/otp_bottom_sheet.dart';
 import 'package:dana/core/auth/auth_session.dart';
+import 'package:dana/core/widgets/custom_app_bar.dart';
 import 'package:dana/extensions/localization_extension.dart';
+import 'package:dana/core/errors/error_mapper.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_up_cubit.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_up_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+import 'package:dana/providers/app_theme_provider.dart';
 
 /// A backend-wired Sign Up screen that uses `SignUpCubit`.
 ///
@@ -79,6 +83,12 @@ class _SignUpWiredViewState extends State<_SignUpWiredView> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<AppThemeProvider>();
+    final isDark =
+        themeProvider.appTheme == ThemeMode.dark ||
+        (themeProvider.appTheme == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
+
     return BlocListener<SignUpCubit, SignUpState>(
       listener: (context, state) async {
         if (state is SignUpOtpSent) {
@@ -100,7 +110,9 @@ class _SignUpWiredViewState extends State<_SignUpWiredView> {
         } else if (state is SignUpFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message),
+              content: Text(
+                ErrorMapper.localizeMessage(context, state.message),
+              ),
               backgroundColor: Colors.red,
               behavior: SnackBarBehavior.floating,
             ),
@@ -108,7 +120,10 @@ class _SignUpWiredViewState extends State<_SignUpWiredView> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text('Sign up')),
+        appBar: CustomAppBar(
+          title: context.l10n.googleSignUpTitle,
+          isDark: isDark,
+        ),
         body: SafeArea(
           child: Form(
             key: _formKey,
@@ -117,52 +132,73 @@ class _SignUpWiredViewState extends State<_SignUpWiredView> {
               children: [
                 TextFormField(
                   controller: _parentName,
-                  decoration: const InputDecoration(labelText: 'Parent name'),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.fullNameLabel,
+                  ),
                   validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Required' : null,
+                      (v == null || v.trim().isEmpty)
+                          ? context.l10n.fieldRequired
+                          : null,
                 ),
                 TextFormField(
                   controller: _government,
-                  decoration: const InputDecoration(labelText: 'Government'),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.governorateLabel,
+                  ),
                   validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Required' : null,
+                      (v == null || v.trim().isEmpty)
+                          ? context.l10n.fieldRequired
+                          : null,
                 ),
                 TextFormField(
                   controller: _address,
-                  decoration: const InputDecoration(labelText: 'Address'),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.addressLabel,
+                  ),
                   validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Required' : null,
+                      (v == null || v.trim().isEmpty)
+                          ? context.l10n.fieldRequired
+                          : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _childName,
-                  decoration: const InputDecoration(labelText: 'Child name'),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.childNameLabel,
+                  ),
                   validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Required' : null,
+                      (v == null || v.trim().isEmpty)
+                          ? context.l10n.fieldRequired
+                          : null,
                 ),
                 TextFormField(
                   controller: _childBirthDate,
-                  decoration: const InputDecoration(
-                    labelText: 'Child birth date (YYYY-MM-DD)',
+                  decoration: InputDecoration(
+                    labelText: context.l10n.birthDateLabel,
+                    hintText: context.l10n.birthDateFormatYyyyMmDd,
                   ),
                   validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Required' : null,
+                      (v == null || v.trim().isEmpty)
+                          ? context.l10n.fieldRequired
+                          : null,
                 ),
                 DropdownButtonFormField<String>(
                   initialValue: _childGender,
-                  items: const [
-                    DropdownMenuItem(value: 'male', child: Text('Male')),
-                    DropdownMenuItem(value: 'female', child: Text('Female')),
+                  items: [
+                    DropdownMenuItem(value: 'male', child: Text(context.l10n.boy)),
+                    DropdownMenuItem(value: 'female', child: Text(context.l10n.girl)),
                   ],
                   onChanged: (v) => setState(() => _childGender = v ?? 'male'),
-                  decoration: const InputDecoration(labelText: 'Child gender'),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.childGenderLabel,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _phone,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone',
-                    hintText: '10 or 11 digits (e.g. 01xxxxxxxxx)',
+                  decoration: InputDecoration(
+                    labelText: context.l10n.phoneNumberLabel,
+                    hintText: context.l10n.phoneNumberHint,
                     counterText: '',
                   ),
                   keyboardType: TextInputType.phone,
@@ -172,27 +208,35 @@ class _SignUpWiredViewState extends State<_SignUpWiredView> {
                   ],
                   validator: (v) {
                     final s = (v ?? '').replaceAll(RegExp(r'\D'), '');
-                    if (s.isEmpty) return 'Required';
+                    if (s.isEmpty) return context.l10n.fieldRequired;
                     if (s.length < 10 || s.length > 11) {
-                      return 'Enter 10–11 digits';
+                      return context.l10n.enterPhoneDigitsRange(10, 11);
                     }
                     return null;
                   },
                 ),
                 TextFormField(
                   controller: _email,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(labelText: context.l10n.email),
                   validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Required' : null,
+                      (v == null || v.trim().isEmpty)
+                          ? context.l10n.fieldRequired
+                          : null,
                 ),
                 TextFormField(
                   controller: _password,
-                  decoration: const InputDecoration(labelText: 'Password'),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.passwordLabel,
+                  ),
                   obscureText: true,
                   validator: (v) {
                     final s = v?.trim() ?? '';
-                    if (s.isEmpty) return 'Required';
-                    if (s.length < 6) return 'Min 6 chars';
+                    if (s.isEmpty) return context.l10n.fieldRequired;
+                    if (s.length < 8) return context.l10n.passwordMinChars(8);
+                    if (!RegExp(r'[A-Za-z]').hasMatch(s) ||
+                        !RegExp(r'[0-9]').hasMatch(s)) {
+                      return 'Password must contain letters and numbers';
+                    }
                     return null;
                   },
                 ),
@@ -208,7 +252,9 @@ class _SignUpWiredViewState extends State<_SignUpWiredView> {
                               await _submit(context.read<SignUpCubit>());
                             },
                       child: Text(
-                        loading ? 'Sending OTP...' : 'Create account',
+                        loading
+                            ? context.l10n.submitting
+                            : context.l10n.createAccount,
                       ),
                     );
                   },

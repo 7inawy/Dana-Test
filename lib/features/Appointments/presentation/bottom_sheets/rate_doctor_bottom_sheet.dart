@@ -54,7 +54,7 @@ class _RateDoctorBottomSheetState extends State<RateDoctorBottomSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: HomeIndicator()),
+            const Center(child: HomeIndicator()),
             SizedBox(height: 20.h),
             CustomScreenHeader(
               title: context.l10n.rateDoctorTitle,

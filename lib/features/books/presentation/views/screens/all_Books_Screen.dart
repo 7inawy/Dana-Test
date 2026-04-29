@@ -87,8 +87,8 @@ class AllBooksScreen extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: Column(
             crossAxisAlignment: isRtl
-                ? CrossAxisAlignment.start
-                : CrossAxisAlignment.end,
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.start,
             children: [
               SizedBox(height: 16.h),
               Text(

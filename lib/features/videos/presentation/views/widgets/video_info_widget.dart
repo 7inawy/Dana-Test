@@ -53,7 +53,7 @@ class VideoInfoWidget extends StatelessWidget {
           SizedBox(
             width: 360.w,
             child: Text(
-              video.title,
+              video.titleForLocale(Localizations.localeOf(context)),
               textAlign: isRtl ? TextAlign.right : TextAlign.left,
               textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
               style: AppTextStyle.semibold24TextHeading(context),

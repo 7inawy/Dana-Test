@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/ai_chat_session.dart';
@@ -7,9 +8,13 @@ import '../../presentation/controller/data/model/message_model.dart';
 
 class AIChatStorage {
   static const _legacySessionsKey = 'ai_chat_sessions_v1';
+  static const _secureSessionsPrefix = 'ai_chat_sessions_v2.user.';
+  static const FlutterSecureStorage _secure = FlutterSecureStorage();
 
   static String _scopedSessionsKey(String userId) =>
       'ai_chat_sessions_v1.user.${userId.trim()}';
+
+  static String _secureKey(String userId) => '$_secureSessionsPrefix${userId.trim()}';
 
   static Future<void> _clearLegacyKeyIfPresent() async {
     final prefs = await SharedPreferences.getInstance();
@@ -20,13 +25,37 @@ class AIChatStorage {
     }
   }
 
+  static Future<void> _migratePrefsToSecureIfNeeded({required String userId}) async {
+    // One-way best-effort migration. After migration we remove the prefs copy.
+    final prefs = await SharedPreferences.getInstance();
+    final prefsKey = _scopedSessionsKey(userId);
+    final raw = prefs.getString(prefsKey);
+    if (raw == null || raw.trim().isEmpty) return;
+
+    try {
+      final existing = await _secure.read(key: _secureKey(userId));
+      if (existing == null || existing.trim().isEmpty) {
+        await _secure.write(key: _secureKey(userId), value: raw);
+      }
+      await prefs.remove(prefsKey);
+    } catch (_) {
+      // If secure storage fails, keep legacy prefs as a fallback.
+    }
+  }
+
   static Future<List<AIChatSession>> loadSessions({
     required String userId,
   }) async {
     await _clearLegacyKeyIfPresent();
-    final prefs = await SharedPreferences.getInstance();
-    final key = _scopedSessionsKey(userId);
-    final raw = prefs.getString(key);
+    await _migratePrefsToSecureIfNeeded(userId: userId);
+
+    String? raw;
+    try {
+      raw = await _secure.read(key: _secureKey(userId));
+    } catch (_) {}
+
+    // Fallback to legacy prefs if secure storage isn't available (best-effort).
+    raw ??= (await SharedPreferences.getInstance()).getString(_scopedSessionsKey(userId));
     if (raw == null || raw.trim().isEmpty) return [];
 
     try {
@@ -112,6 +141,11 @@ class AIChatStorage {
 
   static Future<void> clearAllForUser({required String userId}) async {
     await _clearLegacyKeyIfPresent();
+    try {
+      await _secure.delete(key: _secureKey(userId));
+    } catch (_) {}
+
+    // Also clear legacy storage locations.
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_scopedSessionsKey(userId));
   }
@@ -120,8 +154,17 @@ class AIChatStorage {
     required String userId,
     required List<AIChatSession> sessions,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
     final raw = jsonEncode(sessions.map((s) => s.toJson()).toList());
+    try {
+      await _secure.write(key: _secureKey(userId), value: raw);
+      // Best effort: remove legacy prefs copy if it exists.
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_scopedSessionsKey(userId));
+      return;
+    } catch (_) {
+      // Fallback to prefs if secure storage fails.
+    }
+    final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_scopedSessionsKey(userId), raw);
   }
 }

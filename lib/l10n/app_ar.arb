@@ -152,6 +152,7 @@
   "appointmentsCompleted": "مكتملة",
 
   "rebook": "إعادة الحجز",
+  "followUpAppointmentTitle": "تحديد ميعاد المتابعة",
   "followUpAppointment": "تحديد ميعاد المتابعة",
   "followUpAppointmentDesc": "المتابعة بتعمل فرق كبير! احجز جلسة الإعادة دلوقتي وتابع تطورات طفلك مع نفس الدكتور.. خطوة بخطوة إحنا معاكم.",
   "bookFollowUpSession": "حجز جلسة متابعة",
@@ -639,6 +640,122 @@
   "bookEmotionsAuthor": "رنا سمير",
   "bookEmotionsDesc": "دليل يساعدك على تحديد مشاعر طفلك وتوجيهه للتعبير عن نفسه بطريقة صحيحة.",
   "bookEmotionsChapter1Title": "الذكاء العاطفي يبدأ من البيت",
-  "bookEmotionsChapter1Body": "الأطفال لا يولدون وهم يعرفون أسماء مشاعرهم، ولا يعرفون كيف يتعاملون معها."
+  "bookEmotionsChapter1Body": "الأطفال لا يولدون وهم يعرفون أسماء مشاعرهم، ولا يعرفون كيف يتعاملون معها.",
+
+  "retry": "إعادة المحاولة",
+  "generateVaccinationSchedule": "إنشاء جدول التطعيمات",
+
+  "couldNotOpenBrowser": "تعذر فتح المتصفح",
+  "continueGoogleInBrowser": "كمّل تسجيل الدخول بجوجل في المتصفح…",
+
+  "googleSignUpTitle": "إنشاء حساب",
+  "googleSignInTitle": "تسجيل الدخول بجوجل",
+  "googleContinueSignupTitle": "متابعة التسجيل بجوجل",
+  "googleContinueSignupDesc": "بعد ما تكمّل تسجيل الدخول بجوجل في المتصفح، هتتحوّل لصفحة/رابط فيه requestId.\n\nالصق الـ requestId هنا علشان نكمل.",
+  "pasteRequestIdFirst": "الصق requestId (UUID) أولاً",
+  "requestIdLabel": "requestId",
+  "requestIdHint": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "paste": "لصق",
+
+  "completeAccountTitle": "إكمال الحساب",
+  "completeAccountHeaderTitle": "إكمال الحساب",
+  "completeAccountHeaderSubtitle": "من فضلك أضف بيانات التواصل وتفاصيل الأطفال.",
+  "phoneLabel": "رقم الهاتف",
+  "phoneRequired": "رقم الهاتف مطلوب",
+  "passwordRequirementsMin8": "الحد الأدنى 8 أحرف (حروف + أرقام)",
+  "childIndexLabel": "الطفل {index}",
+  "@childIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "genderLabel": "النوع",
+  "addChild": "إضافة طفل",
+  "maxChildrenReached": "الحد الأقصى {max} أطفال",
+  "@maxChildrenReached": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "submitting": "جاري الإرسال…",
+  "complete": "إكمال",
+
+  "fieldRequired": "مطلوب",
+  "maxCharacters": "الحد الأقصى {max} حرف",
+  "@maxCharacters": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "onlyLettersAllowed": "يسمح بالحروف فقط",
+  "birthDateFormatYyyyMmDd": "استخدم YYYY-MM-DD",
+  "invalidDate": "تاريخ غير صالح",
+  "dateMustBePast": "يجب أن يكون التاريخ في الماضي",
+  "childAgeRange": "عمر الطفل يجب أن يكون من 0 إلى 18",
+  "passwordMinChars": "الحد الأدنى {min} أحرف",
+  "@passwordMinChars": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "passwordMaxChars": "الحد الأقصى {max} حرف",
+  "@passwordMaxChars": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "passwordLettersAndNumbers": "استخدم حروف وأرقام",
+  "enterPhoneDigitsRange": "أدخل {min}–{max} رقم",
+  "@enterPhoneDigitsRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+
+  "aiChatSendFailed": "تعذر إرسال الرسالة. حاول مرة أخرى.",
+
+  "bookingDraftIncomplete": "بيانات الحجز غير مكتملة",
+  "noBookingToShow": "لا يوجد حجز للعرض.",
+  "bookingSlotAlreadyBooked": "هذا الموعد تم حجزه بالفعل. اختر وقتًا آخر.",
+  "bookingStartFailedMissingDoctorData": "تعذر بدء الحجز: بيانات الطبيب غير مكتملة.",
+  "selectDoctorFirst": "اختر طبيباً من قائمة الأطباء أولاً",
+  "networkError": "مشكلة في الاتصال بالشبكة. حاول مرة أخرى.",
+  "unknownError": "حدث خطأ غير متوقع. حاول مرة أخرى.",
+
+  "cancelBookingConfirmMessage": "سيتم إلغاء هذا الحجز. هل تريد المتابعة؟",
+  "appointmentsEmptyUpcoming": "لا توجد حجوزات قادمة",
+  "appointmentsEmptyCompleted": "لا توجد حجوزات مكتملة",
+  "appointmentsEmptyCancelled": "لا توجد حجوزات ملغاة",
+
+  "paymentDetailsTitle": "تفاصيل الدفع",
+  "accountAlreadyExistsTitle": "الحساب موجود بالفعل",
+  "editInfo": "تعديل البيانات",
+  "login": "تسجيل الدخول",
+  "addNewCardTitle": "إضافة بطاقة جديدة",
+  "addNewCardSubtitle": "ادخل بيانات بطاقتك لإتمام الدفع بأمان.",
+  "cardNumberLabel": "رقم البطاقة",
+  "cardNumberHint": "0000 0000 0000 0000",
+  "expiryDateLabel": "تاريخ الانتهاء",
+  "securityCodeLabel": "رمز الأمان",
+  "cvvHint": "CVV",
+  "cardHolderNameLabel": "اسم صاحب البطاقة",
+  "cardHolderNameHint": "اكتب الاسم كما هو على البطاقة",
+  "saveCard": "حفظ البطاقة",
+  "dataEncryptedNotice": "بياناتك مشفرة ومحميّة بالكامل."
 
 }

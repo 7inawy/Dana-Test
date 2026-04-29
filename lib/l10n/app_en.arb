@@ -645,6 +645,122 @@
   "bookEmotionsAuthor": "Rana Samir",
   "bookEmotionsDesc": "A guide that helps you identify your child's emotions and guide them to express themselves in a healthy way.",
   "bookEmotionsChapter1Title": "Emotional Intelligence Starts at Home",
-  "bookEmotionsChapter1Body": "Children are not born knowing the names of their feelings, nor do they know how to deal with them. This is a skill that is taught and acquired."
+  "bookEmotionsChapter1Body": "Children are not born knowing the names of their feelings, nor do they know how to deal with them. This is a skill that is taught and acquired.",
+
+  "retry": "Try again",
+  "generateVaccinationSchedule": "Generate vaccination schedule",
+
+  "couldNotOpenBrowser": "Could not open browser",
+  "continueGoogleInBrowser": "Continue Google sign-in in your browser…",
+
+  "googleSignUpTitle": "Sign up",
+  "googleSignInTitle": "Google Sign In",
+  "googleContinueSignupTitle": "Continue Google signup",
+  "googleContinueSignupDesc": "After you finish Google sign-in in the browser, you will be redirected to a page/URL containing a requestId.\n\nPaste that requestId here to continue.",
+  "pasteRequestIdFirst": "Paste the requestId (UUID) first",
+  "requestIdLabel": "requestId",
+  "requestIdHint": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "paste": "Paste",
+
+  "completeAccountTitle": "Complete account",
+  "completeAccountHeaderTitle": "Complete account",
+  "completeAccountHeaderSubtitle": "Please add your contact info and your children details.",
+  "phoneLabel": "Phone",
+  "phoneRequired": "Phone is required",
+  "passwordRequirementsMin8": "Min 8 characters (letters + numbers)",
+  "childIndexLabel": "Child {index}",
+  "@childIndexLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "genderLabel": "Gender",
+  "addChild": "Add child",
+  "maxChildrenReached": "Max {max} children",
+  "@maxChildrenReached": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "submitting": "Submitting…",
+  "complete": "Complete",
+
+  "fieldRequired": "Required",
+  "maxCharacters": "Max {max} characters",
+  "@maxCharacters": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "onlyLettersAllowed": "Only letters are allowed",
+  "birthDateFormatYyyyMmDd": "Use YYYY-MM-DD",
+  "invalidDate": "Invalid date",
+  "dateMustBePast": "Date must be in the past",
+  "childAgeRange": "Child age must be 0–18",
+  "passwordMinChars": "Min {min} characters",
+  "@passwordMinChars": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "passwordMaxChars": "Max {max} characters",
+  "@passwordMaxChars": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "passwordLettersAndNumbers": "Use letters and numbers",
+  "enterPhoneDigitsRange": "Enter {min}–{max} digits",
+  "@enterPhoneDigitsRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+
+  "aiChatSendFailed": "Failed to send message. Please try again.",
+
+  "bookingDraftIncomplete": "Booking details are incomplete",
+  "noBookingToShow": "No booking to show.",
+  "bookingSlotAlreadyBooked": "This time is already booked. Please choose another time.",
+  "bookingStartFailedMissingDoctorData": "Couldn't start booking: doctor data is incomplete.",
+  "selectDoctorFirst": "Select a doctor from the doctors list first",
+  "networkError": "Network error. Please try again.",
+  "unknownError": "Something went wrong. Please try again.",
+
+  "cancelBookingConfirmMessage": "This booking will be cancelled. Do you want to continue?",
+  "appointmentsEmptyUpcoming": "No upcoming appointments",
+  "appointmentsEmptyCompleted": "No completed appointments",
+  "appointmentsEmptyCancelled": "No cancelled appointments",
+
+  "paymentDetailsTitle": "Payment details",
+  "accountAlreadyExistsTitle": "Account already exists",
+  "editInfo": "Edit info",
+  "login": "Login",
+  "addNewCardTitle": "Add a new card",
+  "addNewCardSubtitle": "Enter your card details to complete payment securely.",
+  "cardNumberLabel": "Card number",
+  "cardNumberHint": "0000 0000 0000 0000",
+  "expiryDateLabel": "Expiry date",
+  "securityCodeLabel": "Security code",
+  "cvvHint": "CVV",
+  "cardHolderNameLabel": "Cardholder name",
+  "cardHolderNameHint": "Enter the name as it appears on the card",
+  "saveCard": "Save card",
+  "dataEncryptedNotice": "Your data is fully encrypted and protected."
 
 }

@@ -14,6 +14,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../../../../providers/app_theme_provider.dart';
+import 'package:dana/extensions/localization_extension.dart';
+import 'package:dana/core/errors/error_mapper.dart';
+import 'package:dana/core/widgets/custom_app_bar.dart';
 import '../widgets/sign_up_page_view.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -64,6 +67,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onPageChanged(int index) {
     setState(() => _currentIndex = index);
+  }
+
+  Future<void> _handleBack() async {
+    if (_currentIndex > 0) {
+      await _controller.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      return;
+    }
+    if (!mounted) return;
+    await Navigator.maybePop(context);
   }
 
   @override
@@ -117,12 +132,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
               await showDialog<void>(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                  title: const Text('Account already exists'),
+                  title: Text(context.l10n.accountAlreadyExistsTitle),
                   content: Text(msg),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(ctx).pop(),
-                      child: const Text('Edit info'),
+                      child: Text(context.l10n.editInfo),
                     ),
                     TextButton(
                       onPressed: () {
@@ -132,7 +147,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           AppRoutes.login,
                         );
                       },
-                      child: const Text('Login'),
+                      child: Text(context.l10n.login),
                     ),
                   ],
                 ),
@@ -143,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             if (!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(msg),
+                content: Text(ErrorMapper.localizeMessage(context, msg)),
                 behavior: SnackBarBehavior.floating,
                 backgroundColor: Colors.red,
               ),
@@ -161,8 +176,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 if (!context.mounted) return;
                 if (!ok) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Could not open browser'),
+                    SnackBar(
+                      content: Text(context.l10n.couldNotOpenBrowser),
                       behavior: SnackBarBehavior.floating,
                       backgroundColor: Colors.red,
                     ),
@@ -170,15 +185,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   return;
                 }
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Continue Google sign-up in your browser…'),
+                  SnackBar(
+                    content: Text(context.l10n.continueGoogleInBrowser),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
               } else if (state is GoogleAuthFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(state.message),
+                    content: Text(
+                      ErrorMapper.localizeMessage(context, state.message),
+                    ),
                     backgroundColor: Colors.red,
                     behavior: SnackBarBehavior.floating,
                   ),
@@ -191,7 +208,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
           backgroundColor: isDark
               ? AppColors.bg_surface_default_dark
               : AppColors.bg_surface_default_light,
+          appBar: CustomAppBar(
+            title: context.l10n.googleSignUpTitle,
+            isDark: isDark,
+            onBack: _handleBack,
+          ),
           body: SafeArea(
+            top: false,
             child: Column(
               children: [
                 SizedBox(height: AppSizes.h24),

@@ -13,6 +13,7 @@ import 'package:dana/features/auth/login/presentation/views/screens/login/widget
 import 'package:dana/features/auth/login/presentation/views/screens/login/widgets/login_password_field.dart';
 import 'package:dana/features/auth/login/presentation/views/screens/login/widgets/login_phone_field.dart';
 import 'package:dana/core/widgets/otp_bottom_sheet.dart';
+import 'package:dana/core/errors/error_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -43,7 +44,9 @@ class LoginBody extends StatelessWidget {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.message),
+                  content: Text(
+                    ErrorMapper.localizeMessage(context, state.message),
+                  ),
                   backgroundColor: Colors.red,
                   behavior: SnackBarBehavior.floating,
                 ),
@@ -61,8 +64,8 @@ class LoginBody extends StatelessWidget {
               if (!context.mounted) return;
               if (!ok) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Could not open browser'),
+                  SnackBar(
+                    content: Text(context.l10n.couldNotOpenBrowser),
                     behavior: SnackBarBehavior.floating,
                     backgroundColor: Colors.red,
                   ),
@@ -70,15 +73,17 @@ class LoginBody extends StatelessWidget {
                 return;
               }
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Continue Google sign-in in your browser…'),
+                SnackBar(
+                  content: Text(context.l10n.continueGoogleInBrowser),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
             } else if (state is GoogleAuthFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.message),
+                  content: Text(
+                    ErrorMapper.localizeMessage(context, state.message),
+                  ),
                   backgroundColor: Colors.red,
                   behavior: SnackBarBehavior.floating,
                 ),

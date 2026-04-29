@@ -19,15 +19,16 @@ class AIInputBar extends StatefulWidget {
 }
 
 class _AIInputBarState extends State<AIInputBar> {
+  static const double _kTopPadding = 11;
+  static const double _kHorizontalPadding = 24;
+  static const double _kGap = 10;
+  static const double _kIconSize = 24;
+
   final TextEditingController _controller = TextEditingController();
-  bool _hasText = false;
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() {
-      setState(() => _hasText = _controller.text.trim().isNotEmpty);
-    });
   }
 
   @override
@@ -58,17 +59,27 @@ class _AIInputBarState extends State<AIInputBar> {
           ? AppColors.bg_card_default_dark
           : AppColors.bg_card_default_light,
       padding: EdgeInsets.only(
-        top: 11.h,
-        bottom: 11.h + MediaQuery.of(context).padding.bottom,
-        right: 24.w,
-        left: 24.w,
+        top: _kTopPadding.h,
+        bottom: _kTopPadding.h + MediaQuery.of(context).padding.bottom,
+        right: _kHorizontalPadding.w,
+        left: _kHorizontalPadding.w,
       ),
       child: Row(
         children: [
-          _hasText
-              ? SendButton(onTap: _handleSend)
-              : IconBtn(icon: Icons.add_rounded, onTap: () {}, size: 24),
-          SizedBox(width: 10.w),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _controller,
+            builder: (context, value, _) {
+              final hasText = value.text.trim().isNotEmpty;
+              return hasText
+                  ? SendButton(onTap: _handleSend)
+                  : IconBtn(
+                      icon: Icons.add_rounded,
+                      onTap: () {},
+                      size: _kIconSize,
+                    );
+            },
+          ),
+          SizedBox(width: _kGap.w),
           Expanded(child: InputField(controller: _controller)),
         ],
       ),

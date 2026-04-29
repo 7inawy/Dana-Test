@@ -1,4 +1,5 @@
 import 'package:dana/core/utils/app_routes.dart';
+import 'package:dana/extensions/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -41,8 +42,8 @@ class _GoogleRequestIdScreenState extends State<GoogleRequestIdScreen> {
     final id = _normalize(_controller.text);
     if (id.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Paste the requestId (UUID) first'),
+        SnackBar(
+          content: Text(context.l10n.pasteRequestIdFirst),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.red,
         ),
@@ -55,22 +56,20 @@ class _GoogleRequestIdScreenState extends State<GoogleRequestIdScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Continue Google signup')),
+      appBar: AppBar(title: Text(context.l10n.googleContinueSignupTitle)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'After you finish Google sign-in in the browser, you will be redirected to a page/URL containing a requestId.\n\nPaste that requestId here to continue.',
-              ),
+              Text(context.l10n.googleContinueSignupDesc),
               const SizedBox(height: 16),
               TextField(
                 controller: _controller,
-                decoration: const InputDecoration(
-                  labelText: 'requestId',
-                  hintText: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+                decoration: InputDecoration(
+                  labelText: context.l10n.requestIdLabel,
+                  hintText: context.l10n.requestIdHint,
                 ),
               ),
               const SizedBox(height: 12),
@@ -79,12 +78,12 @@ class _GoogleRequestIdScreenState extends State<GoogleRequestIdScreen> {
                   OutlinedButton.icon(
                     onPressed: _paste,
                     icon: const Icon(Icons.paste),
-                    label: const Text('Paste'),
+                    label: Text(context.l10n.paste),
                   ),
                   const SizedBox(width: 12),
                   FilledButton(
                     onPressed: _continue,
-                    child: const Text('Continue'),
+                    child: Text(context.l10n.continueButton),
                   ),
                 ],
               ),

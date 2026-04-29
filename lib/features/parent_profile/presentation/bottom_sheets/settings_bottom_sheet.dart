@@ -36,7 +36,7 @@ class SettingsBottomSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: HomeIndicator()),
+            const Center(child: HomeIndicator()),
             SizedBox(height: 20.h),
             Text(
               context.l10n.accountSettingsTitle,

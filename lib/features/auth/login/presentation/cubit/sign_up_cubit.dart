@@ -56,6 +56,20 @@ class SignUpCubit extends Cubit<SignUpState> {
   String get phone => ParentPhoneUtils.normalizeForApi(_phone);
 
   // ── Validation ────────────────────────────────────────────────────────────
+  DateTime? _tryParseYyyyMmDd(String raw) {
+    final s = raw.trim();
+    final m = RegExp(r'^(\d{4})-(\d{2})-(\d{2})$').firstMatch(s);
+    if (m == null) return null;
+    final y = int.tryParse(m.group(1)!);
+    final mo = int.tryParse(m.group(2)!);
+    final d = int.tryParse(m.group(3)!);
+    if (y == null || mo == null || d == null) return null;
+    final dt = DateTime(y, mo, d);
+    // Reject impossible dates like 2026-02-31 (DateTime normalizes otherwise).
+    if (dt.year != y || dt.month != mo || dt.day != d) return null;
+    return dt;
+  }
+
   String? validateStep1() {
     if (_parentName.trim().isEmpty) return 'من فضلك ادخل الاسم';
     if (_parentName.trim().length < 3) return 'الاسم يجب أن يكون 3 أحرف على الأقل';
@@ -66,7 +80,20 @@ class SignUpCubit extends Cubit<SignUpState> {
 
   String? validateStep2() {
     if (_childName.trim().isEmpty) return 'من فضلك ادخل اسم الطفل';
+    if (_childName.trim().length < 2) {
+      return 'اسم الطفل يجب أن يكون حرفين على الأقل';
+    }
     if (_childBirthDate.trim().isEmpty) return 'من فضلك ادخل تاريخ الميلاد';
+    final bd = _tryParseYyyyMmDd(_childBirthDate);
+    if (bd == null) return 'استخدم YYYY-MM-DD';
+    final today = DateTime.now();
+    final todayDate = DateTime(today.year, today.month, today.day);
+    final birthDate = DateTime(bd.year, bd.month, bd.day);
+    if (birthDate.isAfter(todayDate)) return 'تاريخ الميلاد لا يمكن أن يكون في المستقبل';
+    // Match CustomDatePicker requirement: child must be at least ~1 month old.
+    if (birthDate.isAfter(todayDate.subtract(const Duration(days: 30)))) {
+      return 'يجب أن يكون عمر الطفل شهر على الأقل';
+    }
     return null;
   }
 
@@ -89,8 +116,11 @@ class SignUpCubit extends Cubit<SignUpState> {
 
   String? validateStep4() {
     if (_password.trim().isEmpty) return 'من فضلك ادخل كلمة المرور';
-    if (_password.trim().length < 6)
-      return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+    final p = _password.trim();
+    if (p.length < 8) return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
+    if (!RegExp(r'[A-Za-z]').hasMatch(p) || !RegExp(r'[0-9]').hasMatch(p)) {
+      return 'كلمة المرور يجب أن تحتوي على حروف وأرقام';
+    }
     return null;
   }
 

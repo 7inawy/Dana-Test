@@ -2,12 +2,12 @@ import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_routes.dart';
 import 'package:dana/core/auth/auth_session.dart';
 import 'package:dana/core/di/injection_container.dart';
-import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:async';
+import 'package:dana/extensions/theme_mode_extension.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String routeName = 'SplashScreen';
@@ -23,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _slideController;
   late AnimationController _bounceRightController;
   late AnimationController _bounceLeftController;
+  Timer? _startDelay;
 
   late Animation<Offset> _leftSlide;
   late Animation<Offset> _rightSlide;
@@ -75,7 +76,8 @@ class _SplashScreenState extends State<SplashScreen>
         );
 
     // أول حاجة: حركة الدخول
-    Future.delayed(Duration(milliseconds: 200), () {
+    _startDelay = Timer(const Duration(milliseconds: 200), () {
+      if (!mounted) return;
       _slideController.forward();
     });
 
@@ -84,10 +86,13 @@ class _SplashScreenState extends State<SplashScreen>
       if (status == AnimationStatus.completed) {
         // الأول اليمين
         await _bounceRightController.forward();
+        if (!mounted) return;
         await _bounceRightController.reverse();
+        if (!mounted) return;
 
         // بعدين الشمال
         await _bounceLeftController.forward();
+        if (!mounted) return;
         await _bounceLeftController.reverse();
 
         final hasToken = await sl<AuthSession>().hasToken();
@@ -102,6 +107,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
+    _startDelay?.cancel();
     _slideController.dispose();
     _bounceRightController.dispose();
     _bounceLeftController.dispose();
@@ -110,11 +116,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<AppThemeProvider>();
-    final isDark =
-        themeProvider.appTheme == ThemeMode.dark ||
-        (themeProvider.appTheme == ThemeMode.system &&
-            MediaQuery.of(context).platformBrightness == Brightness.dark);
+    final isDark = context.isDarkModeWatch;
     final isRTL = Directionality.of(context) == TextDirection.rtl;
 
     return Scaffold(

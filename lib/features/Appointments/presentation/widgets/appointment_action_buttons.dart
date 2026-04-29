@@ -46,8 +46,8 @@ class AppointmentActionButtons extends StatelessWidget {
     final args = bookingDoctorArgsFromAppointment(appointment);
     if (args == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('تعذر بدء الحجز: بيانات الطبيب غير مكتملة.'),
+        SnackBar(
+          content: Text(context.l10n.bookingStartFailedMissingDoctorData),
           behavior: SnackBarBehavior.floating,
         ),
       );

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../extensions/localization_extension.dart';
 import '../../controller/data/model/message_model.dart';
 import '../../../../Chat_with_doctor/presentation/views/screens/Doctor_chat/widgets/messages_list.dart';
 import '../widgets/aI_Input_Bar.dart';
@@ -110,7 +111,7 @@ class _AIChatScreenState extends State<AIChatScreen> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to send message. Please try again.')),
+        SnackBar(content: Text(context.l10n.aiChatSendFailed)),
       );
     } finally {
       if (mounted) {
@@ -146,9 +147,11 @@ class _AIChatScreenState extends State<AIChatScreen> {
   }
 
   String _formatTime(DateTime dt) {
-    final h = dt.hour.toString().padLeft(2, '0');
-    final m = dt.minute.toString().padLeft(2, '0');
-    return '$h:$m';
+    final tod = TimeOfDay.fromDateTime(dt);
+    return MaterialLocalizations.of(context).formatTimeOfDay(
+      tod,
+      alwaysUse24HourFormat: MediaQuery.of(context).alwaysUse24HourFormat,
+    );
   }
 
   @override

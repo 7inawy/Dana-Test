@@ -9,6 +9,23 @@ class VideoPlaybackCoordinator {
   static VideoPlayerController? _activeVideo;
   static YoutubePlayerController? _activeYoutube;
 
+  static Future<void> pauseActive() async {
+    final prevVideo = _activeVideo;
+    final prevYoutube = _activeYoutube;
+
+    try {
+      if (prevVideo != null && prevVideo.value.isPlaying) {
+        await prevVideo.pause();
+      }
+    } catch (_) {}
+
+    try {
+      if (prevYoutube != null && prevYoutube.value.isPlaying) {
+        prevYoutube.pause();
+      }
+    } catch (_) {}
+  }
+
   static Future<void> setActiveVideo(VideoPlayerController controller) async {
     if (identical(_activeVideo, controller)) return;
 

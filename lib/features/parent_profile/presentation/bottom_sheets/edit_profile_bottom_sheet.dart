@@ -30,7 +30,6 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
   late final TextEditingController _addressCtrl;
   late final TextEditingController _phoneCtrl;
   String? _governorate;
-  String _phoneForApi = '';
   bool _saving = false;
 
   List<String> get _govItems {
@@ -48,7 +47,6 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
     _emailCtrl = TextEditingController(text: p.email);
     _addressCtrl = TextEditingController(text: p.address);
     _phoneCtrl = TextEditingController(text: p.phone);
-    _phoneForApi = ParentPhoneUtils.normalizeForApi(p.phone);
     final gov = p.government.trim();
     _governorate = gov.isNotEmpty && _govItems.contains(gov)
         ? gov
@@ -64,24 +62,24 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
     super.dispose();
   }
 
-  String get _effectivePhone => _phoneForApi.isNotEmpty
-      ? _phoneForApi
-      : ParentPhoneUtils.normalizeForApi(_phoneCtrl.text);
+  String get _effectivePhoneNormalized =>
+      ParentPhoneUtils.normalizeForApi(_phoneCtrl.text);
 
   String get _initialPhoneNormalized =>
       ParentPhoneUtils.normalizeForApi(widget.initial.phone);
 
   bool get _needsPhoneOtp =>
-      _effectivePhone.isNotEmpty &&
-      _effectivePhone != _initialPhoneNormalized;
+      _effectivePhoneNormalized.isNotEmpty &&
+      _effectivePhoneNormalized != _initialPhoneNormalized;
 
   Future<void> _save(BuildContext context) async {
     final gov = _governorate ?? _govItems.first;
     final cubit = context.read<ParentProfileCubit>();
+    final effectivePhone = _effectivePhoneNormalized;
 
     if (_needsPhoneOtp) {
       setState(() => _saving = true);
-      final sendErr = await cubit.requestPhoneChangeOtp(phone: _effectivePhone);
+      final sendErr = await cubit.requestPhoneChangeOtp(phone: effectivePhone);
       if (!mounted) return;
       setState(() => _saving = false);
       if (sendErr != null) {
@@ -93,9 +91,9 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
 
       OtpBottomSheet.show(
         context,
-        _effectivePhone,
+        effectivePhone,
         onResendOtp: () async {
-          final err = await cubit.requestPhoneChangeOtp(phone: _effectivePhone);
+          final err = await cubit.requestPhoneChangeOtp(phone: effectivePhone);
           if (!context.mounted || err == null) return;
           ScaffoldMessenger.of(
             context,
@@ -104,25 +102,32 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
         onVerified: (pin) => _persistProfile(
           context,
           gov: gov,
+          effectivePhone: effectivePhone,
           phoneOtp: pin,
         ),
       );
       return;
     }
 
-    await _persistProfile(context, gov: gov, phoneOtp: null);
+    await _persistProfile(
+      context,
+      gov: gov,
+      effectivePhone: effectivePhone,
+      phoneOtp: null,
+    );
   }
 
   Future<void> _persistProfile(
     BuildContext context, {
     required String gov,
+    required String effectivePhone,
     String? phoneOtp,
   }) async {
     setState(() => _saving = true);
     final err = await context.read<ParentProfileCubit>().updateProfile(
       parentName: _nameCtrl.text,
       email: _emailCtrl.text,
-      phone: _effectivePhone,
+      phone: effectivePhone,
       government: gov,
       address: _addressCtrl.text,
       phoneOtp: phoneOtp,
@@ -204,8 +209,6 @@ class _EditProfileBottomSheetState extends State<EditProfileBottomSheet> {
                   height: 64.h,
                   child: CustomPhoneField(
                     controller: _phoneCtrl,
-                    onNormalizedNumberChanged: (n) =>
-                        setState(() => _phoneForApi = n),
                   ),
                 ),
                 SizedBox(height: 16.h),

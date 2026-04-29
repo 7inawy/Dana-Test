@@ -22,13 +22,12 @@ class BookCardHorizontal extends StatelessWidget {
         (themeProvider.appTheme == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
     final isRtl = Localizations.localeOf(context).languageCode == 'ar';
+    final locale = Localizations.localeOf(context);
 
     return SizedBox(
       width: 142.w,
       child: Column(
-        crossAxisAlignment: isRtl
-            ? CrossAxisAlignment.start
-            : CrossAxisAlignment.end,
+        crossAxisAlignment: isRtl ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Container(
             width: 142.w,
@@ -57,7 +56,7 @@ class BookCardHorizontal extends StatelessWidget {
           SizedBox(height: 8.h),
           SizedBox(
             child: Text(
-              book.title,
+              book.titleForLocale(locale),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: isRtl ? TextAlign.right : TextAlign.left,
@@ -67,7 +66,7 @@ class BookCardHorizontal extends StatelessWidget {
           ),
           SizedBox(height: 4.h),
           Text(
-            book.author,
+            book.authorForLocale(locale),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: isRtl ? TextAlign.right : TextAlign.left,

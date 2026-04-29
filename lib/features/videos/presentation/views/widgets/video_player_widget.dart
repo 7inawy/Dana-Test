@@ -5,6 +5,7 @@ import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:async';
 
 import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_raduis.dart';
@@ -21,6 +22,25 @@ class VideoPlayerWidget extends StatefulWidget {
 }
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+  static const YoutubePlayerFlags _kYoutubeFlags = YoutubePlayerFlags(
+    autoPlay: false,
+    mute: false,
+  );
+
+  static const Duration _kYoutubeProgressDebounce = Duration(milliseconds: 250);
+  static const Duration _kSeekStep = Duration(seconds: 10);
+
+  static const double _kOuterWidth = 392;
+  static const double _kOuterHeight = 256;
+  static const double _kErrorHorizontalPadding = 16;
+  static const double _kErrorGap = 12;
+  static const double _kProgressBarHeight = 3;
+  static const double _kControlsHorizontalPadding = 16;
+  static const double _kControlsVerticalPadding = 10;
+  static const double _kControlsGap = 12;
+  static const double _kIconSize = 24;
+  static const FontWeight _kControlsFontWeight = FontWeight.w500;
+
   VideoPlayerController? _videoController;
   ChewieController? _chewieController;
   YoutubePlayerController? _youtubeController;
@@ -29,13 +49,24 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   bool _webViewLoading = false;
   bool _initStarted = false;
   String? _initError;
-  Duration _currentPosition = Duration.zero;
-  Duration _totalDuration = Duration.zero;
   bool _wasPlaying = false;
+  final ValueNotifier<_YoutubeProgress> _youtubeProgress =
+      ValueNotifier(const _YoutubeProgress.zero());
+  Timer? _ytProgressDebounce;
+
+  YoutubePlayerController? get _yt => _youtubeController;
 
   String get _url => (widget.video.videoUrl ?? '').trim();
 
   static final RegExp _youtubeIdPattern = RegExp(r'^[a-zA-Z0-9_-]{11}$');
+
+  @override
+  void dispose() {
+    _ytProgressDebounce?.cancel();
+    _youtubeProgress.dispose();
+    _disposePlayers();
+    super.dispose();
+  }
 
   String? _sanitizeYouTubeId(String? raw) {
     final v = (raw ?? '').trim();
@@ -144,22 +175,9 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         }
         _youtubeController = YoutubePlayerController(
           initialVideoId: videoId,
-          flags: const YoutubePlayerFlags(
-            autoPlay: false,
-            mute: false,
-          ),
+          flags: _kYoutubeFlags,
         );
-        _youtubeController!.addListener(() {
-          if (!mounted) return;
-          final c = _youtubeController!;
-          if (c.value.isPlaying) {
-            VideoPlaybackCoordinator.setActiveYoutube(c);
-          }
-          setState(() {
-            _currentPosition = c.value.position;
-            _totalDuration = c.metadata.duration;
-          });
-        });
+        _youtubeController!.addListener(_handleYoutubeTick);
         if (mounted) setState(() {});
         return;
       }
@@ -249,6 +267,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     }
     final yc = _youtubeController;
     if (yc != null) {
+      yc.removeListener(_handleYoutubeTick);
       VideoPlaybackCoordinator.clearYoutube(yc);
     }
     _chewieController?.dispose();
@@ -258,6 +277,27 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     _youtubeController?.dispose();
     _youtubeController = null;
     _webViewController = null;
+  }
+
+  void _handleYoutubeTick() {
+    final c = _yt;
+    if (c == null || !mounted) return;
+
+    if (c.value.isPlaying) {
+      VideoPlaybackCoordinator.setActiveYoutube(c);
+    }
+
+    // YouTube controller notifies very frequently; throttle UI updates.
+    if (_ytProgressDebounce?.isActive ?? false) return;
+    _ytProgressDebounce = Timer(_kYoutubeProgressDebounce, () {
+      final ctrl = _yt;
+      if (ctrl == null || !mounted) return;
+      _youtubeProgress.value = _YoutubeProgress(
+        position: ctrl.value.position,
+        duration: ctrl.metadata.duration,
+        isPlaying: ctrl.value.isPlaying,
+      );
+    });
   }
 
   void _handleNativeVideoPlaybackChange() {
@@ -282,178 +322,348 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   void _seekBackward() {
-    final c = _youtubeController;
+    final c = _yt;
     if (c == null) return;
-    final newPosition = _currentPosition - const Duration(seconds: 10);
+    final p = _youtubeProgress.value.position;
+    final newPosition = p - _kSeekStep;
     c.seekTo(newPosition < Duration.zero ? Duration.zero : newPosition);
   }
 
   void _seekForward() {
-    final c = _youtubeController;
+    final c = _yt;
     if (c == null) return;
-    final newPosition = _currentPosition + const Duration(seconds: 10);
-    c.seekTo(newPosition > _totalDuration ? _totalDuration : newPosition);
-  }
-
-  @override
-  void dispose() {
-    _disposePlayers();
-    super.dispose();
+    final p = _youtubeProgress.value.position;
+    final d = _youtubeProgress.value.duration;
+    final newPosition = p + _kSeekStep;
+    c.seekTo(newPosition > d ? d : newPosition);
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final player = _initError != null
-        ? Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    _initError!,
-                    textAlign: TextAlign.center,
-                    style: AppTextStyle.medium12TextBody(context),
-                  ),
-                  SizedBox(height: 12.h),
-                ],
-              ),
-            ),
-          )
-        : (_youtubeController != null
-            ? Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Video
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(AppRadius.radius_lg),
-                      child: YoutubePlayer(
-                        controller: _youtubeController!,
-                        showVideoProgressIndicator: false,
-                      ),
-                    ),
-                  ),
-
-                  // Progress bar (tap to seek)
-                  GestureDetector(
-                    onTapDown: (details) {
-                      if (_totalDuration.inMilliseconds <= 0) return;
-                      final box = context.findRenderObject() as RenderBox?;
-                      if (box == null) return;
-                      final dx = details.localPosition.dx / box.size.width;
-                      final seekTo = _totalDuration * dx;
-                      _youtubeController!.seekTo(seekTo);
-                    },
-                    child: SizedBox(
-                      height: 3.h,
-                      child: LinearProgressIndicator(
-                        value: _totalDuration.inSeconds > 0
-                            ? (_currentPosition.inSeconds /
-                                _totalDuration.inSeconds)
-                            : 0,
-                        backgroundColor: isDark
-                            ? AppColors.border_card_default_dark
-                            : AppColors.border_card_default_light,
-                        valueColor: const AlwaysStoppedAnimation(
-                          AppColors.primary_default_light,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Controls row
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-                    child: Row(
-                      textDirection: TextDirection.ltr,
-                      children: [
-                        GestureDetector(
-                          onTap: _seekBackward,
-                          child: Icon(
-                            Icons.replay_10,
-                            size: 24.sp,
-                            color: isDark
-                                ? AppColors.text_heading_dark
-                                : AppColors.text_heading_light,
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        GestureDetector(
-                          onTap: () {
-                            final c = _youtubeController!;
-                            if (c.value.isPlaying) {
-                              c.pause();
-                            } else {
-                              VideoPlaybackCoordinator.setActiveYoutube(c);
-                              c.play();
-                            }
-                            setState(() {});
-                          },
-                          child: Icon(
-                            _youtubeController!.value.isPlaying
-                                ? Icons.pause
-                                : Icons.play_arrow,
-                            size: 24.sp,
-                            color: isDark
-                                ? AppColors.text_heading_dark
-                                : AppColors.text_heading_light,
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        GestureDetector(
-                          onTap: _seekForward,
-                          child: Icon(
-                            Icons.forward_10,
-                            size: 24.sp,
-                            color: isDark
-                                ? AppColors.text_heading_dark
-                                : AppColors.text_heading_light,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          '${_formatDuration(_currentPosition)} / ${_formatDuration(_totalDuration)}',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            color: isDark
-                                ? AppColors.text_body_dark
-                                : AppColors.text_body_light,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            : (_chewieController != null
-                ? Chewie(controller: _chewieController!)
-                : (_useWebView && _webViewController != null
-                    ? Stack(
-                        children: [
-                          WebViewWidget(controller: _webViewController!),
-                          if (_webViewLoading)
-                            const Center(child: CircularProgressIndicator()),
-                        ],
-                      )
-                    : const Center(child: CircularProgressIndicator()))));
-
+    final player = _buildPlayer(context, isDark: isDark);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.radius_lg),
           child: SizedBox(
-            width: 392.w,
-            height: 256.h,
+            width: _kOuterWidth.w,
+            height: _kOuterHeight.h,
             child: player,
           ),
         ),
       ],
     );
   }
+
+  Widget _buildPlayer(BuildContext context, {required bool isDark}) {
+    if (_initError != null) {
+      return _ErrorView(
+        message: _initError!,
+        horizontalPadding: _kErrorHorizontalPadding,
+        gap: _kErrorGap,
+      );
+    }
+
+    final ytController = _youtubeController;
+    if (ytController != null) {
+      return _YoutubePlayerView(
+        controller: ytController,
+        progress: _youtubeProgress,
+        isDark: isDark,
+        onSeekBackward: _seekBackward,
+        onSeekForward: _seekForward,
+        onTogglePlayPause: () {
+          final c = _yt;
+          if (c == null) return;
+          if (c.value.isPlaying) {
+            c.pause();
+          } else {
+            VideoPlaybackCoordinator.setActiveYoutube(c);
+            c.play();
+          }
+        },
+        formatDuration: _formatDuration,
+        progressBarHeight: _kProgressBarHeight,
+        controlsHorizontalPadding: _kControlsHorizontalPadding,
+        controlsVerticalPadding: _kControlsVerticalPadding,
+        controlsGap: _kControlsGap,
+        iconSize: _kIconSize,
+        controlsFontWeight: _kControlsFontWeight,
+      );
+    }
+
+    final chewie = _chewieController;
+    if (chewie != null) {
+      return Chewie(controller: chewie);
+    }
+
+    if (_useWebView && _webViewController != null) {
+      return _WebViewStack(
+        controller: _webViewController!,
+        loading: _webViewLoading,
+      );
+    }
+
+    return const Center(child: CircularProgressIndicator());
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  final String message;
+  final double horizontalPadding;
+  final double gap;
+
+  const _ErrorView({
+    required this.message,
+    required this.horizontalPadding,
+    required this.gap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: AppTextStyle.medium12TextBody(context),
+            ),
+            SizedBox(height: gap.h),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WebViewStack extends StatelessWidget {
+  final WebViewController controller;
+  final bool loading;
+
+  const _WebViewStack({required this.controller, required this.loading});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        WebViewWidget(controller: controller),
+        if (loading) const Center(child: CircularProgressIndicator()),
+      ],
+    );
+  }
+}
+
+class _YoutubePlayerView extends StatelessWidget {
+  final YoutubePlayerController controller;
+  final ValueNotifier<_YoutubeProgress> progress;
+  final bool isDark;
+  final VoidCallback onSeekBackward;
+  final VoidCallback onSeekForward;
+  final VoidCallback onTogglePlayPause;
+  final String Function(Duration) formatDuration;
+  final double progressBarHeight;
+  final double controlsHorizontalPadding;
+  final double controlsVerticalPadding;
+  final double controlsGap;
+  final double iconSize;
+  final FontWeight controlsFontWeight;
+
+  const _YoutubePlayerView({
+    required this.controller,
+    required this.progress,
+    required this.isDark,
+    required this.onSeekBackward,
+    required this.onSeekForward,
+    required this.onTogglePlayPause,
+    required this.formatDuration,
+    required this.progressBarHeight,
+    required this.controlsHorizontalPadding,
+    required this.controlsVerticalPadding,
+    required this.controlsGap,
+    required this.iconSize,
+    required this.controlsFontWeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.radius_lg),
+            child: YoutubePlayer(
+              controller: controller,
+              showVideoProgressIndicator: false,
+            ),
+          ),
+        ),
+        _YoutubeProgressBar(
+          progress: progress,
+          height: progressBarHeight,
+          isDark: isDark,
+          onTapDown: (details) {
+            final total = progress.value.duration;
+            if (total.inMilliseconds <= 0) return;
+            final box = context.findRenderObject() as RenderBox?;
+            if (box == null) return;
+            final dx = details.localPosition.dx / box.size.width;
+            final seekTo = total * dx;
+            controller.seekTo(seekTo);
+          },
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: controlsHorizontalPadding.w,
+            vertical: controlsVerticalPadding.h,
+          ),
+          child: ValueListenableBuilder<_YoutubeProgress>(
+            valueListenable: progress,
+            builder: (context, p, _) {
+              return _YoutubeControlsRow(
+                progress: p,
+                isDark: isDark,
+                onSeekBackward: onSeekBackward,
+                onSeekForward: onSeekForward,
+                onTogglePlayPause: onTogglePlayPause,
+                formatDuration: formatDuration,
+                gap: controlsGap,
+                iconSize: iconSize,
+                fontWeight: controlsFontWeight,
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _YoutubeProgressBar extends StatelessWidget {
+  final ValueNotifier<_YoutubeProgress> progress;
+  final double height;
+  final bool isDark;
+  final GestureTapDownCallback onTapDown;
+
+  const _YoutubeProgressBar({
+    required this.progress,
+    required this.height,
+    required this.isDark,
+    required this.onTapDown,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: onTapDown,
+      child: SizedBox(
+        height: height.h,
+        child: ValueListenableBuilder<_YoutubeProgress>(
+          valueListenable: progress,
+          builder: (context, p, _) {
+            return LinearProgressIndicator(
+              value: p.duration.inSeconds > 0
+                  ? (p.position.inSeconds / p.duration.inSeconds)
+                  : 0,
+              backgroundColor: isDark
+                  ? AppColors.border_card_default_dark
+                  : AppColors.border_card_default_light,
+              valueColor: const AlwaysStoppedAnimation(
+                AppColors.primary_default_light,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _YoutubeControlsRow extends StatelessWidget {
+  final _YoutubeProgress progress;
+  final bool isDark;
+  final VoidCallback onSeekBackward;
+  final VoidCallback onSeekForward;
+  final VoidCallback onTogglePlayPause;
+  final String Function(Duration) formatDuration;
+  final double gap;
+  final double iconSize;
+  final FontWeight fontWeight;
+
+  const _YoutubeControlsRow({
+    required this.progress,
+    required this.isDark,
+    required this.onSeekBackward,
+    required this.onSeekForward,
+    required this.onTogglePlayPause,
+    required this.formatDuration,
+    required this.gap,
+    required this.iconSize,
+    required this.fontWeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final iconColor = isDark
+        ? AppColors.text_heading_dark
+        : AppColors.text_heading_light;
+    final textColor =
+        isDark ? AppColors.text_body_dark : AppColors.text_body_light;
+
+    return Row(
+      textDirection: Directionality.of(context),
+      children: [
+        GestureDetector(
+          onTap: onSeekBackward,
+          child: Icon(Icons.replay_10, size: iconSize.sp, color: iconColor),
+        ),
+        SizedBox(width: gap.w),
+        GestureDetector(
+          onTap: onTogglePlayPause,
+          child: Icon(
+            progress.isPlaying ? Icons.pause : Icons.play_arrow,
+            size: iconSize.sp,
+            color: iconColor,
+          ),
+        ),
+        SizedBox(width: gap.w),
+        GestureDetector(
+          onTap: onSeekForward,
+          child: Icon(Icons.forward_10, size: iconSize.sp, color: iconColor),
+        ),
+        const Spacer(),
+        Text(
+          '${formatDuration(progress.position)} / ${formatDuration(progress.duration)}',
+          style: TextStyle(
+            fontSize: 12.sp,
+            fontWeight: fontWeight,
+            color: textColor,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _YoutubeProgress {
+  final Duration position;
+  final Duration duration;
+  final bool isPlaying;
+
+  const _YoutubeProgress({
+    required this.position,
+    required this.duration,
+    required this.isPlaying,
+  });
+
+  const _YoutubeProgress.zero()
+      : position = Duration.zero,
+        duration = Duration.zero,
+        isPlaying = false;
 }

@@ -9,17 +9,20 @@ import '../../../../../providers/app_theme_provider.dart';
 import '../../../data/model/video_Model.dart';
 
 import '../screens/video_details_screen.dart';
+import '../../utils/video_playback_coordinator.dart';
 
 class VideoCard extends StatelessWidget {
   final VideoModel video;
   final List<VideoModel> relatedVideos;
   final double? imageWidth;
+  final bool replaceCurrent;
 
   const VideoCard({
     super.key,
     required this.video,
     this.relatedVideos = const [],
     this.imageWidth,
+    this.replaceCurrent = false,
   });
 
   Widget _thumbnailPlaceholder(BuildContext context, {required double width}) {
@@ -62,20 +65,26 @@ class VideoCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) =>
-                VideoDetailsScreen(video: video, relatedVideos: relatedVideos),
-          ),
+        // Stop any currently playing video before navigating, because the
+        // previous details route may still be alive in the navigation stack.
+        VideoPlaybackCoordinator.pauseActive();
+
+        final route = MaterialPageRoute(
+          builder: (_) =>
+              VideoDetailsScreen(video: video, relatedVideos: relatedVideos),
         );
+
+        if (replaceCurrent) {
+          Navigator.pushReplacement(context, route);
+        } else {
+          Navigator.push(context, route);
+        }
       },
       child: SizedBox(
         width: width,
         child: Column(
-          crossAxisAlignment: isRtl
-              ? CrossAxisAlignment.start
-              : CrossAxisAlignment.end,
+          crossAxisAlignment:
+              isRtl ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             Container(
               width: width,
@@ -117,7 +126,7 @@ class VideoCard extends StatelessWidget {
             SizedBox(
               width: width,
               child: Text(
-                video.title,
+                video.titleForLocale(Localizations.localeOf(context)),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: isRtl ? TextAlign.right : TextAlign.left,

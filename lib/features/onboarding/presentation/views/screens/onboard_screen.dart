@@ -4,10 +4,9 @@ import 'package:dana/features/onboarding/presentation/views/widgets/custom_onboa
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 import '../../../../../core/utils/app_assets.dart';
 import '../../../../../core/utils/app_colors.dart';
-import '../../../../../providers/app_theme_provider.dart';
+import 'package:dana/extensions/theme_mode_extension.dart';
 
 class OnBoardScreen extends StatefulWidget {
   static const String routeName = 'OnBoardScreen';
@@ -18,16 +17,18 @@ class OnBoardScreen extends StatefulWidget {
 }
 
 class _ScreenOnboardState extends State<OnBoardScreen> {
-  PageController controller = PageController();
+  final PageController controller = PageController();
   int index = 0;
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<AppThemeProvider>();
-    final isDark =
-        themeProvider.appTheme == ThemeMode.dark ||
-        (themeProvider.appTheme == ThemeMode.system &&
-            MediaQuery.of(context).platformBrightness == Brightness.dark);
+    final isDark = context.isDarkModeWatch;
     final onboardList = OnboardModel.getOnboardingData(context);
 
     return Scaffold(

@@ -6,6 +6,8 @@ import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/core/widgets/home_indicator.dart';
 import 'package:dana/extensions/localization_extension.dart';
+import 'package:dana/features/Chat_bot/data/storage/ai_chat_storage.dart';
+import 'package:dana/features/auth/login/data/model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -30,7 +32,7 @@ class _LogOutBottomSheetState extends State<LogOutBottomSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Center(child: HomeIndicator()),
+            const Center(child: HomeIndicator()),
             SizedBox(height: 20.h),
             Center(
               child: SvgPicture.asset(
@@ -70,6 +72,16 @@ class _LogOutBottomSheetState extends State<LogOutBottomSheet> {
                     text: context.l10n.confirmLogoutButton,
                     textColor: AppColors.error_default_light,
                     onTap: () async {
+                      // Clear user-scoped local caches (best-effort) before clearing the session.
+                      try {
+                        final token = await sl<AuthSession>().token();
+                        if (token != null && token.trim().isNotEmpty) {
+                          final userId = UserModel.fromToken(token: token).id.trim();
+                          if (userId.isNotEmpty) {
+                            await AIChatStorage.clearAllForUser(userId: userId);
+                          }
+                        }
+                      } catch (_) {}
                       await sl<AuthSession>().clear();
                       Navigator.pushNamedAndRemoveUntil(
                         context,

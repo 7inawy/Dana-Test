@@ -123,6 +123,7 @@ import '../auth/dio_error_interceptor.dart';
 import '../auth/dio_unauthorized_interceptor.dart';
 import '../auth/token_storage.dart';
 import '../log/debug_audit_log.dart';
+import '../network/dio_security.dart';
 import '../../features/auth/login/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/login/data/datasources/auth_remote_data_source_impl.dart';
 import '../../features/auth/login/data/repo/auth_repository_impl.dart';
@@ -145,6 +146,7 @@ import '../../features/auth/login/presentation/cubit/sign_up_cubit.dart';
 import '../../features/booking/data/repo/booking_repo.dart';
 import '../../features/booking/data/services/booking_service.dart';
 import '../../features/booking/presentation/cubit/booking_cubit.dart';
+import '../../features/booking/presentation/cubit/payment_children_cubit.dart';
 import '../../features/parent_profile/data/datasources/parent_profile_remote_data_source.dart';
 import '../../features/parent_profile/data/datasources/parent_profile_remote_data_source_impl.dart';
 import '../../features/parent_profile/data/repo/parent_profile_repository.dart';
@@ -327,6 +329,7 @@ Future<void> init() async {
         headers: {'Accept': 'application/json'},
       ),
     );
+    configureDioSecurity(dio);
     dio.interceptors.add(DioErrorInterceptor());
     dio.interceptors.add(DioAuthInterceptor(sl<AuthSession>()));
     dio.interceptors.add(DioUnauthorizedInterceptor(sl<AuthSession>()));
@@ -494,6 +497,7 @@ Future<void> init() async {
   sl.registerFactory<GoogleAuthCubit>(() => GoogleAuthCubit(sl()));
 
   sl.registerFactory<BookingCubit>(() => BookingCubit(sl()));
+  sl.registerFactory<PaymentChildrenCubit>(() => PaymentChildrenCubit(sl()));
   sl.registerFactory<ParentProfileCubit>(() => ParentProfileCubit(sl()));
   sl.registerFactory<DoctorsListCubit>(() => DoctorsListCubit(sl()));
   sl.registerFactory<VaccinationScheduleCubit>(

@@ -1,6 +1,8 @@
 import 'package:dana/core/widgets/text_frame.dart';
 import 'package:dana/core/utils/app_colors.dart';
 import 'package:dana/core/utils/app_text_style.dart';
+import 'package:dana/core/utils/currency_helper.dart';
+import 'package:dana/extensions/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,10 +13,14 @@ class PaymentDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final feeLabel = CurrencyHelper.format(context, 250);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('تفاصيل الدفع', style: AppTextStyle.bold16TextDisplay(context)),
+        Text(
+          context.l10n.paymentDetailsTitle,
+          style: AppTextStyle.bold16TextDisplay(context),
+        ),
         SizedBox(height: 12.h),
         TextFrame(
           child: Column(
@@ -23,10 +29,10 @@ class PaymentDetailsSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'تكلفة الخدمة',
+                    context.l10n.serviceCost,
                     style: AppTextStyle.bold12TextHeading(context),
                   ),
-                  Text('250 ج', style: AppTextStyle.bold12TextHeading(context)),
+                  Text(feeLabel, style: AppTextStyle.bold12TextHeading(context)),
                 ],
               ),
               SizedBox(height: 10.h),
@@ -34,10 +40,13 @@ class PaymentDetailsSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'ضريبة',
+                    context.l10n.tax,
                     style: AppTextStyle.semibold12TextBody(context),
                   ),
-                  Text('0 ج', style: AppTextStyle.semibold12TextBody(context)),
+                  Text(
+                    CurrencyHelper.format(context, 0),
+                    style: AppTextStyle.semibold12TextBody(context),
+                  ),
                 ],
               ),
             ],
@@ -55,10 +64,13 @@ class PaymentDetailsSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'إجمالي التكلفة',
+                context.l10n.totalCost,
                 style: AppTextStyle.bold12TextDisplay(context),
               ),
-              Text('250 ج', style: AppTextStyle.semibold12TextDisplay(context)),
+              Text(
+                feeLabel,
+                style: AppTextStyle.semibold12TextDisplay(context),
+              ),
             ],
           ),
         ),

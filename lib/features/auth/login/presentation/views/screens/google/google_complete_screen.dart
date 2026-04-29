@@ -9,6 +9,8 @@ import 'package:dana/core/widgets/custom_screen_header.dart';
 import 'package:dana/core/widgets/custom_textForm.dart';
 import 'package:dana/core/widgets/password_field.dart';
 import 'package:dana/core/widgets/phone_field.dart';
+import 'package:dana/extensions/localization_extension.dart';
+import 'package:dana/core/errors/error_mapper.dart';
 import 'package:dana/features/auth/login/data/datasources/auth_remote_data_source.dart';
 import 'package:dana/features/auth/login/presentation/cubit/google_auth_cubit.dart';
 import 'package:dana/features/auth/login/presentation/cubit/google_auth_state.dart';
@@ -18,6 +20,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../providers/app_theme_provider.dart';
+import 'google_complete_validators.dart';
 
 class GoogleCompleteScreen extends StatefulWidget {
   static const String routeName = 'GoogleCompleteScreen';
@@ -51,10 +54,6 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
   final _address = TextEditingController();
 
   final List<_ChildForm> _children = [_ChildForm()];
-
-  static const int _maxGovernmentLen = 50;
-  static const int _maxAddressLen = 120;
-  static const int _maxChildNameLen = 50;
   static const int _maxChildren = 5;
 
   @override
@@ -81,81 +80,6 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
         .toList();
   }
 
-  String? _requiredText(String? v) {
-    if (v == null || v.trim().isEmpty) return 'Required';
-    return null;
-  }
-
-  String? _validateGovernment(String? v) {
-    final s = (v ?? '').trim();
-    if (s.isEmpty) return 'Required';
-    if (s.length > _maxGovernmentLen) {
-      return 'Max $_maxGovernmentLen characters';
-    }
-    // Arabic/English letters + spaces + hyphen
-    final ok = RegExp(r'^[\p{L}\s-]+$', unicode: true).hasMatch(s);
-    if (!ok) return 'Only letters are allowed';
-    return null;
-  }
-
-  String? _validateAddress(String? v) {
-    final s = (v ?? '').trim();
-    if (s.isEmpty) return 'Required';
-    if (s.length > _maxAddressLen) {
-      return 'Max $_maxAddressLen characters';
-    }
-    return null;
-  }
-
-  String? _validatePassword(String? v) {
-    final s = (v ?? '').trim();
-    if (s.isEmpty) return 'Required';
-    if (s.length < 8) return 'Min 8 characters';
-    if (s.length > 64) return 'Max 64 characters';
-    final hasLetter = RegExp(r'[A-Za-z]').hasMatch(s);
-    final hasNumber = RegExp(r'\d').hasMatch(s);
-    if (!hasLetter || !hasNumber) return 'Use letters and numbers';
-    return null;
-  }
-
-  String? _validateChildName(String? v) {
-    final s = (v ?? '').trim();
-    if (s.isEmpty) return 'Required';
-    if (s.length > _maxChildNameLen) {
-      return 'Max $_maxChildNameLen characters';
-    }
-    final ok = RegExp(r'^[\p{L}\s-]+$', unicode: true).hasMatch(s);
-    if (!ok) return 'Only letters are allowed';
-    return null;
-  }
-
-  String? _validateBirthDate(String? v) {
-    final s = (v ?? '').trim();
-    if (s.isEmpty) return 'Required';
-    final match = RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(s);
-    if (!match) return 'Use YYYY-MM-DD';
-    final parsed = DateTime.tryParse(s);
-    if (parsed == null) return 'Invalid date';
-    final today = DateTime.now();
-    final date = DateTime(parsed.year, parsed.month, parsed.day);
-    final nowDate = DateTime(today.year, today.month, today.day);
-    if (date.isAfter(nowDate)) return 'Date must be in the past';
-
-    final years = nowDate.year - date.year -
-        ((nowDate.month < date.month ||
-                (nowDate.month == date.month && nowDate.day < date.day))
-            ? 1
-            : 0);
-    if (years > 18) return 'Child age must be 0–18';
-    return null;
-  }
-
-  String _fmtYyyyMmDd(DateTime d) {
-    final mm = d.month.toString().padLeft(2, '0');
-    final dd = d.day.toString().padLeft(2, '0');
-    return '${d.year}-$mm-$dd';
-  }
-
   Future<void> _pickChildBirthDate(_ChildForm c) async {
     final picked = await showDatePicker(
       context: context,
@@ -165,7 +89,7 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
       locale: Localizations.localeOf(context),
     );
     if (picked == null) return;
-    setState(() => c.birthDate.text = _fmtYyyyMmDd(picked));
+    setState(() => c.birthDate.text = GoogleCompleteValidators.fmtYyyyMmDd(picked));
   }
 
   @override
@@ -185,7 +109,9 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
           } else if (state is GoogleAuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
+                content: Text(
+                  ErrorMapper.localizeMessage(context, state.message),
+                ),
                 backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -193,7 +119,7 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
           }
         },
         child: Scaffold(
-          appBar: AppBar(title: const Text('Complete account')),
+          appBar: AppBar(title: Text(context.l10n.completeAccountTitle)),
           body: SafeArea(
             child: Form(
               key: _formKey,
@@ -218,14 +144,13 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
                     ),
                     children: [
                       CustomScreenHeader(
-                        title: 'Complete account',
-                        subtitle:
-                            'Please add your contact info and your children details.',
+                        title: context.l10n.completeAccountHeaderTitle,
+                        subtitle: context.l10n.completeAccountHeaderSubtitle,
                       ),
                       SizedBox(height: AppSizes.h24),
 
                       Text(
-                        'Phone',
+                        context.l10n.phoneLabel,
                         style: AppTextStyle.medium12TextHeading(context),
                       ),
                       SizedBox(height: AppSizes.h8),
@@ -242,45 +167,48 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
                         Padding(
                           padding: EdgeInsets.only(top: 6.h),
                           child: Text(
-                            'Phone is required',
+                            context.l10n.phoneRequired,
                             style: AppTextStyle.semibold12ErrorDefault(context),
                           ),
                         ),
 
                       SizedBox(height: AppSizes.h16),
                       Text(
-                        'Password',
+                        context.l10n.passwordLabel,
                         style: AppTextStyle.medium12TextHeading(context),
                       ),
                       SizedBox(height: AppSizes.h8),
                       PasswordField(
-                        text: 'Min 8 characters (letters + numbers)',
+                        text: context.l10n.passwordRequirementsMin8,
                         controller: _password,
-                        validator: _validatePassword,
+                        validator: (v) =>
+                            GoogleCompleteValidators.validatePassword(context, v),
                       ),
 
                       SizedBox(height: AppSizes.h16),
                       CustomTextForm(
-                        text: 'Government',
-                        hintText: 'e.g. Cairo',
+                        text: context.l10n.governorateLabel,
+                        hintText: context.l10n.governorateHint,
                         controller: _government,
-                        validator: _validateGovernment,
+                        validator: (v) =>
+                            GoogleCompleteValidators.validateGovernment(context, v),
                         keyboardType: TextInputType.name,
                       ),
 
                       SizedBox(height: AppSizes.h16),
                       CustomTextForm(
-                        text: 'Address',
-                        hintText: 'Street, building, etc.',
+                        text: context.l10n.addressLabel,
+                        hintText: context.l10n.addressHint,
                         controller: _address,
-                        validator: _validateAddress,
+                        validator: (v) =>
+                            GoogleCompleteValidators.validateAddress(context, v),
                         keyboardType: TextInputType.streetAddress,
                         maxLines: 2,
                       ),
 
                       SizedBox(height: AppSizes.h24),
                       Text(
-                        'Children',
+                        context.l10n.children,
                         style: AppTextStyle.semibold16TextHeading(context),
                       ),
                       SizedBox(height: AppSizes.h8),
@@ -302,7 +230,7 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
                               Row(
                                 children: [
                                   Text(
-                                    'Child ${i + 1}',
+                                    context.l10n.childIndexLabel(i + 1),
                                     style: AppTextStyle.medium16TextHeading(
                                       context,
                                     ),
@@ -328,18 +256,26 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
                               ),
                               SizedBox(height: 8.h),
                               CustomTextForm(
-                                text: 'Child name',
-                                hintText: 'Enter child name',
+                                text: context.l10n.childNameLabel,
+                                hintText: context.l10n.childNameHint,
                                 controller: c.name,
-                                validator: _validateChildName,
+                                validator: (v) =>
+                                    GoogleCompleteValidators.validateChildName(
+                                      context,
+                                      v,
+                                    ),
                                 keyboardType: TextInputType.name,
                               ),
                               SizedBox(height: 12.h),
                               CustomTextForm(
-                                text: 'Birth date',
-                                hintText: 'YYYY-MM-DD',
+                                text: context.l10n.birthDateLabel,
+                                hintText: context.l10n.birthDateHint,
                                 controller: c.birthDate,
-                                validator: _validateBirthDate,
+                                validator: (v) =>
+                                    GoogleCompleteValidators.validateBirthDate(
+                                      context,
+                                      v,
+                                    ),
                                 readOnly: true,
                                 onTap: () => _pickChildBirthDate(c),
                                 suffixIcon: const Icon(
@@ -349,21 +285,25 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
                               SizedBox(height: 12.h),
                               DropdownButtonFormField<String>(
                                 initialValue: c.gender,
-                                items: const [
+                                items: [
                                   DropdownMenuItem(
                                     value: 'male',
-                                    child: Text('Male'),
+                                    child: Text(context.l10n.boy),
                                   ),
                                   DropdownMenuItem(
                                     value: 'female',
-                                    child: Text('Female'),
+                                    child: Text(context.l10n.girl),
                                   ),
                                 ],
                                 onChanged: (v) =>
                                     setState(() => c.gender = v ?? 'male'),
-                                validator: (v) => _requiredText(v),
+                                validator: (v) =>
+                                    GoogleCompleteValidators.requiredText(
+                                      context,
+                                      v,
+                                    ),
                                 decoration: InputDecoration(
-                                  labelText: 'Gender',
+                                  labelText: context.l10n.genderLabel,
                                   filled: true,
                                   fillColor: cardColor,
                                   enabledBorder: OutlineInputBorder(
@@ -420,8 +360,8 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
                         icon: const Icon(Icons.add),
                         label: Text(
                           _children.length >= _maxChildren
-                              ? 'Max $_maxChildren children'
-                              : 'Add child',
+                              ? context.l10n.maxChildrenReached(_maxChildren)
+                              : context.l10n.addChild,
                           style: AppTextStyle.semibold12Primary(context),
                         ),
                       ),
@@ -431,7 +371,9 @@ class _GoogleCompleteScreenState extends State<GoogleCompleteScreen> {
                         builder: (context, state) {
                           final loading = state is GoogleAuthCompleteLoading;
                           return CustomButton(
-                            text: loading ? 'Submitting...' : 'Complete',
+                            text: loading
+                                ? context.l10n.submitting
+                                : context.l10n.complete,
                             isLoading: loading,
                             enabled: !loading,
                             onTap: () async {

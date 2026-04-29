@@ -2935,6 +2935,378 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Children are not born knowing the names of their feelings, nor do they know how to deal with them. This is a skill that is taught and acquired.'**
   String get bookEmotionsChapter1Body;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get retry;
+
+  /// No description provided for @generateVaccinationSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate vaccination schedule'**
+  String get generateVaccinationSchedule;
+
+  /// No description provided for @couldNotOpenBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open browser'**
+  String get couldNotOpenBrowser;
+
+  /// No description provided for @continueGoogleInBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Google sign-in in your browser…'**
+  String get continueGoogleInBrowser;
+
+  /// No description provided for @googleSignUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get googleSignUpTitle;
+
+  /// No description provided for @googleSignInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Sign In'**
+  String get googleSignInTitle;
+
+  /// No description provided for @googleContinueSignupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Google signup'**
+  String get googleContinueSignupTitle;
+
+  /// No description provided for @googleContinueSignupDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'After you finish Google sign-in in the browser, you will be redirected to a page/URL containing a requestId.\n\nPaste that requestId here to continue.'**
+  String get googleContinueSignupDesc;
+
+  /// No description provided for @pasteRequestIdFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the requestId (UUID) first'**
+  String get pasteRequestIdFirst;
+
+  /// No description provided for @requestIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'requestId'**
+  String get requestIdLabel;
+
+  /// No description provided for @requestIdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'**
+  String get requestIdHint;
+
+  /// No description provided for @paste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get paste;
+
+  /// No description provided for @completeAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete account'**
+  String get completeAccountTitle;
+
+  /// No description provided for @completeAccountHeaderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete account'**
+  String get completeAccountHeaderTitle;
+
+  /// No description provided for @completeAccountHeaderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please add your contact info and your children details.'**
+  String get completeAccountHeaderSubtitle;
+
+  /// No description provided for @phoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phoneLabel;
+
+  /// No description provided for @phoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone is required'**
+  String get phoneRequired;
+
+  /// No description provided for @passwordRequirementsMin8.
+  ///
+  /// In en, this message translates to:
+  /// **'Min 8 characters (letters + numbers)'**
+  String get passwordRequirementsMin8;
+
+  /// No description provided for @childIndexLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Child {index}'**
+  String childIndexLabel(int index);
+
+  /// No description provided for @genderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get genderLabel;
+
+  /// No description provided for @addChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Add child'**
+  String get addChild;
+
+  /// No description provided for @maxChildrenReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Max {max} children'**
+  String maxChildrenReached(int max);
+
+  /// No description provided for @submitting.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting…'**
+  String get submitting;
+
+  /// No description provided for @complete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get complete;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get fieldRequired;
+
+  /// No description provided for @maxCharacters.
+  ///
+  /// In en, this message translates to:
+  /// **'Max {max} characters'**
+  String maxCharacters(int max);
+
+  /// No description provided for @onlyLettersAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Only letters are allowed'**
+  String get onlyLettersAllowed;
+
+  /// No description provided for @birthDateFormatYyyyMmDd.
+  ///
+  /// In en, this message translates to:
+  /// **'Use YYYY-MM-DD'**
+  String get birthDateFormatYyyyMmDd;
+
+  /// No description provided for @invalidDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid date'**
+  String get invalidDate;
+
+  /// No description provided for @dateMustBePast.
+  ///
+  /// In en, this message translates to:
+  /// **'Date must be in the past'**
+  String get dateMustBePast;
+
+  /// No description provided for @childAgeRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Child age must be 0–18'**
+  String get childAgeRange;
+
+  /// No description provided for @passwordMinChars.
+  ///
+  /// In en, this message translates to:
+  /// **'Min {min} characters'**
+  String passwordMinChars(int min);
+
+  /// No description provided for @passwordMaxChars.
+  ///
+  /// In en, this message translates to:
+  /// **'Max {max} characters'**
+  String passwordMaxChars(int max);
+
+  /// No description provided for @passwordLettersAndNumbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Use letters and numbers'**
+  String get passwordLettersAndNumbers;
+
+  /// No description provided for @enterPhoneDigitsRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter {min}–{max} digits'**
+  String enterPhoneDigitsRange(int min, int max);
+
+  /// No description provided for @aiChatSendFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send message. Please try again.'**
+  String get aiChatSendFailed;
+
+  /// No description provided for @bookingDraftIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking details are incomplete'**
+  String get bookingDraftIncomplete;
+
+  /// No description provided for @noBookingToShow.
+  ///
+  /// In en, this message translates to:
+  /// **'No booking to show.'**
+  String get noBookingToShow;
+
+  /// No description provided for @bookingSlotAlreadyBooked.
+  ///
+  /// In en, this message translates to:
+  /// **'This time is already booked. Please choose another time.'**
+  String get bookingSlotAlreadyBooked;
+
+  /// No description provided for @bookingStartFailedMissingDoctorData.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t start booking: doctor data is incomplete.'**
+  String get bookingStartFailedMissingDoctorData;
+
+  /// No description provided for @selectDoctorFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a doctor from the doctors list first'**
+  String get selectDoctorFirst;
+
+  /// No description provided for @networkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Please try again.'**
+  String get networkError;
+
+  /// No description provided for @unknownError.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get unknownError;
+
+  /// No description provided for @cancelBookingConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This booking will be cancelled. Do you want to continue?'**
+  String get cancelBookingConfirmMessage;
+
+  /// No description provided for @appointmentsEmptyUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming appointments'**
+  String get appointmentsEmptyUpcoming;
+
+  /// No description provided for @appointmentsEmptyCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'No completed appointments'**
+  String get appointmentsEmptyCompleted;
+
+  /// No description provided for @appointmentsEmptyCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'No cancelled appointments'**
+  String get appointmentsEmptyCancelled;
+
+  /// No description provided for @paymentDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment details'**
+  String get paymentDetailsTitle;
+
+  /// No description provided for @accountAlreadyExistsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account already exists'**
+  String get accountAlreadyExistsTitle;
+
+  /// No description provided for @editInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit info'**
+  String get editInfo;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @addNewCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a new card'**
+  String get addNewCardTitle;
+
+  /// No description provided for @addNewCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your card details to complete payment securely.'**
+  String get addNewCardSubtitle;
+
+  /// No description provided for @cardNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Card number'**
+  String get cardNumberLabel;
+
+  /// No description provided for @cardNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'0000 0000 0000 0000'**
+  String get cardNumberHint;
+
+  /// No description provided for @expiryDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiry date'**
+  String get expiryDateLabel;
+
+  /// No description provided for @securityCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Security code'**
+  String get securityCodeLabel;
+
+  /// No description provided for @cvvHint.
+  ///
+  /// In en, this message translates to:
+  /// **'CVV'**
+  String get cvvHint;
+
+  /// No description provided for @cardHolderNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cardholder name'**
+  String get cardHolderNameLabel;
+
+  /// No description provided for @cardHolderNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the name as it appears on the card'**
+  String get cardHolderNameHint;
+
+  /// No description provided for @saveCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Save card'**
+  String get saveCard;
+
+  /// No description provided for @dataEncryptedNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is fully encrypted and protected.'**
+  String get dataEncryptedNotice;
 }
 
 class _AppLocalizationsDelegate

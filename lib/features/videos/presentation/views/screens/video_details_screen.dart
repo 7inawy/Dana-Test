@@ -32,6 +32,7 @@ class VideoDetailsScreen extends StatefulWidget {
 
 class _VideoDetailsScreenState extends State<VideoDetailsScreen> {
   late VideoModel _video;
+  late List<VideoModel> _relatedVideos;
   bool _loading = true;
   String? _error;
 
@@ -39,6 +40,7 @@ class _VideoDetailsScreenState extends State<VideoDetailsScreen> {
   void initState() {
     super.initState();
     _video = widget.video;
+    _relatedVideos = widget.relatedVideos;
     _loadById();
   }
 
@@ -87,7 +89,7 @@ class _VideoDetailsScreenState extends State<VideoDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'الفديوهات',
+                l10n.videos,
                 style: AppTextStyle.medium16TextHeading(context),
               ),
               CustomAppBarButton(
@@ -146,7 +148,7 @@ class _VideoDetailsScreenState extends State<VideoDetailsScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (_) => ViewAllScreen(
-                              videos: widget.relatedVideos
+                              videos: _relatedVideos
                                   .where((v) => v.id != _video.id)
                                   .toList(),
                               sectionTitle: l10n.relatedVideos,
@@ -166,13 +168,20 @@ class _VideoDetailsScreenState extends State<VideoDetailsScreen> {
                   height: 280.h,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: widget.relatedVideos.length,
+                    reverse: isRtl,
+                    itemCount: _relatedVideos.length,
                     itemBuilder: (context, index) => Padding(
                       padding: EdgeInsets.only(
                         left: isRtl ? 8.w : 0,
                         right: isRtl ? 0 : 8.w,
                       ),
-                      child: VideoCard(video: widget.relatedVideos[index]),
+                      child: VideoCard(
+                        video: _relatedVideos[index],
+                        replaceCurrent: true,
+                        relatedVideos: _relatedVideos
+                            .where((v) => v.id != _relatedVideos[index].id)
+                            .toList(),
+                      ),
                     ),
                   ),
                 ),

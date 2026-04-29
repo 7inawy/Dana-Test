@@ -10,12 +10,24 @@ import 'package:dana/core/log/app_logger.dart';
 import 'package:dana/core/navigation/app_navigator.dart';
 import 'package:dana/core/utils/app_routes.dart';
 import 'package:dio/dio.dart';
+import 'package:dana/features/auth/login/data/utils/auth_token_parser.dart';
 
 class GoogleOAuthDeepLinkHandler {
   GoogleOAuthDeepLinkHandler._();
 
   static StreamSubscription<Uri>? _sub;
   static bool _started = false;
+
+  static String _safeUriForLog(Uri uri) {
+    // Never log tokens / temp keys from OAuth redirects.
+    final qpKeys = uri.queryParameters.keys.toList()..sort();
+    final safeKeys = qpKeys.where((k) {
+      final kk = k.toLowerCase();
+      return kk != 'token' && kk != 'tempkey' && kk != 'access_token';
+    }).toList();
+    final keysPart = safeKeys.isEmpty ? '' : ' qpKeys=${safeKeys.join(",")}';
+    return '${uri.scheme}://${uri.host}${uri.path}$keysPart';
+  }
 
   static bool _isGoogleHttpsCallback(Uri uri) {
     // Backend callback is a normal HTTPS URL:
@@ -31,40 +43,6 @@ class GoogleOAuthDeepLinkHandler {
     return uri.scheme == 'dana' && uri.host == 'oauth';
   }
 
-  static String? _extractTempKey(dynamic decoded) {
-    if (decoded is! Map) return null;
-    final direct = decoded['tempKey'] ?? decoded['temp_key'];
-    final directStr = direct?.toString().trim();
-    if (directStr != null && directStr.isNotEmpty) return directStr;
-
-    final tokenWrapper = decoded['token'];
-    if (tokenWrapper is Map) {
-      final nested = tokenWrapper['tempKey'] ?? tokenWrapper['temp_key'];
-      final s = nested?.toString().trim();
-      if (s != null && s.isNotEmpty) return s;
-    }
-    return null;
-  }
-
-  static String? _extractAccessToken(dynamic decoded) {
-    if (decoded is! Map) return null;
-
-    final accessToken = decoded['accessToken'];
-    if (accessToken is Map) {
-      final token = accessToken['access_token']?.toString().trim();
-      if (token != null && token.isNotEmpty) return token;
-    }
-    final tokenWrapper = decoded['token'];
-    if (tokenWrapper is Map) {
-      final nested = tokenWrapper['accessToken'];
-      if (nested is Map) {
-        final token = nested['access_token']?.toString().trim();
-        if (token != null && token.isNotEmpty) return token;
-      }
-    }
-    return null;
-  }
-
   static Future<void> start() async {
     if (_started) return;
     _started = true;
@@ -74,7 +52,7 @@ class GoogleOAuthDeepLinkHandler {
     Future<void> handle(Uri uri) async {
       if (!(_isGoogleHttpsCallback(uri) || _isDanaSchemeCallback(uri))) return;
 
-      AppLogger.info('GoogleOAuth: received deep link: $uri');
+      AppLogger.info('GoogleOAuth: received deep link: ${_safeUriForLog(uri)}');
 
       // 1) Fast path: dana://oauth?token=... or ?tempKey=...
       if (_isDanaSchemeCallback(uri)) {
@@ -113,7 +91,7 @@ class GoogleOAuthDeepLinkHandler {
         );
 
         final decoded = ApiResponse.decode(res.data);
-        final token = _extractAccessToken(decoded);
+        final token = AuthTokenParser.extractAccessToken(decoded);
         if (token != null && token.isNotEmpty) {
           await sl<AuthSession>().setToken(token);
           AppNavigator.key.currentState?.pushNamedAndRemoveUntil(
@@ -123,7 +101,7 @@ class GoogleOAuthDeepLinkHandler {
           return;
         }
 
-        final tempKey = _extractTempKey(decoded);
+        final tempKey = AuthTokenParser.extractTempKey(decoded);
         if (tempKey != null && tempKey.isNotEmpty) {
           AppNavigator.key.currentState?.pushNamed(
             AppRoutes.googleComplete,

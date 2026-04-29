@@ -30,7 +30,11 @@ class NewPasswordFields extends StatelessWidget {
           validator: (v) {
             final s = (v ?? '').trim();
             if (s.isEmpty) return 'Required';
-            if (s.length < 6) return 'Min 6 chars';
+            if (s.length < 8) return 'Min 8 chars';
+            if (!RegExp(r'[A-Za-z]').hasMatch(s) ||
+                !RegExp(r'[0-9]').hasMatch(s)) {
+              return 'Must contain letters and numbers';
+            }
             return null;
           },
         ),

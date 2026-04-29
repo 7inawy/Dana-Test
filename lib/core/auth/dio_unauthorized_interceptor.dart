@@ -15,7 +15,11 @@ class DioUnauthorizedInterceptor extends Interceptor {
 
   bool _isAuthFailure(DioException err) {
     final code = err.response?.statusCode;
-    return code == 401 || code == 403;
+    // Treat only 401 as "session is invalid".
+    //
+    // Many backends use 403 for "forbidden" (role/permission/business rules)
+    // and clearing the session on 403 forces users to re-OTP unnecessarily.
+    return code == 401;
   }
 
   @override

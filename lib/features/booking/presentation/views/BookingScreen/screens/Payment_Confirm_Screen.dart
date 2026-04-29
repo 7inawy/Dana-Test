@@ -13,51 +13,11 @@ import 'package:dana/features/booking/presentation/views/BookingScreen/widgets/b
 import 'package:dana/features/booking/presentation/views/BookingScreen/widgets/patient_header_card.dart';
 import 'package:dana/features/parent_profile/data/repo/parent_profile_repository.dart';
 import 'package:dana/providers/app_theme_provider.dart';
-import 'package:dio/dio.dart';
+import 'package:dana/core/errors/error_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-String _bookingErrorMessage(Object e) {
-  if (e is DioException) {
-    final d = e.response?.data;
-    if (d is Map) {
-      final m = d['message']?.toString();
-      if (m != null && m.isNotEmpty) {
-        final lower = m.toLowerCase();
-        if (lower.contains('already booked') || lower.contains('date already booked')) {
-          return 'هذا الموعد تم حجزه بالفعل. اختر وقتًا آخر.';
-        }
-        return m;
-      }
-      final resp = d['response'];
-      if (resp is Map) {
-        final m2 = resp['message']?.toString();
-        if (m2 != null && m2.isNotEmpty) {
-          final lower = m2.toLowerCase();
-          if (lower.contains('already booked') || lower.contains('date already booked')) {
-            return 'هذا الموعد تم حجزه بالفعل. اختر وقتًا آخر.';
-          }
-          return m2;
-        }
-        final data = resp['data'];
-        if (data is Map) {
-          final m3 = data['message']?.toString();
-          if (m3 != null && m3.isNotEmpty) {
-            final lower = m3.toLowerCase();
-            if (lower.contains('already booked') || lower.contains('date already booked')) {
-              return 'هذا الموعد تم حجزه بالفعل. اختر وقتًا آخر.';
-            }
-            return m3;
-          }
-        }
-      }
-    }
-    return e.message?.isNotEmpty == true ? e.message! : e.toString();
-  }
-  return e.toString();
-}
 
 class PaymentSuccessScreen extends StatefulWidget {
   static const String routeName = 'PaymentSuccessScreen';
@@ -87,7 +47,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
     if (draft == null || !draft.canSubmit) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('بيانات الحجز غير مكتملة')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.bookingDraftIncomplete)));
       return;
     }
     setState(() => _submitting = true);
@@ -125,7 +85,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(_bookingErrorMessage(e))));
+      ).showSnackBar(SnackBar(content: Text(ErrorMapper.localized(context, e))));
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
@@ -146,7 +106,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
           child: Padding(
             padding: EdgeInsets.all(24.w),
             child: Text(
-              'لا يوجد حجز للعرض.',
+              context.l10n.noBookingToShow,
               style: AppTextStyle.medium16TextHeading(context),
             ),
           ),
@@ -173,7 +133,11 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 32.h, right: 24.w, left: 24.w),
+        padding: EdgeInsetsDirectional.only(
+          top: 32.h,
+          start: 24.w,
+          end: 24.w,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -9,12 +9,6 @@ import '../log/app_logger.dart';
 /// - Adds a consistent timeout.
 /// - Normalizes Dio error messages for debugging (without leaking headers/body).
 class DioErrorInterceptor extends Interceptor {
-  String _truncate(Object? value, {int max = 1200}) {
-    final s = value?.toString() ?? '';
-    if (s.length <= max) return s;
-    return '${s.substring(0, max)}…';
-  }
-
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     // Ensure a reasonable default timeout even if callers override options.
@@ -33,8 +27,10 @@ class DioErrorInterceptor extends Interceptor {
       );
       final status = err.response?.statusCode;
       if (status != null) {
+        final ct = err.response?.headers.value('content-type');
+        final len = err.response?.headers.value('content-length');
         AppLogger.debug(
-          'HTTP response: status=$status data=${_truncate(err.response?.data)}',
+          'HTTP response: status=$status content-type=$ct content-length=$len',
         );
       }
     }

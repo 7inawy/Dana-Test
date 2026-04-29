@@ -56,7 +56,7 @@ class _DataBottomSheetState extends State<DataBottomSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: HomeIndicator()),
+            const Center(child: HomeIndicator()),
             SizedBox(height: 20.h),
             Text(
               widget.title,

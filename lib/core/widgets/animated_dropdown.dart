@@ -26,6 +26,18 @@ class AnimatedDropdown extends StatefulWidget {
 
 class _AnimatedDropdownState extends State<AnimatedDropdown>
     with SingleTickerProviderStateMixin {
+  static const Duration _kToggleDuration = Duration(milliseconds: 200);
+  static const double _kBorderRadius = 8;
+  static const double _kBorderWidth = 0.8;
+  static const double _kOverlayYOffset = 5;
+  static const int _kMaxVisibleItemsBeforeScroll = 2;
+  static const double _kOverlayMaxHeight = 95;
+  static const double _kItemHorizontalPadding = 16;
+  static const double _kItemVerticalPadding = 10;
+  static const double _kFieldHorizontalPadding = 16;
+  static const double _kFieldVerticalPadding = 12;
+  static const double _kArrowSize = 24;
+
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
   late AnimationController _controller;
@@ -38,7 +50,7 @@ class _AnimatedDropdownState extends State<AnimatedDropdown>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200),
+      duration: _kToggleDuration,
     );
     _heightAnimation = CurvedAnimation(
       parent: _controller,
@@ -50,6 +62,7 @@ class _AnimatedDropdownState extends State<AnimatedDropdown>
     if (isOpen) {
       _controller.reverse();
       _overlayEntry?.remove();
+      _overlayEntry = null;
       isOpen = false;
     } else {
       _overlayEntry = _createOverlay();
@@ -75,7 +88,7 @@ class _AnimatedDropdownState extends State<AnimatedDropdown>
         child: CompositedTransformFollower(
           link: _layerLink,
           showWhenUnlinked: false,
-          offset: Offset(0, size.height + 5),
+          offset: Offset(0, size.height + _kOverlayYOffset),
           child: Material(
             color: Colors.transparent,
             child: SizeTransition(
@@ -86,18 +99,19 @@ class _AnimatedDropdownState extends State<AnimatedDropdown>
                   color: isDark
                       ? AppColors.bg_card_default_dark
                       : AppColors.bg_card_default_light,
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(_kBorderRadius.r),
                   border: Border.all(
                     color: isDark
                         ? AppColors.border_card_default_dark
                         : AppColors.border_card_default_light,
-                    width: 0.8.w,
+                    width: _kBorderWidth.w,
                   ),
                 ),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxHeight: widget.items.length > 2.h
-                        ? 95.h
+                    // `items.length` is a count; compare to an int (not screen units).
+                    maxHeight: widget.items.length > _kMaxVisibleItemsBeforeScroll
+                        ? _kOverlayMaxHeight.h
                         : double.infinity,
                   ),
                   child: ListView(
@@ -111,8 +125,8 @@ class _AnimatedDropdownState extends State<AnimatedDropdown>
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 10.h,
+                            horizontal: _kItemHorizontalPadding.w,
+                            vertical: _kItemVerticalPadding.h,
                           ),
                           child: Text(
                             item,
@@ -131,6 +145,24 @@ class _AnimatedDropdownState extends State<AnimatedDropdown>
     );
   }
 
+  void _closeDropdown() {
+    if (!isOpen) return;
+    isOpen = false;
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+    if (_controller.isAnimating || _controller.value != 0) {
+      _controller.stop();
+      _controller.value = 0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _closeDropdown();
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<AppThemeProvider>();
@@ -145,17 +177,20 @@ class _AnimatedDropdownState extends State<AnimatedDropdown>
       child: GestureDetector(
         onTap: _toggleDropdown,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: _kFieldHorizontalPadding.w,
+            vertical: _kFieldVerticalPadding.h,
+          ),
           decoration: BoxDecoration(
             color: isDark
                 ? AppColors.bg_card_default_dark
                 : AppColors.bg_card_default_light,
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(_kBorderRadius.r),
             border: Border.all(
               color: isDark
                   ? AppColors.border_card_default_dark
                   : AppColors.border_card_default_light,
-              width: 0.8.w,
+              width: _kBorderWidth.w,
             ),
           ),
           child: Row(
@@ -171,11 +206,11 @@ class _AnimatedDropdownState extends State<AnimatedDropdown>
               ),
               AnimatedRotation(
                 turns: isOpen ? 0.5 : 0,
-                duration: const Duration(milliseconds: 200),
+              duration: _kToggleDuration,
                 child: SvgPicture.asset(
                   'assets/Icons/arrow_drop_icon.svg',
-                  width: 24.w,
-                  height: 24.h,
+                width: _kArrowSize.w,
+                height: _kArrowSize.h,
                   colorFilter: ColorFilter.mode(
                     isDark
                         ? AppColors.icon_onLight_dark

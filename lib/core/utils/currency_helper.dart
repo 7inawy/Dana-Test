@@ -1,24 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as intl;
+
+import '../../l10n/app_localizations.dart';
 
 class CurrencyHelper {
   static String format(BuildContext context, num amount) {
-    final locale = Localizations.localeOf(context).languageCode;
-    final isArabic = locale == 'ar';
+    final locale = Localizations.localeOf(context);
+    final isArabic = locale.languageCode == 'ar';
+    final localeName = AppLocalizations.of(context)?.localeName ?? locale.toString();
 
-    final number = _formatNumber(amount, isArabic);
-
+    final number = intl.NumberFormat.decimalPattern(localeName).format(amount);
     return isArabic ? '$number ج' : '$number LE';
-  }
-
-  static String _formatNumber(num number, bool isArabic) {
-    final str = number.toString();
-
-    if (!isArabic) return str;
-
-    const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-
-    return str.replaceAllMapped(RegExp(r'\d'), (match) {
-      return arabicDigits[int.parse(match.group(0)!)];
-    });
   }
 }

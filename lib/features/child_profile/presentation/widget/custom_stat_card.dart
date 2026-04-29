@@ -72,7 +72,7 @@ class CustomStatCard extends StatelessWidget {
                 ],
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Text(
               value,
               style: AppTextStyle.semibold16TextDisplay(context),

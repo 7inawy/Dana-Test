@@ -162,7 +162,7 @@ class _ForgetPasswordDialogState extends State<ForgetPasswordDialog> {
               ),
               child: Column(
                 children: [
-                  HomeIndicator(),
+                  const HomeIndicator(),
                   Expanded(
                     child: SingleChildScrollView(
                       controller: scrollController,

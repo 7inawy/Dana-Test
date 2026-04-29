@@ -2,6 +2,7 @@ import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/core/widgets/custom_button.dart';
 import 'package:dana/core/widgets/custom_screen_header.dart';
 import 'package:dana/core/widgets/custom_text_field.dart';
+import 'package:dana/extensions/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +17,20 @@ class AddVisaBottomSheet extends StatefulWidget {
 }
 
 class _AddVisaBottomSheetState extends State<AddVisaBottomSheet> {
+  static const int _kCardNumberLen = 16;
+  static const int _kCvvLen = 3;
+  static const int _kExpiryMaxLen = 5; // MM/YY
+  static const double _kSheetTopPadding = 32;
+  static const double _kSheetHorizontalPadding = 24;
+  static const double _kLabelToFieldSpacing = 8;
+  static const double _kSectionSpacing = 16;
+  static const double _kSubmitTopSpacing = 39;
+  static const double _kEncryptedNoticeTopSpacing = 8;
+  static const double _kEncryptedNoticeBottomSpacing = 12;
+  static const double _kCvvFieldWidth = 142;
+  static final RegExp _digitsOnly = RegExp(r'[0-9]');
+  static final RegExp _cardNameAllowed = RegExp(r'[a-zA-Z\u0600-\u06FF\s]');
+
   final TextEditingController expiryController = TextEditingController();
   String cardNumber = '';
   String expiry = '';
@@ -23,12 +38,18 @@ class _AddVisaBottomSheetState extends State<AddVisaBottomSheet> {
   String cardName = '';
 
   @override
+  void dispose() {
+    expiryController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(
-        top: 32.h,
-        left: 24.w,
-        right: 24.w,
+      padding: EdgeInsetsDirectional.only(
+        top: _kSheetTopPadding.h,
+        start: _kSheetHorizontalPadding.w,
+        end: _kSheetHorizontalPadding.w,
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: SingleChildScrollView(
@@ -37,25 +58,28 @@ class _AddVisaBottomSheetState extends State<AddVisaBottomSheet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomScreenHeader(
-              title: 'إضافة بطاقة جديدة',
-              subtitle: 'ادخل بيانات بطاقتك لإتمام الدفع بأمان.',
+              title: context.l10n.addNewCardTitle,
+              subtitle: context.l10n.addNewCardSubtitle,
             ),
-            SizedBox(height: 32.h),
-            Text('رقم البطاقة', style: AppTextStyle.bold12TextHeading(context)),
-            SizedBox(height: 8.h),
+            SizedBox(height: _kSheetTopPadding.h),
+            Text(
+              context.l10n.cardNumberLabel,
+              style: AppTextStyle.bold12TextHeading(context),
+            ),
+            SizedBox(height: _kLabelToFieldSpacing.h),
             Directionality(
               textDirection: TextDirection.rtl,
               child: CustomTextField(
-                hintText: '0000 0000 0000 0000',
+                hintText: context.l10n.cardNumberHint,
                 inputType: TextInputType.number,
                 inputFormatter: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  FilteringTextInputFormatter.allow(_digitsOnly),
                 ],
-                maxLength: 16,
+                maxLength: _kCardNumberLen,
                 onChange: (v) => cardNumber = v,
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: _kSectionSpacing.h),
             Row(
               children: [
                 Expanded(
@@ -63,20 +87,20 @@ class _AddVisaBottomSheetState extends State<AddVisaBottomSheet> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'تاريخ الانتهاء',
+                        context.l10n.expiryDateLabel,
                         style: AppTextStyle.bold12TextHeading(context),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: _kLabelToFieldSpacing.h),
                       Directionality(
                         textDirection: TextDirection.rtl,
                         child: CustomTextField(
                           controller: expiryController,
-                          hintText: "MM/YY",
+                          hintText: 'MM/YY',
                           inputType: TextInputType.number,
-                          maxLength: 5,
+                          maxLength: _kExpiryMaxLen,
                           onChange: (v) {
                             if (v.length == 2 && !v.contains('/')) {
-                              expiryController.text = "$v/";
+                              expiryController.text = '$v/';
                               expiryController.selection =
                                   TextSelection.fromPosition(
                                     TextPosition(
@@ -84,7 +108,7 @@ class _AddVisaBottomSheetState extends State<AddVisaBottomSheet> {
                                     ),
                                   );
                             }
-                            if (expiryController.text.length == 5) {
+                            if (expiryController.text.length == _kExpiryMaxLen) {
                               final month = int.tryParse(
                                 expiryController.text.substring(0, 2),
                               );
@@ -107,24 +131,24 @@ class _AddVisaBottomSheetState extends State<AddVisaBottomSheet> {
                     ],
                   ),
                 ),
-                SizedBox(width: 8.h),
+                SizedBox(width: _kLabelToFieldSpacing.h),
 
                 SizedBox(
-                  width: 142.w,
+                  width: _kCvvFieldWidth.w,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'رمز الأمان',
+                        context.l10n.securityCodeLabel,
                         style: AppTextStyle.bold12TextHeading(context),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: _kLabelToFieldSpacing.h),
                       Directionality(
                         textDirection: TextDirection.rtl,
                         child: CustomTextField(
                           inputType: TextInputType.number,
-                          maxLength: 3,
-                          hintText: 'CVV',
+                          maxLength: _kCvvLen,
+                          hintText: context.l10n.cvvHint,
                           onChange: (v) => cvv = v,
                         ),
                       ),
@@ -133,32 +157,32 @@ class _AddVisaBottomSheetState extends State<AddVisaBottomSheet> {
                 ),
               ],
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: _kSectionSpacing.h),
             Text(
-              'اسم صاحب البطاقة',
+              context.l10n.cardHolderNameLabel,
               style: AppTextStyle.bold12TextHeading(context),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: _kLabelToFieldSpacing.h),
             Directionality(
               textDirection: TextDirection.rtl,
               child: CustomTextField(
-                hintText: 'اكتب الاسم كما هو على البطاقة',
+                hintText: context.l10n.cardHolderNameHint,
                 inputType: TextInputType.name,
                 inputFormatter: [
                   FilteringTextInputFormatter.allow(
-                    RegExp(r'[a-zA-Z\u0600-\u06FF\s]'),
+                    _cardNameAllowed,
                   ),
                 ],
                 onChange: (v) => cardName = v,
               ),
             ),
-            SizedBox(height: 39.h),
+            SizedBox(height: _kSubmitTopSpacing.h),
             CustomButton(
-              text: 'حفظ البطاقة',
+              text: context.l10n.saveCard,
               onTap: () {
-                if (cardNumber.length == 16 &&
+                if (cardNumber.length == _kCardNumberLen &&
                     expiry.isNotEmpty &&
-                    cvv.length == 3 &&
+                    cvv.length == _kCvvLen &&
                     cardName.isNotEmpty) {
                   widget.onSave({
                     'last4': cardNumber.substring(cardNumber.length - 4),
@@ -168,14 +192,14 @@ class _AddVisaBottomSheetState extends State<AddVisaBottomSheet> {
                 }
               },
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: _kEncryptedNoticeTopSpacing.h),
             Center(
               child: Text(
-                'بياناتك مشفرة ومحميّة بالكامل.',
+                context.l10n.dataEncryptedNotice,
                 style: AppTextStyle.bold12Secondary(context),
               ),
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: _kEncryptedNoticeBottomSpacing.h),
           ],
         ),
       ),

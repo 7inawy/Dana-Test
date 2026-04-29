@@ -22,7 +22,7 @@ class VideoHorizontalList extends StatelessWidget {
         itemBuilder: (context, index) => VideoCard(
           video: videos[index],
           relatedVideos: videos
-              .where((v) => v.title != videos[index].title)
+              .where((v) => v.id != videos[index].id)
               .toList(),
         ),
       ),

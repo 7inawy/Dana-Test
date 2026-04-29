@@ -9,8 +9,17 @@ import '../../../../l10n/app_localizations.dart';
 
 class BookModel {
   final String id;
+  /// Fallback title (used when a localized field isn't available).
   final String title;
+  /// Optional localized titles (if the API provides them).
+  final String? titleAr;
+  final String? titleEn;
+
+  /// Fallback author (used when a localized field isn't available).
   final String author;
+  /// Optional localized authors (if the API provides them).
+  final String? authorAr;
+  final String? authorEn;
   final String imageUrl;
   final String? description;
   final List<BookChapter> chapters;
@@ -23,6 +32,10 @@ class BookModel {
     required this.title,
     required this.author,
     required this.imageUrl,
+    this.titleAr,
+    this.titleEn,
+    this.authorAr,
+    this.authorEn,
     this.description,
     this.chapters = const [],
     this.pagesCount,
@@ -34,6 +47,20 @@ class BookModel {
     final p = pagesCount;
     if (p != null && p > 0) return p;
     return chapters.length;
+  }
+
+  String titleForLocale(Locale locale) {
+    final lang = locale.languageCode.toLowerCase();
+    if (lang == 'ar') return (titleAr?.trim().isNotEmpty ?? false) ? titleAr!.trim() : title;
+    if (lang == 'en') return (titleEn?.trim().isNotEmpty ?? false) ? titleEn!.trim() : title;
+    return title;
+  }
+
+  String authorForLocale(Locale locale) {
+    final lang = locale.languageCode.toLowerCase();
+    if (lang == 'ar') return (authorAr?.trim().isNotEmpty ?? false) ? authorAr!.trim() : author;
+    if (lang == 'en') return (authorEn?.trim().isNotEmpty ?? false) ? authorEn!.trim() : author;
+    return author;
   }
 
   /// Turns API `cover` values into a loadable URL (absolute) or leaves asset paths as-is.
@@ -93,11 +120,29 @@ class BookModel {
       }
     }
 
+    String? pickString(List<String> keys) {
+      for (final k in keys) {
+        final v = json[k];
+        final s = v?.toString().trim();
+        if (s != null && s.isNotEmpty) return s;
+      }
+      return null;
+    }
+
+    final titleAr = pickString(const ['titleAr', 'title_ar', 'titleAR', 'arabicTitle', 'titleArabic']);
+    final titleEn = pickString(const ['titleEn', 'title_en', 'titleEN', 'englishTitle', 'titleEnglish']);
+    final authorAr = pickString(const ['authorAr', 'author_ar', 'authorAR', 'arabicAuthor', 'authorArabic']);
+    final authorEn = pickString(const ['authorEn', 'author_en', 'authorEN', 'englishAuthor', 'authorEnglish']);
+
     return BookModel(
       id: json['_id']?.toString() ?? '',
       title: json['title']?.toString() ?? '',
       author: json['author']?.toString() ?? '',
       imageUrl: resolvedCoverUrl(json['cover'] ?? json['imageUrl']),
+      titleAr: titleAr,
+      titleEn: titleEn,
+      authorAr: authorAr,
+      authorEn: authorEn,
       description: json['description']?.toString(),
       link: json['link']?.toString(),
       chapters: parsedChapters,
