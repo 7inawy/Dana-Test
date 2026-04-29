@@ -4,6 +4,9 @@ import 'package:dana/core/di/injection_container.dart';
 import 'package:dana/core/utils/app_routes.dart';
 import 'package:dana/core/widgets/otp_bottom_sheet.dart';
 import 'package:dana/core/auth/auth_session.dart';
+import 'package:dana/core/utils/app_text_style.dart';
+import 'package:dana/core/widgets/Custom_indicator.dart';
+import 'package:dana/core/widgets/custom_app_bar_button.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_up_cubit.dart';
 import 'package:dana/features/auth/login/presentation/cubit/sign_up_state.dart';
 import 'package:dana/features/auth/login/presentation/cubit/google_auth_cubit.dart';
@@ -16,7 +19,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../../../../../../providers/app_theme_provider.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/core/errors/error_mapper.dart';
-import 'package:dana/core/widgets/custom_app_bar.dart';
 import '../widgets/sign_up_page_view.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -208,16 +210,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
           backgroundColor: isDark
               ? AppColors.bg_surface_default_dark
               : AppColors.bg_surface_default_light,
-          appBar: CustomAppBar(
-            title: context.l10n.googleSignUpTitle,
-            isDark: isDark,
-            onBack: _handleBack,
+          appBar: AppBar(
+            backgroundColor: isDark
+                ? AppColors.bg_card_default_dark
+                : AppColors.bg_card_default_light,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+            title: Text(
+              context.l10n.googleSignUpTitle,
+              style: AppTextStyle.medium16TextHeading(context),
+            ),
+            actions: [
+              Padding(
+                padding: EdgeInsetsDirectional.only(end: AppSizes.w24),
+                child: CustomAppBarButton(onTap: _handleBack),
+              ),
+            ],
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(AppSizes.h24),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: AppSizes.h12),
+                child: CustomIndicatorRow(
+                  currentIndex: _currentIndex,
+                  itemCount: 4,
+                  height: AppSizes.h2,
+                  activeWidth: 70,
+                  inactiveWidth: 70,
+                  spacing: 6,
+                ),
+              ),
+            ),
           ),
           body: SafeArea(
             top: false,
             child: Column(
               children: [
-                SizedBox(height: AppSizes.h24),
                 Expanded(
                   child: SignUpPageView(
                     controller: _controller,

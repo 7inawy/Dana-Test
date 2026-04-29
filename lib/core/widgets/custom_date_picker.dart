@@ -22,6 +22,12 @@ class CustomDatePicker extends StatefulWidget {
 class _CustomDatePickerState extends State<CustomDatePicker> {
   late int localSelectedIndex;
 
+  DateTime _clampDate(DateTime date, {required DateTime min, required DateTime max}) {
+    if (date.isBefore(min)) return min;
+    if (date.isAfter(max)) return max;
+    return date;
+  }
+
   DateTime _latestAllowedBirthDate() {
     // Prevent selecting very recent dates (e.g. newborn/1-day old).
     // Product requirement: at least ~1 month old.
@@ -93,15 +99,19 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
           icon: Icons.calendar_month_rounded,
           onTap: () async {
             final lastAllowed = _latestAllowedBirthDate();
+            final firstDate = DateTime(1900);
+            final lastDate = DateTime(
+              lastAllowed.year,
+              lastAllowed.month,
+              lastAllowed.day,
+            );
+            final initialDate = _clampDate(DateTime.now(), min: firstDate, max: lastDate);
+
             DateTime? pickedDate = await showDatePicker(
               context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1900),
-              lastDate: DateTime(
-                lastAllowed.year,
-                lastAllowed.month,
-                lastAllowed.day,
-              ),
+              initialDate: initialDate,
+              firstDate: firstDate,
+              lastDate: lastDate,
               locale: Localizations.localeOf(context),
             );
 
