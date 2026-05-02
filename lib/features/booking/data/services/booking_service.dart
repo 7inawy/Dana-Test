@@ -111,4 +111,23 @@ class BookingService {
     // Matches Postman "delete-appointment": DELETE /v1/booking/:id
     return dio.delete('${ApiEndpoint.bookingById}$bookingId');
   }
+
+  Future<Response> completeConsultation({required String bookingId}) async {
+    // Backend endpoint spelling varies across deployments.
+    // Prefer legacy spelling first to match current backend notes.
+    try {
+      return await dio.patch(
+        ApiEndpoint.doctorCompleteConsultationLegacy(bookingId),
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+    } on DioException catch (e) {
+      final code = e.response?.statusCode ?? 0;
+      final isNotFound = code == 404;
+      if (!isNotFound) rethrow;
+      return dio.patch(
+        ApiEndpoint.doctorCompleteConsultation(bookingId),
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+    }
+  }
 }

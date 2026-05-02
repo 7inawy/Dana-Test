@@ -19,6 +19,20 @@ class AppConfig {
     defaultValue: 'https://rhostdev.qzz.io/api',
   );
 
+  /// Socket.IO base URL.
+  ///
+  /// Our API base includes `/api` (see [apiBaseUrl]). Socket.IO is typically served
+  /// from the same host root (e.g. `https://host.tld/socket.io`), so we strip a
+  /// trailing `/api` if present.
+  static String socketBaseUrl() {
+    final raw = apiBaseUrl.trim();
+    if (raw.isEmpty) return raw;
+    final normalized = raw.endsWith('/') ? raw.substring(0, raw.length - 1) : raw;
+    return normalized.endsWith('/api')
+        ? normalized.substring(0, normalized.length - 4)
+        : normalized;
+  }
+
   /// Enable **debug-only** audit logging to disk / optional ingest.
   ///
   /// Intentionally defaults to `false` so it can't accidentally ship enabled.

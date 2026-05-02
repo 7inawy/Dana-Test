@@ -236,4 +236,38 @@ class BookingCubit extends Cubit<BookingState> {
       return msg;
     }
   }
+
+  /// Doctor action: marks consultation complete (`PATCH /v1/doctor/booking/:id/*consultation`).
+  /// Returns `null` on success, or an error message string on failure.
+  Future<String?> completeConsultation({required String bookingId}) async {
+    emit(BookingLoading());
+    final parentId = _lastParentId;
+    final doctorId = _lastDoctorId;
+    try {
+      await repo.completeConsultation(bookingId: bookingId);
+      if (doctorId != null && doctorId.isNotEmpty) {
+        final list = await repo.getDoctorAppointments(doctorId: doctorId);
+        emit(BookingSuccess(list));
+      } else if (parentId != null && parentId.isNotEmpty) {
+        await _reloadParentBookings(parentId);
+      } else {
+        await getBookings();
+      }
+      return null;
+    } catch (e) {
+      final msg = ErrorMapper.message(e);
+      // Best-effort refresh to keep UI consistent.
+      try {
+        if (doctorId != null && doctorId.isNotEmpty) {
+          final list = await repo.getDoctorAppointments(doctorId: doctorId);
+          emit(BookingSuccess(list));
+        } else if (parentId != null && parentId.isNotEmpty) {
+          await _reloadParentBookings(parentId);
+        }
+      } catch (_) {
+        emit(BookingError(msg));
+      }
+      return msg;
+    }
+  }
 }

@@ -7,6 +7,8 @@ class Booking {
   final String time;
   final String status;
   final String paymentStatus;
+  final String paymentMethod;
+  final String notes;
   final Child child;
   final Doctor doctor;
   final String parentId;
@@ -29,6 +31,8 @@ class Booking {
     required this.time,
     required this.status,
     required this.paymentStatus,
+    this.paymentMethod = '',
+    this.notes = '',
     required this.child,
     required this.doctor,
     required this.parentId,
@@ -44,6 +48,8 @@ class Booking {
     String? time,
     String? status,
     String? paymentStatus,
+    String? paymentMethod,
+    String? notes,
     Child? child,
     Doctor? doctor,
     String? parentId,
@@ -58,6 +64,8 @@ class Booking {
       time: time ?? this.time,
       status: status ?? this.status,
       paymentStatus: paymentStatus ?? this.paymentStatus,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      notes: notes ?? this.notes,
       child: child ?? this.child,
       doctor: doctor ?? this.doctor,
       parentId: parentId ?? this.parentId,
@@ -88,6 +96,8 @@ class Booking {
       time: json['time']?.toString() ?? '',
       status: json['status']?.toString() ?? '',
       paymentStatus: json['paymentStatus']?.toString() ?? '',
+      paymentMethod: json['paymentMethod']?.toString() ?? '',
+      notes: json['notes']?.toString() ?? '',
       child: Child.fromJson(json['childId']),
       doctor: Doctor.fromJson(json['doctorId']),
       parentId: parentRaw is Map

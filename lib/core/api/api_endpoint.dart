@@ -108,6 +108,15 @@ class ApiEndpoint {
   static String todayDoctorAppointmentsPath(String doctorId) =>
       '$todayDoctorAppointmentsByDoctor$doctorId';
 
+  // ── Doctor / Booking actions ────────────────────────────────────────────────
+  /// PATCH /v1/doctor/booking/:bookingId/compelete-consultation (legacy spelling)
+  static String doctorCompleteConsultationLegacy(String bookingId) =>
+      '/v1/doctor/booking/$bookingId/compelete-consultation';
+
+  /// PATCH /v1/doctor/booking/:bookingId/complete-consultation (correct spelling)
+  static String doctorCompleteConsultation(String bookingId) =>
+      '/v1/doctor/booking/$bookingId/complete-consultation';
+
   // ── Paymob ───────────────────────────────────────────────────────────────────
   static const String paymobCallback = '/v1/paymob/callback'; // GET (internal)
 

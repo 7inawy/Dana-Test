@@ -181,4 +181,9 @@ class BookingRepo {
   Future<void> deleteBooking({required String bookingId}) async {
     await service.deleteBooking(bookingId: bookingId);
   }
+
+  Future<Booking> completeConsultation({required String bookingId}) async {
+    final response = await service.completeConsultation(bookingId: bookingId);
+    return _parseBooking(response.data);
+  }
 }

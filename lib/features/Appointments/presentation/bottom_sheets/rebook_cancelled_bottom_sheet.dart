@@ -9,6 +9,10 @@ import 'package:dana/features/Appointments/presentation/widgets/appointment_date
 import 'package:dana/features/Appointments/presentation/widgets/appointment_month_navigator.dart';
 import 'package:dana/features/Appointments/presentation/widgets/appointment_time_grid.dart';
 import 'package:dana/core/utils/app_routes.dart';
+import 'package:dana/core/di/injection_container.dart';
+import 'package:dana/core/errors/error_mapper.dart';
+import 'package:dana/features/booking/data/repo/booking_repo.dart';
+import 'package:dana/features/parent_profile/data/repo/parent_profile_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -28,18 +32,84 @@ class RebookCancelledBottomSheet extends StatefulWidget {
 
 class _RebookCancelledBottomSheetState
     extends State<RebookCancelledBottomSheet> {
-  void _onConfirm(BuildContext context) {
+  bool _submitting = false;
+
+  int _yearsOld(DateTime? birthDate) {
+    if (birthDate == null) return 0;
+    final n = DateTime.now();
+    var y = n.year - birthDate.year;
+    if (n.month < birthDate.month ||
+        (n.month == birthDate.month && n.day < birthDate.day)) {
+      y--;
+    }
+    return y < 0 ? 0 : y;
+  }
+
+  Future<void> _onConfirm(BuildContext context) async {
+    if (_submitting) return;
     final controller = context.read<AppointmentController>();
-    final draft = controller.buildDraftForPayment();
-    if (draft == null) {
+    final slotDraft = controller.buildDraftForPayment();
+    if (slotDraft == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.selectAppointment)),
       );
       return;
     }
 
-    Navigator.pop(context);
-    Navigator.of(context).pushNamed(AppRoutes.paymentMethod, arguments: draft);
+    setState(() => _submitting = true);
+    try {
+      final me = await sl<ParentProfileRepository>().getMe();
+      final bookingId = widget.appointment.bookingId;
+      String? childId = widget.appointment.childId;
+      String paymentMethod = 'on-visit';
+      String? notes;
+
+      if (bookingId != null && bookingId.isNotEmpty) {
+        final b = await sl<BookingRepo>().getBookingById(bookingId: bookingId);
+        if (b.child.id.isNotEmpty) childId = b.child.id;
+        if (b.paymentMethod.trim().isNotEmpty) paymentMethod = b.paymentMethod.trim();
+        final n = b.notes.trim();
+        if (n.isNotEmpty) notes = n;
+      }
+
+      if (childId == null || childId.isEmpty) {
+        throw Exception(context.l10n.bookingDraftIncomplete);
+      }
+
+      dynamic child;
+      for (final c in me.children) {
+        if (c.id == childId) {
+          child = c;
+          break;
+        }
+      }
+
+      final childName = child?.childName;
+      final childYears = _yearsOld(child?.birthDate);
+
+      final draft = slotDraft.copyWith(
+        childId: childId,
+        childName: childName,
+        childYears: childYears,
+        paymentMethod: paymentMethod,
+        notes: notes,
+      );
+
+      if (!mounted) return;
+      Navigator.pop(context);
+      if (paymentMethod == 'visa') {
+        Navigator.of(context).pushNamed(AppRoutes.onlinePaymentScreen, arguments: draft);
+      } else {
+        Navigator.of(context).pushNamed(AppRoutes.paymentSuccessScreen, arguments: draft);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(ErrorMapper.localized(context, e))),
+      );
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
   }
 
   @override
