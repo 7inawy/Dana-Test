@@ -82,6 +82,21 @@ class ApiEndpoint {
   // ── AI Chat ──────────────────────────────────────────────────────────────────
   static const String chatSend = '/v1/chat/send'; // POST
 
+  // ── Doctor Chat (Parent ↔ Doctor) ───────────────────────────────────────────
+  /// POST /v1/chat/conversations/:bookingId/parent
+  static String chatCreateParentConversationByBooking(String bookingId) =>
+      '/v1/chat/conversations/$bookingId/parent';
+
+  /// GET /v1/chat/messages/room/:roomId
+  static String chatMessagesByRoom(String roomId) => '/v1/chat/messages/room/$roomId';
+
+  /// GET /v1/chat/check-room/:userId/room/:roomId
+  static String chatCheckRoom({
+    required String userId,
+    required String roomId,
+  }) =>
+      '/v1/chat/check-room/$userId/room/$roomId';
+
   // ── Booking ──────────────────────────────────────────────────────────────────
   static const String createBooking = '/v1/booking'; // POST
   static const String getAllBookings = '/v1/booking'; // GET

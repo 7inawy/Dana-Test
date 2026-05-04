@@ -9,10 +9,13 @@ import 'package:dana/features/Appointments/presentation/bottom_sheets/change_app
 import 'package:dana/features/Appointments/presentation/bottom_sheets/rebook_cancelled_bottom_sheet.dart';
 import 'package:dana/features/Appointments/presentation/bottom_sheets/rebook_completed_bottom_sheet.dart';
 import 'package:dana/features/Appointments/presentation/bottom_sheets/rate_doctor_bottom_sheet.dart';
+import 'package:dana/features/Chat_with_doctor/presentation/chat_doctor_args.dart';
 import 'package:dana/features/booking/presentation/cubit/booking_cubit.dart';
+import 'package:dana/features/Chat_bot/presentation/controller/data/model/message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/utils/app_routes.dart';
 
 class AppointmentActionButtons extends StatelessWidget {
   final Appointment appointment;
@@ -66,92 +69,149 @@ class AppointmentActionButtons extends StatelessWidget {
     }
   }
 
+  void _openChat(BuildContext context) {
+    final bookingId = appointment.bookingId?.trim();
+    final doctorId = appointment.doctorId?.trim();
+    if (bookingId == null || bookingId.isEmpty || doctorId == null || doctorId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.bookingStartFailedMissingDoctorData),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    Navigator.of(context).pushNamed(
+      AppRoutes.chatDoctor,
+      arguments: ChatDoctorArgs(
+        bookingId: bookingId,
+        doctor: Doctor(
+          id: doctorId,
+          name: appointment.doctorNamePlain.isNotEmpty
+              ? appointment.doctorNamePlain
+              : appointment.doctorName,
+          specialty: appointment.specialty,
+          location: appointment.address,
+          imageUrl: appointment.image,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     switch (appointment.status) {
       case Status.upcoming:
-        return Row(
+        return Column(
           children: [
-            Expanded(
-              child: CustomButton(
-                borderRadius: AppRadius.radius_md,
-                height: 36.h,
-                text: context.l10n.changeAppointment,
-                onTap: () => _showSheet(
-                  context,
-                  ChangeAppointmentBottomSheet(appointment: appointment),
-                ),
-              ),
+            CustomButton(
+              borderRadius: AppRadius.radius_md,
+              height: 36.h,
+              text: context.l10n.chat,
+              onTap: () => _openChat(context),
             ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: CustomButton(
-                color: Colors.transparent,
-                borderRadius: AppRadius.radius_md,
-                borderColor: isDark
-                    ? AppColors.border_button_outlined_dark
-                    : AppColors.border_button_outlined_light,
-                height: 36.h,
-                text: context.l10n.cancelAppointment,
-                textStyle: AppTextStyle.semibold16TextButtonOutlined(context),
-                onTap: () => onCancel?.call(),
-              ),
+            SizedBox(height: 10.h),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomButton(
+                    borderRadius: AppRadius.radius_md,
+                    height: 36.h,
+                    text: context.l10n.changeAppointment,
+                    onTap: () => _showSheet(
+                      context,
+                      ChangeAppointmentBottomSheet(appointment: appointment),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: CustomButton(
+                    color: Colors.transparent,
+                    borderRadius: AppRadius.radius_md,
+                    borderColor: isDark
+                        ? AppColors.border_button_outlined_dark
+                        : AppColors.border_button_outlined_light,
+                    height: 36.h,
+                    text: context.l10n.cancelAppointment,
+                    textStyle: AppTextStyle.semibold16TextButtonOutlined(context),
+                    onTap: () => onCancel?.call(),
+                  ),
+                ),
+              ],
             ),
           ],
         );
 
       case Status.completed:
         final rated = appointment.userRating;
-        return Row(
+        return Column(
           children: [
-            Expanded(
-              child: CustomButton(
-                borderRadius: AppRadius.radius_md,
-                height: 36.h,
-                text: context.l10n.rebook,
-                onTap: () => _openRebookBottomSheet(context, appointment),
-              ),
+            CustomButton(
+              borderRadius: AppRadius.radius_md,
+              height: 36.h,
+              text: context.l10n.chat,
+              onTap: () => _openChat(context),
             ),
-            if (rated != null) ...[
-              SizedBox(width: 10.w),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.star_rounded, size: 22.r, color: Colors.amber.shade700),
-                      SizedBox(width: 4.w),
-                      Text(
-                        rated == rated.roundToDouble()
-                            ? '${rated.toInt()}/5'
-                            : '${rated.toStringAsFixed(1)}/5',
-                        style: AppTextStyle.semibold16TextButtonOutlined(context),
+            SizedBox(height: 10.h),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomButton(
+                    borderRadius: AppRadius.radius_md,
+                    height: 36.h,
+                    text: context.l10n.rebook,
+                    onTap: () => _openRebookBottomSheet(context, appointment),
+                  ),
+                ),
+                if (rated != null) ...[
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.star_rounded,
+                            size: 22.r,
+                            color: Colors.amber.shade700,
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            rated == rated.roundToDouble()
+                                ? '${rated.toInt()}/5'
+                                : '${rated.toStringAsFixed(1)}/5',
+                            style:
+                                AppTextStyle.semibold16TextButtonOutlined(context),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ] else ...[
-              SizedBox(width: 10.w),
-              Expanded(
-                child: CustomButton(
-                  color: Colors.transparent,
-                  borderRadius: AppRadius.radius_md,
-                  borderColor: isDark
-                      ? AppColors.border_button_outlined_dark
-                      : AppColors.border_button_outlined_light,
-                  height: 36.h,
-                  text: context.l10n.rateDoctor,
-                  textStyle: AppTextStyle.semibold16TextButtonOutlined(context),
-                  onTap: () => _showSheet(
-                    context,
-                    RateDoctorBottomSheet(appointment: appointment),
+                ] else ...[
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: CustomButton(
+                      color: Colors.transparent,
+                      borderRadius: AppRadius.radius_md,
+                      borderColor: isDark
+                          ? AppColors.border_button_outlined_dark
+                          : AppColors.border_button_outlined_light,
+                      height: 36.h,
+                      text: context.l10n.rateDoctor,
+                      textStyle:
+                          AppTextStyle.semibold16TextButtonOutlined(context),
+                      onTap: () => _showSheet(
+                        context,
+                        RateDoctorBottomSheet(appointment: appointment),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ],
+                ],
+              ],
+            ),
           ],
         );
 

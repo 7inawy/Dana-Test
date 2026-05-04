@@ -18,17 +18,24 @@ class ChatSocketClient {
 
   StreamSubscription? _connectSub;
 
+  String? _userId;
+  String? _roomId;
+
   String? _parentId;
   String? _doctorId;
 
   bool get isConnected => _socket?.connected == true;
 
   Future<void> connectAndJoin({
+    required String roomId,
+    required String parentId,
     required String doctorId,
     required void Function(JsonMap message) onMessage,
     void Function(Object error)? onError,
   }) async {
-    _doctorId = doctorId;
+    _roomId = roomId.trim();
+    _parentId = parentId.trim();
+    _doctorId = doctorId.trim();
 
     final jwt = (await _session.token())?.trim();
     if (jwt == null || jwt.isEmpty) {
@@ -41,7 +48,7 @@ class ChatSocketClient {
       onError?.call(StateError('Invalid JWT (missing sub)'));
       return;
     }
-    _parentId = user.id.trim();
+    _userId = user.id.trim();
 
     final socket = io.io(
       AppConfig.socketBaseUrl(),
@@ -55,18 +62,27 @@ class ChatSocketClient {
     _socket = socket;
 
     socket.onConnect((_) {
-      final p = _parentId;
-      final d = _doctorId;
-      if (p == null || d == null) return;
-      socket.emit('joinRoom', {'parentId': p, 'doctorId': d});
+      final u = _userId;
+      final r = _roomId;
+      if (u == null || r == null || u.isEmpty || r.isEmpty) return;
+      socket.emit('joinRoom', {'userId': u, 'roomId': r});
     });
 
-    socket.on('receiveMessage', (data) {
+    socket.on('getMessage', (data) {
       try {
         final map = (data is Map) ? Map<String, dynamic>.from(data) : null;
-        final response = map?['response'];
+        if (map == null) return;
+
+        // Backend payload may be either:
+        // - direct message map (manual HTML example), or
+        // - wrapped response map: { response: { data: {...} } }
+        final response = map['response'];
         final msg = (response is Map) ? response['data'] : null;
-        if (msg is Map) onMessage(Map<String, dynamic>.from(msg));
+        if (msg is Map) {
+          onMessage(Map<String, dynamic>.from(msg));
+          return;
+        }
+        onMessage(map);
       } catch (e) {
         onError?.call(e);
       }
@@ -85,14 +101,21 @@ class ChatSocketClient {
     String? clientMessageId,
   }) {
     final socket = _socket;
+    final r = _roomId;
+    final u = _userId;
     final p = _parentId;
     final d = _doctorId;
-    if (socket == null || p == null || d == null) return;
+    if (socket == null || r == null || u == null || p == null || d == null) return;
 
     socket.emit('sendMessage', <String, dynamic>{
+      'roomId': r,
+      'senderId': u,
+      'receiverId': d,
+      'senderModel': 'Parent',
+      'type': 'TEXT',
+      'message': text,
       'parentId': p,
       'doctorId': d,
-      'message': text,
       if (clientMessageId != null) 'clientMessageId': clientMessageId,
     });
   }

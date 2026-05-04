@@ -10,7 +10,6 @@ import 'package:dana/features/auth/login/presentation/cubit/sign_up_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 
 /// A backend-wired Sign Up screen that uses `SignUpCubit`.

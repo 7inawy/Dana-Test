@@ -1,10 +1,8 @@
 import 'package:dana/core/utils/app_colors.dart';
-import 'package:dana/core/utils/app_routes.dart';
 import 'package:dana/core/utils/app_text_style.dart';
 import 'package:dana/core/utils/currency_helper.dart';
 import 'package:dana/extensions/localization_extension.dart';
 import 'package:dana/features/Appointments/logic/appointment_controller.dart';
-import 'package:dana/features/Chat_bot/presentation/controller/data/model/message_model.dart';
 import 'package:dana/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -119,15 +117,12 @@ class DoctorCard extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.chatDoctor,
-                      arguments: Doctor(
-                        id: controller.doctorId,
-                        name: name,
-                        specialty: spec,
-                        location: loc,
-                        imageUrl: controller.imageUrl,
+                    // Chat requires an existing bookingId (see chat manual).
+                    // DoctorTime screen is pre-booking, so we block entry here.
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(context.l10n.bookNow),
+                        behavior: SnackBarBehavior.floating,
                       ),
                     );
                   },

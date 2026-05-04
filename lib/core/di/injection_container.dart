@@ -176,6 +176,7 @@ import '../../features/child_profile/presentation/cubit/growth_cubit.dart';
 import '../../features/home/data/datasources/doctors_list_remote_data_source.dart';
 import '../../features/home/data/datasources/doctors_list_remote_data_source_impl.dart';
 import '../../features/home/presentation/cubit/doctors_list_cubit.dart';
+import '../../features/Chat_with_doctor/data/services/doctor_chat_service.dart';
 // import '../../features/home/data/datasource/Parent_Remote_DataSource_Impl.dart';
 // import '../../features/home/data/datasource/doctor_repository_impl.dart';
 // import '../../features/home/data/repo/Parent_Remote_DataSource.dart';
@@ -387,6 +388,11 @@ Future<void> init() async {
   // ═══════════════════════════════════════
   sl.registerLazySingleton<BookingService>(() => BookingService(sl()));
   sl.registerLazySingleton<BookingRepo>(() => BookingRepo(sl()));
+
+  // ═══════════════════════════════════════
+  // Chat with doctor
+  // ═══════════════════════════════════════
+  sl.registerLazySingleton<DoctorChatService>(() => DoctorChatService(sl()));
 
   sl.registerLazySingleton<ChildVaccinationService>(
     () => ChildVaccinationService(sl()),

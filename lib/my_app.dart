@@ -34,6 +34,7 @@ import 'package:provider/provider.dart';
 import 'features/Chat_bot/presentation/controller/data/model/message_model.dart';
 import 'features/Chat_bot/presentation/views/screens/aI_Chat_Screen.dart';
 import 'features/Chat_bot/presentation/views/screens/ai_chat_history_screen.dart';
+import 'features/Chat_with_doctor/presentation/chat_doctor_args.dart';
 import 'features/Chat_with_doctor/presentation/views/screens/Doctor_chat/screens/chat_screen.dart';
 import 'features/Examination/presentation/views/screens/examination_screen.dart';
 import 'features/auth/signUp/presentation/views/screens/add_children/views/screens/child_info_screen.dart';
@@ -81,8 +82,11 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute<void>(
                 builder: (ctx) {
                   final arg = settings.arguments;
-                  final doctor = arg is Doctor ? arg : null;
-                  return ChatScreen(doctor: doctor ?? getSampleDoctor(ctx));
+                  final args = arg is ChatDoctorArgs ? arg : null;
+                  return ChatScreen(
+                    doctor: args?.doctor ?? getSampleDoctor(ctx),
+                    bookingId: args?.bookingId,
+                  );
                 },
               );
             }
