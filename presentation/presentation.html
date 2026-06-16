@@ -2829,9 +2829,109 @@
         </section>
 
         <!-- ======================================================
-       SLIDE 8 — FLUTTER APP
+       SLIDE 8 — BACKEND DEEP DIVE
   ====================================================== -->
         <section class="slide" id="s8" data-slide="8">
+            <div
+                style="position: absolute; inset: 0; background: radial-gradient(ellipse 700px 500px at 0% 100%, rgba(107,122,232,0.1) 0%, transparent 60%);">
+            </div>
+            <div style="padding: 72px 100px; display: flex; gap: 64px; height: 100%; position: relative; z-index: 1;">
+                <div class="s9-left" style="flex: 0 0 520px;">
+                    <div class="slide-label" style="color: #8B9AFF;">Backend</div>
+                    <h2
+                        style="font-size: 38px; font-weight: 800; color: var(--white); margin-top: 10px; line-height:1.2;">
+                        The engine<br>behind Dana</h2>
+
+                    <div class="s9-api-list">
+                        <div
+                            style="font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin: 16px 0 4px;">
+                            Key API Endpoints</div>
+                        <div class="s9-api-item">
+                            <span class="s9-method post">POST</span>
+                            <span class="s9-endpoint">/v1/parent/pre-SignUp</span>
+                            <span class="s9-endpoint-desc">OTP Registration</span>
+                        </div>
+                        <div class="s9-api-item">
+                            <span class="s9-method get">GET</span>
+                            <span class="s9-endpoint">/v1/child/:id/growth</span>
+                            <span class="s9-endpoint-desc">Growth Records</span>
+                        </div>
+                        <div class="s9-api-item">
+                            <span class="s9-method post">POST</span>
+                            <span class="s9-endpoint">/v1/booking</span>
+                            <span class="s9-endpoint-desc">Create Appointment</span>
+                        </div>
+                        <div class="s9-api-item">
+                            <span class="s9-method post">POST</span>
+                            <span class="s9-endpoint">/v1/chat/send</span>
+                            <span class="s9-endpoint-desc">AI Message</span>
+                        </div>
+                        <div class="s9-api-item">
+                            <span class="s9-method patch">PATCH</span>
+                            <span class="s9-endpoint">/v1/child/:id/childVaccinations/:vid/take</span>
+                        </div>
+                        <div class="s9-api-item">
+                            <span class="s9-method post">POST</span>
+                            <span class="s9-endpoint">/v1/sensory-test/:childId</span>
+                            <span class="s9-endpoint-desc">SPD Submit</span>
+                        </div>
+                    </div>
+                    <div
+                        style="margin-top: 24px; font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: 1px; text-transform: uppercase;">
+                        Speaker: Backend Engineer</div>
+                </div>
+
+                <div class="s9-right">
+                    <div class="s9-stat-row">
+                        <div class="s9-stat-card">
+                            <div class="s9-stat-num teal">3</div>
+                            <div class="s9-stat-label">User roles with full RBAC enforcement</div>
+                        </div>
+                        <div class="s9-stat-card">
+                            <div class="s9-stat-num peach">2</div>
+                            <div class="s9-stat-label">Real-time protocols (Socket.IO + REST)</div>
+                        </div>
+                        <div class="s9-stat-card">
+                            <div class="s9-stat-num mid">JWT</div>
+                            <div class="s9-stat-label">Token-based auth · flutter_secure_storage</div>
+                        </div>
+                        <div class="s9-stat-card">
+                            <div class="s9-stat-num teal">Google</div>
+                            <div class="s9-stat-label">OAuth2 via in-app WebView deep-link</div>
+                        </div>
+                    </div>
+
+                    <div class="s9-arch-note">
+                        <div class="s9-arch-note-title">Architecture Decision: AuthInterceptor</div>
+                        <div class="s9-arch-note-text">
+                            All API calls are routed through a single <strong
+                                style="color: rgba(255,255,255,0.8);">AuthInterceptor</strong> that automatically
+                            injects JWT tokens and handles 401 responses — redirecting to login and clearing secure
+                            storage. Public paths (signup, signin, Google OAuth) are whitelisted and bypass the
+                            Authorization header entirely.
+                        </div>
+                    </div>
+
+                    <div
+                        style="background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px;">
+                        <div
+                            style="font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.7); margin-bottom: 12px;">
+                            Payment Integration</div>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <span class="s7-tech-chip white">Paymob Gateway</span>
+                            <span class="s7-tech-chip teal">Pay at Clinic</span>
+                            <span class="s7-tech-chip peach">Online Card (Visa)</span>
+                            <span class="s7-tech-chip white">Webhook Callback</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================
+       SLIDE 9 — FLUTTER APP
+  ====================================================== -->
+        <section class="slide" id="s9" data-slide="9">
             <div class="s8-left">
                 <div>
                     <div class="slide-label teal">Flutter · iOS & Android</div>
@@ -2931,106 +3031,6 @@
                         </svg>
                         <div style="font-size: 12px; color: var(--ink-soft); text-align: center; font-weight: 600;">
                             Booking Flow</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ======================================================
-       SLIDE 9 — BACKEND DEEP DIVE
-  ====================================================== -->
-        <section class="slide" id="s9" data-slide="9">
-            <div
-                style="position: absolute; inset: 0; background: radial-gradient(ellipse 700px 500px at 0% 100%, rgba(107,122,232,0.1) 0%, transparent 60%);">
-            </div>
-            <div style="padding: 72px 100px; display: flex; gap: 64px; height: 100%; position: relative; z-index: 1;">
-                <div class="s9-left" style="flex: 0 0 520px;">
-                    <div class="slide-label" style="color: #8B9AFF;">Backend</div>
-                    <h2
-                        style="font-size: 38px; font-weight: 800; color: var(--white); margin-top: 10px; line-height:1.2;">
-                        The engine<br>behind Dana</h2>
-
-                    <div class="s9-api-list">
-                        <div
-                            style="font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin: 16px 0 4px;">
-                            Key API Endpoints</div>
-                        <div class="s9-api-item">
-                            <span class="s9-method post">POST</span>
-                            <span class="s9-endpoint">/v1/parent/pre-SignUp</span>
-                            <span class="s9-endpoint-desc">OTP Registration</span>
-                        </div>
-                        <div class="s9-api-item">
-                            <span class="s9-method get">GET</span>
-                            <span class="s9-endpoint">/v1/child/:id/growth</span>
-                            <span class="s9-endpoint-desc">Growth Records</span>
-                        </div>
-                        <div class="s9-api-item">
-                            <span class="s9-method post">POST</span>
-                            <span class="s9-endpoint">/v1/booking</span>
-                            <span class="s9-endpoint-desc">Create Appointment</span>
-                        </div>
-                        <div class="s9-api-item">
-                            <span class="s9-method post">POST</span>
-                            <span class="s9-endpoint">/v1/chat/send</span>
-                            <span class="s9-endpoint-desc">AI Message</span>
-                        </div>
-                        <div class="s9-api-item">
-                            <span class="s9-method patch">PATCH</span>
-                            <span class="s9-endpoint">/v1/child/:id/childVaccinations/:vid/take</span>
-                        </div>
-                        <div class="s9-api-item">
-                            <span class="s9-method post">POST</span>
-                            <span class="s9-endpoint">/v1/sensory-test/:childId</span>
-                            <span class="s9-endpoint-desc">SPD Submit</span>
-                        </div>
-                    </div>
-                    <div
-                        style="margin-top: 24px; font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: 1px; text-transform: uppercase;">
-                        Speaker: Backend Engineer</div>
-                </div>
-
-                <div class="s9-right">
-                    <div class="s9-stat-row">
-                        <div class="s9-stat-card">
-                            <div class="s9-stat-num teal">3</div>
-                            <div class="s9-stat-label">User roles with full RBAC enforcement</div>
-                        </div>
-                        <div class="s9-stat-card">
-                            <div class="s9-stat-num peach">2</div>
-                            <div class="s9-stat-label">Real-time protocols (Socket.IO + REST)</div>
-                        </div>
-                        <div class="s9-stat-card">
-                            <div class="s9-stat-num mid">JWT</div>
-                            <div class="s9-stat-label">Token-based auth · flutter_secure_storage</div>
-                        </div>
-                        <div class="s9-stat-card">
-                            <div class="s9-stat-num teal">Google</div>
-                            <div class="s9-stat-label">OAuth2 via in-app WebView deep-link</div>
-                        </div>
-                    </div>
-
-                    <div class="s9-arch-note">
-                        <div class="s9-arch-note-title">Architecture Decision: AuthInterceptor</div>
-                        <div class="s9-arch-note-text">
-                            All API calls are routed through a single <strong
-                                style="color: rgba(255,255,255,0.8);">AuthInterceptor</strong> that automatically
-                            injects JWT tokens and handles 401 responses — redirecting to login and clearing secure
-                            storage. Public paths (signup, signin, Google OAuth) are whitelisted and bypass the
-                            Authorization header entirely.
-                        </div>
-                    </div>
-
-                    <div
-                        style="background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px;">
-                        <div
-                            style="font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.7); margin-bottom: 12px;">
-                            Payment Integration</div>
-                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                            <span class="s7-tech-chip white">Paymob Gateway</span>
-                            <span class="s7-tech-chip teal">Pay at Clinic</span>
-                            <span class="s7-tech-chip peach">Online Card (Visa)</span>
-                            <span class="s7-tech-chip white">Webhook Callback</span>
-                        </div>
                     </div>
                 </div>
             </div>
